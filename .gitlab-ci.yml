@@ -1,0 +1,10 @@
+stages:
+  - build
+
+image: docker:20.10.13
+
+build:
+  stage: build
+  script:
+    - apk add openjdk17
+    - ./gradlew build -Dquarkus.native.container-build=true
