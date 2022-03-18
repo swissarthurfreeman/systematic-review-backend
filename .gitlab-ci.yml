@@ -10,6 +10,6 @@ build:
     - ./gradlew build
       -Dquarkus.container-image.build=true
       -Dquarkus.container-image.push=true
-      -Dquarkus.container-image.registry=${CI_REGISTRY}
+      -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
