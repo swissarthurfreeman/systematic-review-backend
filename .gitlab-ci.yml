@@ -1,14 +1,12 @@
 stages:
   - build
 
-image: docker:20.10.13
+image: gradle:jdk17
 
 build:
   stage: build
   script:
-    - apk add openjdk17
-    - ./gradlew build
-      -Dquarkus.container-image.build=true
+    - gradle build
       -Dquarkus.container-image.push=true
       -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
