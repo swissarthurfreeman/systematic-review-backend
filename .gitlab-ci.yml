@@ -8,7 +8,7 @@ build:
   script:
     - apk add openjdk17
     - ./gradlew build
-      -Dquarkus.native.container-build=true
+      -Dquarkus.container-image.build=true
       -Dquarkus.container-image.push=true
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
