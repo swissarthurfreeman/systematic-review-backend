@@ -9,14 +9,14 @@ variables:
   SONAR_TOKEN: $SONAR_TOKEN
   GRADLE_USER_HOME: ".cache/gradle/"
 
+cache:
+  paths:
+    - .cache
+
 test:
   stage: test
   script:
     - gradle test
-  cache:
-    key: gradle
-    paths:
-      - .cache/gradle
 
 push-image:
   stage: deploy
@@ -30,8 +30,6 @@ push-image:
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
   cache:
     key: gradle
-    paths:
-      - .cache/gradle
 
 sonarqube:
   stage: verify
