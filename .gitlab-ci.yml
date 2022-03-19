@@ -1,10 +1,25 @@
 stages:
-  - build
+  - test
+  - verify
+  - deploy
 
-image: gradle:jdk17
+image: gradle:7.3.3-jdk17
 
-build:
-  stage: build
+variables:
+  SONAR_TOKEN: $SONAR_TOKEN
+  GRADLE_OPTS: "--build-cache --gradle-user-home .cache/gradle/"
+
+test:
+  stage: test
+  script:
+    - gradle test
+  cache:
+    key: gradle
+    paths:
+      - .cache/gradle
+
+push-image:
+  stage: deploy
   script:
     - gradle build
       -Dquarkus.container-image.push=true
@@ -13,3 +28,11 @@ build:
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
+  cache:
+    key: gradle
+    paths:
+      - .cache/gradle
+
+sonarqube:
+  stage: verify
+  script: gradle sonarqube
