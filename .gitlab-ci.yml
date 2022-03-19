@@ -7,7 +7,7 @@ image: gradle:7.3.3-jdk17
 
 variables:
   SONAR_TOKEN: $SONAR_TOKEN
-  GRADLE_OPTS: "--build-cache --gradle-user-home .cache/gradle/"
+  GRADLE_USER_HOME: ".cache/gradle/"
 
 test:
   stage: test
