@@ -1,25 +1,43 @@
 package ch.unige.pinfo3;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.*;
+import java.awt.*;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
 @Path("/jobs")
 public class JobResource {
-    private Set<Job> jobs = Collections.synchronizedSet(new LinkedHashSet<>());
+    private Set<Job> jobs = Collections.newSetFromMap(
+            Collections.synchronizedMap(new LinkedHashMap<>()));
+
+    // bogus john doe user.
+    public static User john = new User("John_Doe", "john@doe.com");
+
 
     JobResource() {
-        User John = new User("John_Doe", "john@doe.com");
-        jobs.add(new Job("HIV AND SAHARA", John));
-        jobs.add(new Job("BRAZIL OR ZIKA", John));
+        jobs.add(new Job("HIV AND SAHARA", john));
+        jobs.add(new Job("BRAZIL OR ZIKA", john));
     }
 
     @POST
-    public create(Job job) {
+    public Set<Job> add(Job job) {
         jobs.add(job);
+        return jobs;
+    }
+
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Job get(@PathParam("id") String id) {
+
+        Iterator<Job> it = jobs.iterator();
+
+        while(it.hasNext()) {
+            Job curr = it.next();
+            return curr;            // returns random first element for now.
+        }
     }
 }
