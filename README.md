@@ -1,4 +1,4 @@
-# backend Project
+# PInfo Back-End Project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
