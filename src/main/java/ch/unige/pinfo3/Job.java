@@ -14,5 +14,5 @@ public class Job {
         this.user = user;
     }
 
-
+    UUID getId() { return this.id; }
 }
