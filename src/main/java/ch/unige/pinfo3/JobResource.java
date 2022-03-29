@@ -1,14 +1,11 @@
 package ch.unige.pinfo3;
 
-import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 @Path("/jobs")
@@ -16,7 +13,7 @@ public class JobResource {
     private Set<Job> jobs = Collections.synchronizedSet(new LinkedHashSet<>());
 
     JobResource() {
-        User John = new User()
+        User John = new User("John_Doe", "john@doe.com");
         jobs.add(new Job("HIV AND SAHARA", John));
         jobs.add(new Job("BRAZIL OR ZIKA", John));
     }
