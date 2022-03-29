@@ -1,15 +1,34 @@
 stages:
-  - build
+  - test
+  - verify
+  - deploy
 
-image: docker:20.10.13
+image: gradle:7.3.3-jdk17
 
-build:
-  stage: build
+variables:
+  SONAR_TOKEN: $SONAR_TOKEN
+  GRADLE_USER_HOME: ".cache/gradle/"
+
+cache:
+  paths:
+    - .cache
+
+test:
+  stage: test
   script:
-    - apk add openjdk17
-    - ./gradlew build
-      -Dquarkus.container-image.build=true
+    - gradle test
+
+push-image:
+  stage: deploy
+  script:
+    - gradle build
       -Dquarkus.container-image.push=true
+      -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
+      -Dquarkus.container-image.name=${CI_PROJECT_NAME}
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
+
+sonarqube:
+  stage: verify
+  script: gradle sonarqube

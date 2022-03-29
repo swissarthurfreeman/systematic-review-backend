@@ -1,6 +1,15 @@
 plugins {
     id 'java'
     id 'io.quarkus'
+    id "org.sonarqube" version "3.3"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "ch.unige.pinfo3"
+        property "sonar.organization", "pinfo3"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 repositories {
@@ -9,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.quarkus:quarkus-container-image-docker'
+    implementation 'io.quarkus:quarkus-container-image-jib'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-arc'
