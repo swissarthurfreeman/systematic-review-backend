@@ -7,13 +7,17 @@ public class User {
     private UUID uuid;
     private String username;
     private String email;
-    private ArrayList<String> quesries;
+    private ArrayList<Job> jobs;
 
     public User(String username, String email){
          uuid = UUID.randomUUID();
          this.username = username;
          this.email = email;
-         this.quesries = new ArrayList<>();
+         this.jobs = new ArrayList<Job>();
+    }
+
+    public void addJob(Job job){
+        jobs.add(job);
     }
 
 
