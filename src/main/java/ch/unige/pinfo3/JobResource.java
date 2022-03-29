@@ -39,5 +39,6 @@ public class JobResource {
             Job curr = it.next();
             return curr;            // returns random first element for now.
         }
+        return new Job("LOL AND MDR", john);
     }
 }
