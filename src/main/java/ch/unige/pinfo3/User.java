@@ -18,6 +18,10 @@ public class User {
         this.jobs = new HashMap<UUID, Job>();
     }
 
+    public UUID getId(){
+        return uuid;
+    }
+
     public void addJob(Job job){
         jobs.put(job.getId(), job);
     }
