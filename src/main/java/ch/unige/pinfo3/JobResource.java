@@ -13,7 +13,7 @@ public class JobResource {
     private Set<Job> jobs = Collections.newSetFromMap(
             Collections.synchronizedMap(new LinkedHashMap<>()));
 
-    JobResource() {
+    public JobResource() {
         jobs.add(new Job("HIV AND SAHARA", john));
         jobs.add(new Job("BRAZIL OR ZIKA", john));
     }
