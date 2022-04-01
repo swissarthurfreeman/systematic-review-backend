@@ -3,10 +3,7 @@ package ch.unige.pinfo3;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -45,8 +42,16 @@ public class UserResource {
 
 
     @DELETE
+    /*
     public Set<User> delete(User user) {
         users.removeIf(i -> i.getId().equals(user.getId()));
+        return users;
+    }
+     */
+
+    @Path("/{id}")
+    public Set<User> delete(@PathParam("id") UUID id) {
+        users.removeIf(i -> i.getId().equals(id));
         return users;
     }
 }
