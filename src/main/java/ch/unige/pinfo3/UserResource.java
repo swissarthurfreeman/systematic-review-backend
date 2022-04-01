@@ -4,6 +4,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,17 +24,25 @@ public class UserResource {
         return users;
     }
 
-    @POST
-    public Set<User> addUser(String username, String email){
-        users.add(new User(username,email));
-        return users;
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User get(@PathParam("id") String id) {
+        Iterator<User> it = users.iterator();
+
+        while(it.hasNext()) {
+            User curr = it.next();
+            return curr;            // returns random first element for now.
+        }
+        return new User("user93", "user93@unige.ch");
     }
-    /*
-    public Set<User> add(User user) {
+
+    @POST
+    public Set<User> addUser(User user){
         users.add(user);
         return users;
     }
-     */
+
 
     @DELETE
     public Set<User> delete(User user) {
