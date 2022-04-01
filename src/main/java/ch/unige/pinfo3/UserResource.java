@@ -19,15 +19,21 @@ public class UserResource {
     }
 
     @GET
-    public Response list() {
-        return Response.ok(users).build();
+    public Set<User> returnUsers() {
+        return users;
     }
 
     @POST
+    public Set<User> addUser(String username, String email){
+        users.add(new User(username,email));
+        return users;
+    }
+    /*
     public Set<User> add(User user) {
         users.add(user);
         return users;
     }
+     */
 
     @DELETE
     public Set<User> delete(User user) {
