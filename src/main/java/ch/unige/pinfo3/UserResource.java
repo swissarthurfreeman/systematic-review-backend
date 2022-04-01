@@ -42,13 +42,6 @@ public class UserResource {
 
 
     @DELETE
-    /*
-    public Set<User> delete(User user) {
-        users.removeIf(i -> i.getId().equals(user.getId()));
-        return users;
-    }
-     */
-
     @Path("/{id}")
     public Set<User> delete(@PathParam("id") UUID id) {
         users.removeIf(i -> i.getId().equals(id));
