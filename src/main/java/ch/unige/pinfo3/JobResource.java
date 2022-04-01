@@ -13,14 +13,14 @@ public class JobResource {
     private Set<Job> jobs = Collections.newSetFromMap(
             Collections.synchronizedMap(new LinkedHashMap<>()));
 
-    // bogus john doe user.
-    public static User john = new User("John_Doe", "john@doe.com");
-
-
     JobResource() {
         jobs.add(new Job("HIV AND SAHARA", john));
         jobs.add(new Job("BRAZIL OR ZIKA", john));
     }
+
+    // bogus john doe user.
+    public static User john = new User("John_Doe", "john@doe.com");
+
 
     @POST
     public Set<Job> add(Job job) {
