@@ -1,12 +1,10 @@
 package ch.unige.pinfo3;
 
-import javax.json.bind.annotation.JsonbProperty;
 import java.util.UUID;
 
 public class Job {
-    @JsonbProperty("query")
+    // add public getter to return value in json
     final public String query;
-    @JsonbProperty("user")
     final private User user;
 
     private UUID id = UUID.randomUUID();
@@ -17,7 +15,7 @@ public class Job {
         this.id = UUID.fromString(uuid);
     }
 
-    UUID getId() { return this.id; }
-    String getQuery() { return this.query; }
-    User getUser() { return this.user; }
+    public UUID getId() { return this.id; }
+    public String getQuery() { return this.query; }
+    public User getUser() { return this.user; }
 }

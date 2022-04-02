@@ -27,6 +27,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy-jsonb'
     implementation 'io.quarkus:quarkus-arc'
     testImplementation 'io.quarkus:quarkus-junit5'
+    implementation 'io.rest-assured:rest-assured'
 }
 
 group 'ch.unige.pinfo3'

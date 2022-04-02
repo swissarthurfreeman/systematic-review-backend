@@ -2,17 +2,19 @@ package ch.unige.pinfo3;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
-import java.util.ArrayList;
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @RegisterForReflection
 public class User {
-    private UUID uuid;
-    private String username;
-    private String email;
-    private Map<UUID, Job> jobs;
+    private final UUID uuid;
+    private final String username;
+    private final String email;
+
+    @JsonbTransient
+    private final Map<UUID, Job> jobs;
 
     public User(String username, String email){
         uuid = UUID.randomUUID();
@@ -21,7 +23,7 @@ public class User {
         this.jobs = new HashMap<UUID, Job>();
     }
 
-    public UUID getId(){
+    public UUID getId() {
         return uuid;
     }
 
@@ -41,6 +43,7 @@ public class User {
         return jobs.get(id);
     }
 
+    @JsonbTransient
     public Map<UUID, Job> getJobs(){
         return jobs;
     }
