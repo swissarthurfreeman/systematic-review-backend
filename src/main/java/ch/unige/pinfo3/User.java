@@ -16,11 +16,11 @@ public class User {
     @JsonbTransient
     private final Map<UUID, Job> jobs;
 
-    public User(String username, String email){
-        uuid = UUID.randomUUID();
+    public User(String username, String email, String uuid){
+        this.uuid = UUID.fromString(uuid);
         this.username = username;
         this.email = email;
-        this.jobs = new HashMap<UUID, Job>();
+        this.jobs = new HashMap<>();
     }
 
     public UUID getId() {
@@ -39,12 +39,12 @@ public class User {
         jobs.put(job.getId(), job);
     }
 
-    public Job getJob(UUID id){
+    public Job getJob(UUID id) {
         return jobs.get(id);
     }
 
     @JsonbTransient
-    public Map<UUID, Job> getJobs(){
+    public Map<UUID, Job> getJobs() {
         return jobs;
     }
 

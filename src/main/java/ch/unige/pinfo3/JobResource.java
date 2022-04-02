@@ -1,12 +1,16 @@
 package ch.unige.pinfo3;
 
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Path("/jobs")
 public class JobResource {
-    private ArrayList<Job> jobs = new ArrayList<>();
+    private final ArrayList<Job> jobs = new ArrayList<>();
+
+    // bogus john doe user is first inserted in database.
+    public static User john = new User("john.doe", "john.doe@unige.ch", "0ce40162-aaaa-5666-aaaa-8f36f394ffd9");
 
     public JobResource() {
         // hard-coded uuids to test.
@@ -14,16 +18,15 @@ public class JobResource {
         jobs.add(new Job("BRAZIL OR ZIKA", john, "b6bb6a2a-5cef-4990-98b2-52a359fbaa77"));
     }
 
-    // bogus john doe user.
-    public static User john = new User("John_Doe", "john@doe.com");
-
     @POST
-    public ArrayList<Job> add(Job job) {
-        jobs.add(job);
-        return jobs;
+    public Job add(String query) {
+        Job newJob = new Job(query, john, UUID.randomUUID().toString() );
+        jobs.add(newJob);
+        return newJob;
     }
 
-    @GET public ArrayList<Job> getJobs() {
+    @GET
+    public ArrayList<Job> getJobs() {
         return jobs;
     }
 

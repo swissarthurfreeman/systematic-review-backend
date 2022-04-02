@@ -4,24 +4,24 @@
 
 All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
 
-| Verb | URL        | Body                | Return code | Description                                             |
-|------|------------|---------------------|-------------|---------------------------------------------------------|
-| GET  | /jobs/     | N/A                 | 200         | Gives a list of [Job object](#job-object)               |
-| GET  | /jobs/:id  | N/A                 | 200         | Returns Job with specific ID                            |
-| POST | /jobs/     | [Job](#user-object) | 201         | Creates a new [Job object](#job-object) and returns it. |
-| GET  | /users/    | N/A                 | 200         | Returns list of all users                               |
-| GET  | /users/:id | N/A                 | 200         | Returns a [User object](#user-object)                   |
+| Verb | URL        | Body             | Return code | Description                                             |
+|------|------------|------------------|-------------|---------------------------------------------------------|
+| GET  | /jobs/     | N/A              | 200         | Gives a list of [Job object](#job-object)               |
+| GET  | /jobs/:id  | N/A              | 200         | Returns Job with specific ID                            |
+| POST | /jobs/     | [String](#query) | 201         | Creates a new [Job object](#job-object) and returns it. |
+| GET  | /users/    | N/A              | 200         | Returns list of all users                               |
+| GET  | /users/:id | N/A              | 200         | Returns a [User object](#user-object)                   |
 
 # Resources types
 
 #### User Object
 
-| Field Name | Type     | Description                                       |
-|------------|----------|---------------------------------------------------|
- | uuid       | string   | User unique identifier. (128 hexadecimal bit key) |
-| username   | string   | The username of the user (unique and public)      |
-| email      | string   | email of the user (unique and private)            |
-| queries    | string[] | Returns all queries ran by user                   |
+| Field Name | Type   | Description                                       |
+|------------|--------|---------------------------------------------------|
+ | uuid       | string | User unique identifier. (128 hexadecimal bit key) |
+| username   | string | The username of the user (unique and public)      |
+| email      | string | email of the user (unique and private)            |
+| jobs       | Job[]  | Returns all jobs belonging to user                |
 
 
 #### Job Object
