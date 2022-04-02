@@ -15,12 +15,16 @@ sonarqube {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven {
+        url "https://mvnrepository.com/"
+    }
 }
 
 dependencies {
     implementation 'io.quarkus:quarkus-container-image-jib'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-resteasy-jackson'
+    implementation 'io.quarkus:quarkus-resteasy-jsonb'
     implementation 'io.quarkus:quarkus-arc'
     testImplementation 'io.quarkus:quarkus-junit5'
 }
