@@ -4,16 +4,17 @@
 
 All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
 
-| Verb | URL        | Body          | Return code | Description                           |
-|------|------------|---------------|-------------|---------------------------------------|
-| GET  | /jobs/     | N/A           | 200         | Gives a list of [User object](#User)  |
-| GET  | /jobs/:id  | N/A           | 200         | Returns Job with specific ID          |
-| POST | /jobs/     | [User](#User) | 201         | Creates a new user and returns its id |
-| GET  | /users/:id | N/A           | 200         | Returns a [User object](#user-object) |
+| Verb | URL        | Body                | Return code | Description                                |
+|------|------------|---------------------|-------------|--------------------------------------------|
+| GET  | /jobs/     | N/A                 | 200         | Gives a list of [User object](#job-object) |
+| GET  | /jobs/:id  | N/A                 | 200         | Returns Job with specific ID               |
+| POST | /jobs/     | [Job](#user-object) | 201         | Creates a new user and returns its id      |
+| GET  | /users/    | N/A                 | 200         | Returns list of all users                  |
+| GET  | /users/:id | N/A                 | 200         | Returns a [User object](#user-object)      |
 
 # Resources types
 
-#### User
+#### User Object
 
 | Field Name | Type     | Description                                       |
 |------------|----------|---------------------------------------------------|
@@ -23,7 +24,7 @@ All the bodies will be stored as JSON, and the structure of the objects are desc
 | queries    | string[] | Returns all queries ran by user                   |
 
 
-#### Job
+#### Job Object
 
 | Field Name | Type                         | Description                                              |
 |------------|------------------------------|----------------------------------------------------------|
@@ -31,7 +32,7 @@ All the bodies will be stored as JSON, and the structure of the objects are desc
 | query      | string                       | the job query                                            |
 | status     | ["queued", running", "done"] | self-explanatory                                         |
 | estimation | uint                         | The estimated number of articles send back by the query. |
-| user       | User                         | User having created the Job.                             |
+| user       | User                         | User having creating the Job.                            |
 
 ## Quarkus Usage
 
