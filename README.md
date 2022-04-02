@@ -1,8 +1,43 @@
 # PInfo Back-End Project
 
+# API Endpoints
+
+All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
+
+| Verb | URL        | Body          | Return code | Description                           |
+|------|------------|---------------|-------------|---------------------------------------|
+| GET  | /jobs/     | N/A           | 200         | Gives a list of [User object](#User)  |
+| GET  | /jobs/:id  | N/A           | 200         | Returns Job with specific ID          |
+| POST | /jobs/     | [User](#User) | 201         | Creates a new user and returns its id |
+| GET  | /users/:id | N/A           | 200         | Returns a [User object](#user-object) |
+
+# Resources types
+
+#### User
+
+| Field Name | Type     | Description                                       |
+|------------|----------|---------------------------------------------------|
+ | uuid       | string   | User unique identifier. (128 hexadecimal bit key) |
+| username   | string   | The username of the user (unique and public)      |
+| email      | string   | email of the user (unique and private)            |
+| queries    | string[] | Returns all queries ran by user                   |
+
+
+#### Job
+
+| Field Name | Type                         | Description                                              |
+|------------|------------------------------|----------------------------------------------------------|
+| uuid       | string                       | Unique identifier of the Job. (128 hexadecimal bit key)  |
+| query      | string                       | the job query                                            |
+| status     | ["queued", running", "done"] | self-explanatory                                         |
+| estimation | uint                         | The estimated number of articles send back by the query. |
+| user       | User                         | User having created the Job.                             |
+
+## Quarkus Usage
+
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+If you want to learn more about Quarkus, please visit its website: https://quarkus.io/.
 
 ## Running the application in dev mode
 

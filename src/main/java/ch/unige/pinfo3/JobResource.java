@@ -2,9 +2,7 @@ package ch.unige.pinfo3;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.*;
-import java.awt.*;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
@@ -28,15 +26,16 @@ public class JobResource {
         return jobs;
     }
 
+    @GET public Set<Job> getJobs() {
+        return jobs;
+    }
+
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Job get(@PathParam("id") String id) {
 
-        Iterator<Job> it = jobs.iterator();
-
-        while(it.hasNext()) {
-            Job curr = it.next();
+        for (Job curr : jobs) {
             return curr;            // returns random first element for now.
         }
         return new Job("LOL AND MDR", john);
