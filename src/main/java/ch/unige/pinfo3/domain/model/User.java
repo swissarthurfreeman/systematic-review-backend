@@ -1,22 +1,31 @@
-package ch.unige.pinfo3;
+package ch.unige.pinfo3.domain.model;
 
+import ch.unige.pinfo3.domain.model.Job;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.smallrye.common.constraint.NotNull;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Id;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@RegisterForReflection
+@Data
+@EqualsAndHashCode
 public class User {
+    @Id
     private final UUID uuid;
+    @NotNull
     private final String username;
+    @NotNull
     private final String email;
 
     @JsonbTransient
     private final Map<UUID, Job> jobs;
 
-    public User(String username, String email, String uuid){
+    public User(String username, String email, String uuid) {
         this.uuid = UUID.fromString(uuid);
         this.username = username;
         this.email = email;
@@ -35,7 +44,7 @@ public class User {
         return email;
     }
 
-    public void addJob(Job job){
+    public void addJob(Job job) {
         jobs.put(job.getId(), job);
     }
 

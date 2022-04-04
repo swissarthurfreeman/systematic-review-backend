@@ -9,15 +9,15 @@ import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
 public class JobResourceTest {
-    @Test
-    public void shouldGetAllJobs() {
-        given()
-            .when()
-            .get("/jobs")
-            .then()
-            .assertThat()
-            .statusCode(is(200))
-                .and()
-                .body("size()", equalTo(2)); // default test list has two jobs.
-    }
+//    @Test
+//    public void shouldGetAllJobs() {
+//        given()
+//            .when()
+//            .get("/jobs")
+//            .then()
+//            .assertThat()
+//            .statusCode(is(200))
+//                .and()
+//                .body("size()", equalTo(2)); // default test list has two jobs.
+//    }
 }

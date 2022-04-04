@@ -26,8 +26,11 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-resteasy-jsonb'
     implementation 'io.quarkus:quarkus-arc'
+    implementation 'org.projectlombok:lombok:1.18.20'
     testImplementation 'io.quarkus:quarkus-junit5'
     implementation 'io.rest-assured:rest-assured'
+    // https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api
+    implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.0.0'
 }
 
 group 'ch.unige.pinfo3'
