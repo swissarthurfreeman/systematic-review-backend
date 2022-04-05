@@ -7,15 +7,22 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 @Path("/users")
 public class UserRestService {
-//    @Inject
+    @Inject
     UserService userService;
 
     public UserRestService() {
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<User> getAll() {
+        return userService.getAll();
     }
 
     @GET
@@ -35,6 +42,7 @@ public class UserRestService {
 
     @DELETE
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public void delete(@PathParam("id") UUID id) {
         userService.delete(id);
     }

@@ -16,17 +16,15 @@ import java.util.UUID;
 public class JobRestService {
     @Inject
     JobService jobService;
-    private final User testUser;
 
     public JobRestService() {
-        testUser = jobService.getDummyUser();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Job create(String query) {
-        Job newJob = new Job(query, testUser, UUID.randomUUID().toString());
+        Job newJob = new Job(query, jobService.getDummyUser(), UUID.randomUUID().toString());
         jobService.create(newJob);
         return newJob;
     }
