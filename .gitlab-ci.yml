@@ -15,7 +15,7 @@ cache:
     - .cache
 
 deploy:
-  stage: deploy
+  stage: test_kube
   image:
     name: bitnami/kubectl:latest
     entrypoint: [""]
