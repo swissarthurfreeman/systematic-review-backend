@@ -1,4 +1,5 @@
 stages:
+  - test_kube
   - test
   - verify
   - deploy
@@ -12,6 +13,14 @@ variables:
 cache:
   paths:
     - .cache
+
+deploy:
+  stage: deploy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [""]
+  script:
+    - kubectl config get-contexts
 
 test:
   stage: test
