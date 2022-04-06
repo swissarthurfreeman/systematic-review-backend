@@ -1,5 +1,4 @@
 stages:
-  - test_kube
   - test
   - verify
   - deploy
@@ -13,17 +12,6 @@ variables:
 cache:
   paths:
     - .cache
-
-deploy:
-  stage: test_kube
-  environment:
-    name: production
-    url: https://pinfo3.unige.ch
-  image:
-    name: bitnami/kubectl:latest
-    entrypoint: [""]
-  script:
-    - kubectl config get-contexts
 
 test:
   stage: test
@@ -40,6 +28,17 @@ push-image:
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
+
+production_deploy:
+  stage: .pre
+  environment:
+    name: production
+    url: https://pinfo3.unige.ch
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [""]
+  script:
+    - kubectl get nodes
 
 sonarqube:
   stage: verify
