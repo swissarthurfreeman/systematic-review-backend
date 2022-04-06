@@ -16,6 +16,9 @@ cache:
 
 deploy:
   stage: test_kube
+  environment:
+    name: production
+    url: https://pinfo3.unige.ch
   image:
     name: bitnami/kubectl:latest
     entrypoint: [""]
