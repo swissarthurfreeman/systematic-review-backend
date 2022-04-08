@@ -1,37 +1,33 @@
 package ch.unige.pinfo3.domain.model;
 
-import io.smallrye.common.constraint.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.Id;
 import java.util.UUID;
 
 @Data
 @EqualsAndHashCode
 public class Job {
-    @Id
-    private UUID id = UUID.randomUUID();
-    @NotNull
-    final public String query;
-    @NotNull
-    final private User user;
+    @Getter
+    private UUID id;
 
-    public Job(String query, User user, String uuid) {
+    @Getter
+    @Setter
+    public String query;
+
+    @Getter
+    @Setter
+    private User user;
+
+    public Job() {
+        this.id = UUID.randomUUID();
+    }
+
+    public Job(String query, User user) {
+        this();
         this.query = query;
         this.user = user;
-        this.id = UUID.fromString(uuid);
-    }
-
-    public UUID getId() {
-        return this.id;
-    }
-
-    public String getQuery() {
-        return this.query;
-    }
-
-    public User getUser() {
-        return this.user;
     }
 }

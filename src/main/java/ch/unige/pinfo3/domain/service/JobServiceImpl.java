@@ -2,11 +2,8 @@ package ch.unige.pinfo3.domain.service;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.User;
-import lombok.extern.java.Log;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,9 +15,9 @@ public class JobServiceImpl implements JobService {
 
     public JobServiceImpl() {
         jobs = new ArrayList<>();
-        john = new User("john.doe", "john.doe@unige.ch", "0ce40162-aaaa-5666-aaaa-8f36f394ffd9");
-        jobs.add(new Job("HIV AND SAHARA", john, "0ce40162-76a7-4863-8a1b-8f36f394ffd9"));
-        jobs.add(new Job("HIV AND SAHARA", john, "0ce40162-76a7-4863-8a1b-8f36f394ffd9"));
+        john = User.getDummy();
+        jobs.add(new Job("HIV AND SAHARA", john));
+        jobs.add(new Job("HIV AND SAHARA", john));
     }
 
     @Override
@@ -31,11 +28,6 @@ public class JobServiceImpl implements JobService {
     @Override
     public Job get(UUID id) {
         return jobs.stream().filter(job -> id.equals(job.getId())).findAny().orElse(null);
-    }
-
-    @Override
-    public User getDummyUser() {
-        return john;
     }
 
     @Override

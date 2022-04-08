@@ -1,0 +1,31 @@
+@hostname = 127.0.0.1
+@port = 8080
+@proto = http
+@host = {{proto}}://{{hostname}}:{{port}}
+
+###
+GET {{host}}/users
+Content-Type: application/json
+Accept: application/json
+
+###
+POST {{host}}/users
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "test@example.org",
+    "username": "test"
+}
+
+###
+GET {{host}}/jobs
+Content-Type: application/json
+Accept: application/json
+
+###
+POST {{host}}/jobs
+Content-Type: application/json
+Accept: application/json
+
+test

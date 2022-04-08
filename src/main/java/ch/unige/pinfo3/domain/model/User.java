@@ -1,13 +1,11 @@
 package ch.unige.pinfo3.domain.model;
 
-import ch.unige.pinfo3.domain.model.Job;
-import io.quarkus.runtime.annotations.RegisterForReflection;
-import io.smallrye.common.constraint.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.Id;
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,33 +13,43 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode
 public class User {
-    @Id
-    private final UUID uuid;
-    @NotNull
-    private final String username;
-    @NotNull
-    private final String email;
+    @Getter
+    private UUID id;
 
-    @JsonbTransient
-    private final Map<UUID, Job> jobs;
+    @Getter
+    @Setter
+    private String username;
 
-    public User(String username, String email, String uuid) {
-        this.uuid = UUID.fromString(uuid);
-        this.username = username;
-        this.email = email;
+    @Getter
+    @Setter
+    private String email;
+
+    @Getter
+    private Map<UUID, Job> jobs;
+
+    private static volatile User dummy = null;
+
+    public static User getDummy() {
+        if (dummy == null) {
+            synchronized (Singleton.class) {
+                if (dummy == null) {
+                    dummy = new User("john.doe", "john.doe@example.org");
+                    dummy.id = UUID.fromString("0ce40162-aaaa-5666-aaaa-8f36f394ffd9");
+                }
+            }
+        }
+        return dummy;
+    }
+
+    public User() {
+        this.id = UUID.randomUUID();
         this.jobs = new HashMap<>();
     }
 
-    public UUID getId() {
-        return uuid;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
+    public User(String username, String email) {
+        this();
+        this.username = username;
+        this.email = email;
     }
 
     public void addJob(Job job) {
@@ -50,11 +58,6 @@ public class User {
 
     public Job getJob(UUID id) {
         return jobs.get(id);
-    }
-
-    @JsonbTransient
-    public Map<UUID, Job> getJobs() {
-        return jobs;
     }
 
 }

@@ -17,8 +17,8 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl() {
         users = new ArrayList<>();
-        users.add(new User("john.doe", "john.doe@unige.ch", "0ce40162-aaaa-5666-aaaa-8f36f394ffd9"));
-        users.add(new User("user2", "user2@etu.unige.ch", "81391884-7b3e-4b80-a82b-d2445ba7e806"));
+        users.add(User.getDummy());
+        users.add(new User("user2", "user2@etu.unige.ch"));
     }
 
     @Override

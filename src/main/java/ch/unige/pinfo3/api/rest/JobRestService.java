@@ -24,7 +24,7 @@ public class JobRestService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Job create(String query) {
-        Job newJob = new Job(query, jobService.getDummyUser(), UUID.randomUUID().toString());
+        Job newJob = new Job(query, User.getDummy());
         jobService.create(newJob);
         return newJob;
     }
