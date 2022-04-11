@@ -19,8 +19,7 @@ All the bodies will be stored as JSON, and the structure of the objects are desc
 
 | Verb | URL        | Body             | Return code | Description                                                      |
 |------|------------|------------------|-------------|------------------------------------------------------------------|
-| GET  | /users     | N/A              | 200         | Returns a list of [User object](#user-object) supports filtering. e.g. 
-GET /users?email=john@doe.com&username=john.doe |
+| GET  | /users     | N/A              | 200         | Returns a list of [User object](#user-object) supports filtering. e.g. GET /users?email=john@doe.com&username=john.doe |
 | GET  | /users/:id | N/A              | 200         | Returns user a single [User object](#user-object) resource.      |
 | GET  | /users/:id/jobs | N/A         | 200         | Returns a list of [Job object](#job-object)                      |
 
