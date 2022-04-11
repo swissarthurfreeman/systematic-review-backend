@@ -20,16 +20,20 @@ test:
 
 push-image:
   stage: deploy
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG'
   script:
-    - if [ "$CI_COMMIT_TAG" ]; then IMAGE_TAG="$CI_COMMIT_TAG"; else IMAGE_TAG="latest"; fi
     - gradle build
       -Dquarkus.container-image.push=true
-      -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}:${IMAGE_TAG}
+      -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
+      -Dquarkus.container-image.name=${CI_PROJECT_NAME}
+      -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
 
 sonarqube:
   stage: verify
-  script: gradle sonarqube
+  variables:
+    GIT_DEPTH: 0
+  script: gradle sonarqube -Dsonar.qualitygate.wait=true
+  allow_failure: true
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == merge_request_event || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' 
