@@ -6,45 +6,74 @@
 # API Endpoints
 
 All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
+All endpoints will only be accessible if the Oauth2 token is valid, otherwise 403 Forbiddene error will be sent back.
 
-| Verb | URL        | Body             | Return code | Description                                                      |
-|------|------------|------------------|-------------|------------------------------------------------------------------|
-| GET  | /jobs      | N/A              | 200         | Gives a list of [Job object](#job-object)                        |
-| GET  | /searches  | N/A              | 200         | Gives a list of [Search object](#job-object)                     |
-| GET  | /users/    | N/A              | 200         | Returns a list of [User object](#user-object)                    |
-| GET  | /username  | N/A              | 200         | Returns a [User object](#user-object) with specified username    |
-| POST | /searches/ | [String](#query) | 201         | Create a new [Search Object](#search-object) and returns it.     |
-| GET  | /searches/ | N/A               | 
+| Endpoints             | Allowed Verbs                  |                                                      
+|-----------------------|--------------------------------|  
+| /users                | GET, POST                      |
+| /users/:id            | GET, PUT                       |
+| /users/:id/jobs       | GET                            |   
+| /users/:id/searches   | GET, POST                      |    
+| /results              | GET                            |
+| /results/:id          | GET                            |
+| /estimate/            | GET                            |
 
-
-| Verb | URL        | Body             | Return code | Description                                                      |
-|------|------------|------------------|-------------|------------------------------------------------------------------|
-| GET  | /users     | N/A              | 200         | Returns a list of [User object](#user-object) supports filtering. e.g. GET /users?email=john@doe.com&username=john.doe |
-| GET  | /users/:id | N/A              | 200         | Returns user a single [User object](#user-object) resource.      |
-| GET  | /users/:id/jobs | N/A         | 200         | Returns a list of [Job object](#job-object)                      |
-
+| Verb | URL                     | Body                                              | Return code | Description                                                                                                                  
+|------|-------------------------|---------------------------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| GET  | /users                  | N/A                                               | 200         | Returns a list of [User object](#user-object) supports filtering. e.g. GET /users?email=john@doe.com&username=john.doe                     |
+| POST | /users                  | {"username": "John.Doe", "email": "john@doe.com"} | 201         | Creates a [User object](#user-object) and returns it.                                                                                      |
+| GET  | /users/:id              | N/A                                               | 200         | Returns a [User object](#user-object) with specified id.                                                                                   |
+| PUT  | /users/:id              | {"username": "John.Doe", "email": "john@doe.com"} | 201         | Updates [User Object](#user-object) with specified id.                                                                                     | 
+| GET  | /users/:id/jobs         | N/A                                               | 200         | Returns a list of [Job object](#job-object) that user is observing.                                                                        | 
+| GET  | /jobs/:id               | N/A                                               | 200         | Returns a [Job object](#job-object).                                                                                                       |
+| GET  | /users/:id/searches     | N/A                                               | 200         | Returns a list of [Search Object](#search-object). If job produced by search is done, will contain a [Result Object](result-object) id.    |
+| POST | /users/:id/searches     | {"query": "hiv OR malaria"}                       | 201         | Creates a [Search Object](#search-object).                                                                                                 |
+| GET  | /users/:id/searches/:id | N/A                                               | 200         | Returns a [Search Object](#search-object) belonging to user.                                                                               |
+| GET  | /results                | N/A                                               | 200         | Returns a [Result Object](#result-object)                                                                                                  |
+| GET  | /results/:id            | N/A                                               | 200         | Returns a [Result Object](#result-object)                                                                                                  |
+| GET  | /estimate               | N/A                                               | 200         | Returns an uint with a rough estimate of amount of articles yielded by search. Requires a querystring. /estimate?query=HIV%20AND%20MALARIA |
 
 # Resources types
 
 #### User Object
 
-| Field Name | Type   | Description                                       |
-|------------|--------|---------------------------------------------------|
-| uuid       | string | User unique identifier. (128 hexadecimal bit key) |
-| username   | string | The username of the user (unique and public)      |
-| email      | string | email of the user (unique and private)            |
-| jobs       | Job[]  | Returns all jobs belonging to user                |
+| Field Name | Type      | Description                                       |
+|------------|-----------|---------------------------------------------------|
+| uuid       | string    | User unique identifier. (128 hexadecimal bit key) |
+| username   | string    | The username of the user (unique and public)      |
+| email      | string    | email of the user (unique and private)            |
+| searches   | Search[]  | Returns all searches performed by user            |
 
+#### Search Object
+
+| Field Name  | Type      | Description                                                                                                               |
+|-------------|-----------|---------------------------------------------------------------------------------------------------------------------------|
+| uuid        | UUID      | Search UUID.                                                                                                              |
+| user_uuid   | UUID      | UUID of user having created the search.                                                                                   |
+| query       | string    | Original user provided search query.                                                                                      |
+| ucnf        | UUID      | Unique conjunctive normal form query.                                                                                     |
+| timestamp   | Date      | Time of creation of the search.                                                                                           |
+| result_uuid | UUID|""   | UUID of [Result Object](#result-object) created by a Job with the ucnf query. Will be empty string if not yet available.  |
 
 #### Job Object
 
-| Field Name | Type                         | Description                                              |
-|------------|------------------------------|----------------------------------------------------------|
-| uuid       | string                       | Unique identifier of the Job. (128 hexadecimal bit key)  |
-| query      | string                       | the job query                                            |
-| status     | ["queued", running", "done"] | self-explanatory                                         |
-| estimation | uint                         | The estimated number of articles send back by the query. |
-| user       | User                         | User having creating the Job.                            |
+| Field Name | Type                          | Description                                               |
+|------------|-------------------------------|-----------------------------------------------------------|
+| uuid       | UUUID                         | Unique identifier of the Job. (128 hexadecimal bit key)   |
+| ucnf       | string                        | The ucnf job query.                                       |
+| status     | ["queued", "running", "done"] | Self-explanatory.                                         |
+| percentage | uint                          | Percentage of completion.                                 |
+| user       | User                          | User having creating the Job.                             |
+
+#### Result Object
+| Field Name | Type                          | Description                                               |
+|------------|-------------------------------|-----------------------------------------------------------|
+| uuid       | UUID                          | Unique identifier of the result.                          |
+| ucnf       | string                        | the ucnf job query.                                       |
+| content    | string                        | mock result                                               |
+
+We're waiting on the precise definition of what a job result will be from the Python analysis team. 
+
 
 ## Quarkus Usage
 
