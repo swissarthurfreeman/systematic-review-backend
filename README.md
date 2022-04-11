@@ -7,14 +7,23 @@
 
 All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
 
-| Verb | URL        | Body             | Return code | Description                                             |
-|------|------------|------------------|-------------|---------------------------------------------------------|
-| GET  | /jobs     | N/A              | 200         | Gives a list of [Job object](#job-object)               |
-| GET  | /searches     | N/A              | 200         | Gives a list of [Search object](#job-object)        |
-| GET  | /users/ | N/A              | 200         | Returns a list of [User object](#user-object)                            |
-| GET  | /username | N/A              | 200         | Returns a [User object](#user-object) with specified username     |
-| POST | /searches/     | [String](#query) | 201         | Attempts to create a new [Search Object](#search-object) and returns it. Returns an error if query has issues.|
-| GET  | /searches/ | N/A | 
+| Verb | URL        | Body             | Return code | Description                                                      |
+|------|------------|------------------|-------------|------------------------------------------------------------------|
+| GET  | /jobs      | N/A              | 200         | Gives a list of [Job object](#job-object)                        |
+| GET  | /searches  | N/A              | 200         | Gives a list of [Search object](#job-object)                     |
+| GET  | /users/    | N/A              | 200         | Returns a list of [User object](#user-object)                    |
+| GET  | /username  | N/A              | 200         | Returns a [User object](#user-object) with specified username    |
+| POST | /searches/ | [String](#query) | 201         | Create a new [Search Object](#search-object) and returns it.     |
+| GET  | /searches/ | N/A               | 
+
+
+| Verb | URL        | Body             | Return code | Description                                                      |
+|------|------------|------------------|-------------|------------------------------------------------------------------|
+| GET  | /users     | N/A              | 200         | Returns a list of [User object](#user-object) supports filtering. e.g. 
+GET /users?email=john@doe.com&username=john.doe |
+| GET  | /users/:id | N/A              | 200         | Returns user a single [User object](#user-object) resource.      |
+| GET  | /users/:id/jobs | N/A         | 200         | Returns a list of [Job object](#job-object)                      |
+
 
 # Resources types
 
