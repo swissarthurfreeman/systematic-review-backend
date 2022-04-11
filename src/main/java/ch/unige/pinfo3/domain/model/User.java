@@ -1,63 +1,43 @@
 package ch.unige.pinfo3.domain.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.inject.Singleton;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode
-public class User {
-    @Getter
-    private UUID id;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-    @Getter
-    @Setter
-    private String username;
+import javax.validation.constraints.NotNull;
 
-    @Getter
-    @Setter
-    private String email;
+@Entity
+@Table(name = "USERS")
+public class User implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public UUID uuid;
 
-    @Getter
-    private Map<UUID, Job> jobs;
+    @NotNull
+    public String username;
+    
+    @NotNull
+    public String email;
 
-    private static volatile User dummy = null;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID")
+    private List<Search> searches;
 
-    public static User getDummy() {
-        if (dummy == null) {
-            synchronized (Singleton.class) {
-                if (dummy == null) {
-                    dummy = new User("john.doe", "john.doe@example.org");
-                    dummy.id = UUID.fromString("0ce40162-aaaa-5666-aaaa-8f36f394ffd9");
-                }
-            }
-        }
-        return dummy;
-    }
-
-    public User() {
-        this.id = UUID.randomUUID();
-        this.jobs = new HashMap<>();
-    }
+    public User() {}    // required to be able to marshall objects.
 
     public User(String username, String email) {
-        this();
         this.username = username;
         this.email = email;
+        this.uuid = UUID.randomUUID();
     }
-
-    public void addJob(Job job) {
-        jobs.put(job.getId(), job);
-    }
-
-    public Job getJob(UUID id) {
-        return jobs.get(id);
-    }
-
 }
