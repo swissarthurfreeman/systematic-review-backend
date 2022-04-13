@@ -42,7 +42,11 @@ public class UserService {
      */
     @Transactional
     public User create(User user) {
-        System.out.println(user.uuid);  
+        if(getAll().size() == 0) { // create John Doe user with fixed uuid.
+            User cedric = new User("pendeville_ced", "bae@dieudonne", "c044a099-e489-43f8-9499-c04a371dbb61");
+            em.persist(cedric);
+            return cedric;
+        } 
         user.uuid = UUID.randomUUID().toString();
         em.persist(user);
         return user;
