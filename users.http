@@ -1,8 +1,10 @@
 @hostname = 127.0.0.1
 @port = 8080
 @proto = http
+
 @host = {{proto}}://{{hostname}}:{{port}}
 
+@test_uuid = c044a099-e489-43f8-9499-c04a371dbb61
 ###
 GET {{host}}/users/df5c040a-d5d0-4821-a6d1-4f75508ab97b/searches
 Content-Type: application/json
@@ -24,7 +26,7 @@ Accept: application/json
 
 {
     "query": "HIV AND AIDS",
-    "user_uuid": "fe22d81a-547c-41fb-b53d-ef2afbd5bcc0"
+    "user_uuid": "{{test_uuid}}"
 }
 
 ###
@@ -32,3 +34,5 @@ GET {{host}}/searches
 Content-Type: application/json
 Accept: application/json
 
+###
+GET {{host}}/users/{{test_uuid}}/searches

@@ -13,7 +13,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.model.User;
+import ch.unige.pinfo3.domain.service.SearchService;
 import ch.unige.pinfo3.domain.service.UserService;
 
 /**
@@ -25,6 +27,9 @@ import ch.unige.pinfo3.domain.service.UserService;
 public class UserRestService {
     @Inject
     UserService userService;
+
+    @Inject
+    SearchService searchService;
 
     @GET
     @Transactional
@@ -38,6 +43,14 @@ public class UserRestService {
     @Produces(MediaType.APPLICATION_JSON)
     public User create(User user) {
         return userService.create(user); 
+    }
+
+    @GET
+    @Path("{uuid}/searches")
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Search> getUserSearch(@PathParam("uuid") String user_uuid) {
+        return searchService.getSearchesOf(user_uuid);
     }
 
     @GET
