@@ -7,6 +7,8 @@ import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,30 +28,29 @@ public class UserRestService {
     EntityManager em;
 
     @GET
+    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> getUsers(@QueryParam("page") int page) {
-        System.out.println(page);
-        ArrayList<User> list = new ArrayList<>();
-        list.add(new User("john", "doe@mail.com"));
-        list.add(new User("jonass", "jonass@mail.com"));
-        return list;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<User> criteria = builder.createQuery(User.class);
+		criteria.from(User.class);
+		return em.createQuery(criteria).getResultList();
     }
     
     @POST
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public User create(User user) {
-        //em.persist(user);
+        em.persist(user);
         return user;
-        //em.persist(user);
-        //return user;
     }
 
     @GET
     @Path("{id}")
+    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUser(@PathParam("id") String id) {
-        UUID user_id = UUID.fromString(id);
-        return em.find(User.class, user_id);
+    public User getUser(@PathParam("id") long id) {
+        System.out.println(id);
+        return em.find(User.class, id);
     }
 }

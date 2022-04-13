@@ -4,7 +4,7 @@
 @host = {{proto}}://{{hostname}}:{{port}}
 
 ###
-GET {{host}}/users
+GET {{host}}/users/0
 Content-Type: application/json
 Accept: application/json
 
@@ -23,9 +23,3 @@ GET {{host}}/jobs
 Content-Type: application/json
 Accept: application/json
 
-###
-POST {{host}}/jobs
-Content-Type: application/json
-Accept: application/json
-
-test

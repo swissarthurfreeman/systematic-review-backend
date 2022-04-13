@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "SEARCHES")
+@Table(name = "searches")
 public class Search implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

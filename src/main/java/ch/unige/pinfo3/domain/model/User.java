@@ -17,11 +17,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public UUID uuid;
+    public long uuid;
 
     @NotNull
     public String username;
@@ -29,15 +29,15 @@ public class User implements Serializable {
     @NotNull
     public String email;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
-    private List<Search> searches;
+    //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@JoinColumn(name = "USER_ID")
+    //private List<Search> searches;
 
     public User() {}    // required to be able to marshall objects.
 
-    public User(String username, String email) {
+    public User(String username, String email, long id) {
         this.username = username;
         this.email = email;
-        this.uuid = UUID.randomUUID();
+        this.uuid = id;
     }
 }
