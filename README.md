@@ -53,18 +53,18 @@ All endpoints will only be accessible if the Oauth2 token is valid, otherwise 40
 
 | Field Name  | Type      | Description                                                                                                               |
 |-------------|-----------|---------------------------------------------------------------------------------------------------------------------------|
-| uuid        | UUID      | Search UUID.                                                                                                              |
-| user_uuid   | UUID      | UUID of user having created the search.                                                                                   |
+| uuid        | String      | Search String.                                                                                                              |
+| user_uuid   | String      | UUID of user having created the search.                                                                                   |
 | query       | string    | Original user provided search query.                                                                                      |
-| ucnf        | UUID      | Unique conjunctive normal form query.                                                                                     |
+| ucnf        | String      | Unique conjunctive normal form query.                                                                                     |
 | timestamp   | Date      | Time of creation of the search.                                                                                           |
-| result_uuid | UUID|""   | UUID of [Result Object](#result-object) created by a Job with the ucnf query. Will be empty string if not yet available.  |
+| result_uuid | String|""   | UUID of [Result Object](#result-object) created by a Job with the ucnf query. Will be empty string if not yet available.  |
 
 #### Job Object
 
 | Field Name | Type                          | Description                                               |
 |------------|-------------------------------|-----------------------------------------------------------|
-| uuid       | UUUID                         | Unique identifier of the Job. (128 hexadecimal bit key)   |
+| uuid       | UString                         | Unique identifier of the Job. (128 hexadecimal bit key)   |
 | ucnf       | string                        | The ucnf job query.                                       |
 | status     | ["queued", "running", "done"] | Self-explanatory.                                         |
 | percentage | uint                          | Percentage of completion.                                 |
@@ -73,7 +73,7 @@ All endpoints will only be accessible if the Oauth2 token is valid, otherwise 40
 #### Result Object
 | Field Name | Type                          | Description                                               |
 |------------|-------------------------------|-----------------------------------------------------------|
-| uuid       | UUID                          | Unique identifier of the result.                          |
+| uuid       | String                          | Unique identifier of the result.                          |
 | ucnf       | string                        | the ucnf job query.                                       |
 | content    | string                        | mock result                                               |
 

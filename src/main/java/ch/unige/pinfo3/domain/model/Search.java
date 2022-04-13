@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "searches")
 public class Search implements Serializable {
     @Id
-    public String uuid;             
+    public String uuid;
     
     @NotNull
     public String user_uuid;
