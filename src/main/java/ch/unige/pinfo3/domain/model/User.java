@@ -20,8 +20,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "users")
 public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long uuid;
+    public String uuid;
 
     @NotNull
     public String username;
@@ -35,7 +34,7 @@ public class User implements Serializable {
 
     public User() {}    // required to be able to marshall objects.
 
-    public User(String username, String email, long id) {
+    public User(String username, String email, String id) {
         this.username = username;
         this.email = email;
         this.uuid = id;

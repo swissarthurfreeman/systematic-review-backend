@@ -1,4 +1,4 @@
-package ch.unige.pinfo3.domain.service;
+package ch.unige.pinfo3.api.rest;
 
 public class EstimateRestService {
     

@@ -1,14 +1,9 @@
-package ch.unige.pinfo3.domain.service;
+package ch.unige.pinfo3.api.rest;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,38 +14,37 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import ch.unige.pinfo3.domain.model.User;
+import ch.unige.pinfo3.domain.service.UserService;
 
+/**
+ * This class calls appropriate services for all routes 
+ * to /users and /users/*.
+ */
 @ApplicationScoped
 @Path("/users")
 public class UserRestService {
-
-    @Inject // injects the persistence manager which connects to postgresql.
-    EntityManager em;
+    @Inject
+    UserService userService;
 
     @GET
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> getUsers(@QueryParam("page") int page) {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<User> criteria = builder.createQuery(User.class);
-		criteria.from(User.class);
-		return em.createQuery(criteria).getResultList();
+        return userService.getAll();
     }
     
     @POST
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public User create(User user) {
-        em.persist(user);
-        return user;
+        return userService.create(user); 
     }
 
     @GET
-    @Path("{id}")
+    @Path("{uuid}")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUser(@PathParam("id") long id) {
-        System.out.println(id);
-        return em.find(User.class, id);
+    public User getUser(@PathParam("uuid") String uuid) {
+        return userService.find(uuid);
     }
 }

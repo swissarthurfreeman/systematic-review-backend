@@ -4,7 +4,7 @@
 @host = {{proto}}://{{hostname}}:{{port}}
 
 ###
-GET {{host}}/users/0
+GET {{host}}/users/138b5ce6-1cb2-47e0-ae10-97e61624a968
 Content-Type: application/json
 Accept: application/json
 
@@ -14,8 +14,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "email": "test@example.org",
-    "username": "test"
+    "email": "bane@doe.org"
 }
 
 ###
