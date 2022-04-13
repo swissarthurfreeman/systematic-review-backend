@@ -4,7 +4,7 @@
 @host = {{proto}}://{{hostname}}:{{port}}
 
 ###
-GET {{host}}/users/138b5ce6-1cb2-47e0-ae10-97e61624a968
+GET {{host}}/users/df5c040a-d5d0-4821-a6d1-4f75508ab97b/searches
 Content-Type: application/json
 Accept: application/json
 
@@ -14,11 +14,21 @@ Content-Type: application/json
 Accept: application/json
 
 {
+    "username": "bane@johnson.co",
     "email": "bane@doe.org"
+}
+###
+POST {{host}}/searches
+Content-Type: application/json
+Accept: application/json
+
+{
+    "query": "HIV AND AIDS",
+    "user_uuid": "fe22d81a-547c-41fb-b53d-ef2afbd5bcc0"
 }
 
 ###
-GET {{host}}/jobs
+GET {{host}}/searches
 Content-Type: application/json
 Accept: application/json
 

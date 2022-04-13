@@ -12,9 +12,14 @@ import javax.transaction.Transactional;
 
 import ch.unige.pinfo3.domain.model.User;
 
+/**
+ * This class provides the interfaces for all actions involving users.
+ */
 @ApplicationScoped
 public class UserService {
-    @Inject // injects the persistence manager which connects to postgresql.
+    // injects the persistence manager which connects to postgresql 
+    // via jdbc and appropriate app.properties
+    @Inject 
     EntityManager em;
 
     @Transactional
@@ -25,8 +30,19 @@ public class UserService {
 		return em.createQuery(criteria).getResultList();
     }
 
+    /**
+     * 
+     * @param user a user body unmarshalled from json with a valid username and email.  
+     * user.uuid is null when not provided in json body, if it is provided it is overwritten.
+     * @return the created user
+     * 
+     * @ToDo request validation
+     * <li>check username is valid</li>
+     * <li>check email is valid</li>
+     */
     @Transactional
     public User create(User user) {
+        System.out.println(user.uuid);  
         user.uuid = UUID.randomUUID().toString();
         em.persist(user);
         return user;
