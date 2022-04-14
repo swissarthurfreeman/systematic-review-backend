@@ -29,12 +29,15 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testImplementation 'io.quarkus:quarkus-junit5'
+    implementation 'io.quarkus:quarkus-test-h2'
     implementation 'io.rest-assured:rest-assured'
     implementation 'io.quarkus:quarkus-hibernate-orm'
     implementation 'io.quarkus:quarkus-narayana-jta'
     implementation 'io.quarkus:quarkus-jdbc-postgresql'
     // https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api
     implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.0.0'
+    // https://mvnrepository.com/artifact/io.quarkus/quarkus-jdbc-h2
+    implementation group: 'io.quarkus', name: 'quarkus-jdbc-h2', version: '2.8.0.Final'
 }
 
 group 'ch.unige.pinfo3'
