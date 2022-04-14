@@ -23,9 +23,7 @@ push-image:
   script:
     - gradle build
       -Dquarkus.container-image.push=true
-      -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
-      -Dquarkus.container-image.name=${CI_PROJECT_NAME}
-      -Dquarkus.container-image.registry=${CI_REGISTRY}
+      -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}:staging
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
 
