@@ -8,6 +8,7 @@ image: gradle:7.3.3-jdk17
 variables:
   SONAR_TOKEN: $SONAR_TOKEN
   GRADLE_USER_HOME: ".cache/gradle/"
+  GIT_DEPTH: 0
 
 cache:
   paths:
@@ -18,7 +19,7 @@ test:
   script:
     - gradle test
 
-push-image:
+push-image-staging:
   stage: deploy
   script:
     - gradle build
@@ -26,11 +27,26 @@ push-image:
       -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}:staging
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+push-image:
+  stage: deploy
+  script:
+    - gradle build
+      -Dquarkus.container-image.push=true
+      -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
+      -Dquarkus.container-image.name=${CI_PROJECT_NAME}
+      -Dquarkus.container-image.tag=${CI_COMMIT_TAG}
+      -Dquarkus.container-image.additional-tags=latest
+      -Dquarkus.container-image.registry=${CI_REGISTRY}
+      -Dquarkus.container-image.username=${CI_REGISTRY_USER}
+      -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
+  rules:
+    - if: $CI_COMMIT_TAG
 
 sonarqube:
   stage: verify
-  variables:
-    GIT_DEPTH: 0
   script: gradle sonarqube -Dsonar.qualitygate.wait=true
   allow_failure: true
   rules:
