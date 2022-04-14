@@ -29,7 +29,7 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testImplementation 'io.quarkus:quarkus-junit5'
-    implementation 'io.quarkus:quarkus-test-h2'
+    testImplementation 'io.quarkus:quarkus-test-h2'
     implementation 'io.rest-assured:rest-assured'
     implementation 'io.quarkus:quarkus-hibernate-orm'
     implementation 'io.quarkus:quarkus-narayana-jta'
