@@ -23,7 +23,7 @@ push-image:
   script:
     - gradle build
       -Dquarkus.container-image.push=true
-      -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}:staging
+      -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}:staging:test
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
 
