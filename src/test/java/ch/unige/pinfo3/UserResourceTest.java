@@ -21,6 +21,6 @@ public class UserResourceTest {
             .assertThat()
             .statusCode(is(200))
             .and()
-            .body("size()", equalTo(0)); // default test list has no isers.
+            .body("size()", equalTo(1)); //
     }
 }
