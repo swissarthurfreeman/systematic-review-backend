@@ -38,6 +38,7 @@ dependencies {
     implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.0.0'
     // https://mvnrepository.com/artifact/io.quarkus/quarkus-jdbc-h2
     implementation group: 'io.quarkus', name: 'quarkus-jdbc-h2', version: '2.8.0.Final'
+    implementation 'com.github.cliftonlabs:json-simple:3.1.0' //pour le json
 }
 
 group 'ch.unige.pinfo3'
