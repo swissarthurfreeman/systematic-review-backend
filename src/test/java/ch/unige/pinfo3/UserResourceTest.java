@@ -6,12 +6,10 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 import static io.restassured.RestAssured.get;
@@ -23,8 +21,7 @@ import static org.hamcrest.CoreMatchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserResourceTest{
 
-    File myFile = new File("/Users/bartalazar/Projet_info/backend/src/test/java/ch/unige/pinfo3/testUser.json");
-    // avec chemin relative ce serait mieux
+    InputStream testUser = getClass().getClassLoader().getResourceAsStream("testUser.json");
 
     @Test
     @Order(1)
@@ -89,7 +86,7 @@ public class UserResourceTest{
     public void shouldPostUser(){
         given()
                 .contentType(ContentType.JSON)
-                .body(myFile)
+                .body(testUser)
                 .when()
                 .post("/users")
                 .then()
