@@ -39,6 +39,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.quarkus/quarkus-jdbc-h2
     implementation group: 'io.quarkus', name: 'quarkus-jdbc-h2', version: '2.8.0.Final'
     implementation 'com.github.cliftonlabs:json-simple:3.1.0' //pour le json
+    implementation 'commons-validator:commons-validator:1.7' // pour le validateur de email
+
 }
 
 group 'ch.unige.pinfo3'
