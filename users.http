@@ -12,6 +12,12 @@
 // première requête a faire a moins que y'ait déjà des
 // users de test.
 ###
+GET {{host}}/users
+Content-Type: application/json
+Accept: application/json
+
+
+###
 POST {{host}}/users
 Content-Type: application/json
 Accept: application/json
