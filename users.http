@@ -28,7 +28,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "query": "HIV AND AIDS",
+    "query": "HIV AND EBOLA",
     "user_uuid": "{{test_uuid}}"
 }
 

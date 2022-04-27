@@ -1,5 +1,11 @@
+/**
+ * This class contains core functionality for dealing
+ * with searches. 
+ */
+
 package ch.unige.pinfo3.domain.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +18,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
 
 @ApplicationScoped
@@ -19,20 +27,40 @@ public class SearchService {
     @Inject
     EntityManager em;
 
+    @Inject
+    JobService jobber;
+
     /**
      * Create a search object linked to user.
      * @param search a search object containing a query and valid user_uuid.
-     * @return the newly created search object.
+     * @return the newly created search object. Succeeds no matter what. 
      * 
      * To Do :
+     * - check syntax
      * - check search has valid user_uuid
      * - compute and assign ucnf form.
+     * - create association to job or result object.
      */
     @Transactional
     public Search create(Search search) {
+        search.timestamp = new Date();
         search.uuid = UUID.randomUUID().toString();
         search.ucnf = search.query;
-        em.persist(search);
+        
+        // search for job or result with said ucnf
+        // create association
+        Job job = em.find(Job.class, search.ucnf);
+        Result res = em.find(Result.class, search.ucnf);
+        if(job != null) {
+            search.setJobUUID(job.uuid);
+            //search.result_uuid = null;
+        } else if(res != null) {
+                //search.result_uuid = res.uuid;
+                search.setJobUUID(null);
+        } else {
+            search.setJobUUID(jobber.submit(search.ucnf));
+        }
+        em.persist(search); 
         return em.find(Search.class, search.uuid);
     }
 
