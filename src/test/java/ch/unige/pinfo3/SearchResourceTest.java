@@ -33,7 +33,7 @@ public class SearchResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(30)); // 100 search in the DB on startup
+                .body("size()", equalTo(30)); // 30 search in the DB on startup
     }
 
     @Test
@@ -46,7 +46,7 @@ public class SearchResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(6)); // 2 search for this user on startup
+                .body("size()", equalTo(6)); // 6 search for this user on startup
     }
 /*
     @Test
