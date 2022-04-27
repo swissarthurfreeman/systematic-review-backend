@@ -33,7 +33,7 @@ public class UserResourceTest{
             .assertThat()
             .statusCode(is(200))
             .and()
-            .body("size()", equalTo(1)); // 1 user in the DB on startup
+            .body("size()", equalTo(30)); // 30 user in the DB on startup
     }
 
     @Test
@@ -113,7 +113,7 @@ public class UserResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(2)); // verifie qu'il y a bien 2 users dans la bd
+                .body("size()", equalTo(31)); // verifie qu'il y a bien 101 users dans la bd
     }
 
     @Test

@@ -25,7 +25,20 @@ public class SearchResourceTest{
 
     @Test
     @Order(1)
-    public void shouldGetAllSearches() {
+    public void shouldGetAllSearchesr() {
+        given()
+                .when()
+                .get("/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(30)); // 30 search in the DB on startup
+    }
+
+    @Test
+    @Order(2)
+    public void shouldGetAllSearchesForAUser() {
         given()
                 .when()
                 .get("/users/c044a099-e489-43f8-9499-c04a371dbb62/searches")
@@ -33,7 +46,7 @@ public class SearchResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(1)); // 1 search in the DB on startup
+                .body("size()", equalTo(6)); // 6 search for this user on startup
     }
 /*
     @Test
@@ -42,8 +55,7 @@ public class SearchResourceTest{
     public void shouldGetSearchById(){
         given()
                 .when()
-                .get("/users/c044a099-e489-43f8-9499-c04a371dbb62/searches/c044a099-e489-43f8-9499-c04a371dbb65")
-                // pourquoi 404??????????????????
+                .get("/users/c044a099-e489-43f8-9499-c04a371dbb62/searches?uuid=c044a099-e489-43f8-9499-c04a371dbb65")
                 .then()
                 .assertThat()
                 .statusCode(is(200))
