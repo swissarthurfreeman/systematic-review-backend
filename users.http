@@ -16,7 +16,6 @@ GET {{host}}/users
 Content-Type: application/json
 Accept: application/json
 
-
 ###
 POST {{host}}/users
 Content-Type: application/json
@@ -47,5 +46,15 @@ Accept: application/json
 // look at all searches
 ###
 GET {{host}}/searches
+Content-Type: application/json
+Accept: application/json
+
+###
+GET {{host}}/jobs
+Content-Type: application/json
+Accept: application/json
+
+###
+GET {{host}}/results
 Content-Type: application/json
 Accept: application/json

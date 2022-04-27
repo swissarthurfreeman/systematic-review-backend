@@ -16,6 +16,9 @@ public class Job implements Serializable {
     public String uuid;
 
     @NotNull
+    public String ucnf;
+
+    @NotNull
     public Date timestamp;
 
     @NotNull
