@@ -25,7 +25,7 @@ public class SearchResourceTest{
 
     @Test
     @Order(1)
-    public void shouldGetAllSearchesr() {
+    public void shouldGetAllSearches() {
         given()
                 .when()
                 .get("/searches")
@@ -34,6 +34,7 @@ public class SearchResourceTest{
                 .statusCode(is(200))
                 .and()
                 .body("size()", equalTo(30)); // 30 search in the DB on startup
+        System.out.println(get("/searches"));
     }
 
     @Test
@@ -46,7 +47,7 @@ public class SearchResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(6)); // 6 search for this user on startup
+                .body("size()", equalTo(5)); // 5 searches for this user on startup
     }
 /*
     @Test

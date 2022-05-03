@@ -113,7 +113,7 @@ public class UserResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(31)); // verifie qu'il y a bien 101 users dans la bd
+                .body("size()", equalTo(31)); // verifie qu'il y a bien 31 users dans la bd
     }
 
     @Test
