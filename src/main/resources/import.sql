@@ -80,16 +80,6 @@ insert into jobs (uuid, date, status) values ('82fbcb66-93b0-4fe5-bcb3-e70dc6e4c
 insert into jobs (uuid, date, status) values ('8f5e5972-1861-4f06-996e-5ce92f95e077', 'Tue May 03 4:54:15 CET 2022', 'queued');
 insert into jobs (uuid, date, status) values ('3b3e2ccd-861a-4caf-bd75-c885e73ba205', 'Tue May 03 13:33:30 CET 2022', 'queued');
 insert into jobs (uuid, date, status) values ('f862d106-4c0d-4085-b330-bb7d03973d24', 'Tue May 03 14:58:02 CET 2022', 'queued');
-insert into jobs (uuid, date, status) values ('5eb22330-2004-41ed-94ad-691989330aae', 'Tue May 03 3:49:50 CET 2022', 'queued');
-insert into jobs (uuid, date, status) values ('08648aab-b2bd-468b-9f54-c7f93bd64d31', 'Tue May 03 3:29:43 CET 2022', 'queued');
-insert into jobs (uuid, date, status) values ('6d779f20-7a80-4df3-be11-6aa4ebc8b73d', 'Tue May 03 1:40:53 CET 2022', 'processing');
-insert into jobs (uuid, date, status) values ('3668049f-88d0-433c-9a98-121d0e873680', 'Tue May 03 14:40:12 CET 2022', 'processing');
-insert into jobs (uuid, date, status) values ('c6e201b0-f7a0-4858-a64d-791602f36224', 'Tue May 03 6:31:51 CET 2022', 'queued');
-insert into jobs (uuid, date, status) values ('d2c65a16-9dc8-44f8-85a8-1d77ddf88187', 'Tue May 03 14:08:24 CET 2022', 'queued');
-insert into jobs (uuid, date, status) values ('a08e4d54-e312-4571-84a9-fac2fe99c4df', 'Tue May 03 9:56:19 CET 2022', 'processing');
-insert into jobs (uuid, date, status) values ('ad62d51c-621b-420e-9f49-3d9ed2438d02', 'Tue May 03 13:55:14 CET 2022', 'processing');
-insert into jobs (uuid, date, status) values ('d110abfd-50b6-4aca-a16d-12a6f9faee21', 'Tue May 03 6:39:35 CET 2022', 'processing');
-insert into jobs (uuid, date, status) values ('9c07da89-a6e0-4c88-8d62-acd94b261d84', 'Tue May 03 22:47:55 CET 2022', 'queued');
 
 insert into results (uuid, result) values ('37dbfa52-87a1-4bbf-8145-a6d104a22351', 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.');
 insert into results (uuid, result) values ('4555a844-9766-4bf1-90c4-efea0df8f2d8', 'Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.');
@@ -101,24 +91,4 @@ insert into results (uuid, result) values ('50a69566-3d73-4163-9405-8c314d71970f
 insert into results (uuid, result) values ('f87d1a5f-b476-48b9-8976-191e7668f254', 'Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.');
 insert into results (uuid, result) values ('69c1c881-9f4a-45e9-8ce7-43e9240723fd', 'In hac habitasse platea dictumst. Etiam faucibus cursus urna. Ut tellus.');
 insert into results (uuid, result) values ('499a6fac-3f8f-489e-9c3a-3cf1e6193f11', 'Fusce consequat. Nulla nisl. Nunc nisl.');
-insert into results (uuid, result) values ('8169135a-2ef4-4488-bd07-d6b7b11446f5', 'Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus.');
-insert into results (uuid, result) values ('2c83b3e5-5a61-4b4c-8ba5-57b3e7809ec9', 'Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.');
-insert into results (uuid, result) values ('de773c53-7be8-458f-b41d-8ee10b6e1d8e', 'Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.');
-insert into results (uuid, result) values ('54a31b97-7e45-4dc0-8636-62b049c5f6d0', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.');
-insert into results (uuid, result) values ('2548936b-3a0a-4217-9c86-e878d4e36785', 'Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.');
-insert into results (uuid, result) values ('0a0c5056-8590-4beb-8521-d3b5da013475', 'Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.');
-insert into results (uuid, result) values ('c1876e74-eacf-4353-9d3c-fa3bf7c96a59', 'Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.');
-insert into results (uuid, result) values ('9674fcb2-5f1c-4a1a-848f-7cc45688d2ea', 'In congue. Etiam justo. Etiam pretium iaculis justo.');
-insert into results (uuid, result) values ('a12008b4-1e83-466f-bd9a-e6aeb24c5d7f', 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.');
-insert into results (uuid, result) values ('f3776c88-daa4-4617-ab82-676610160409', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.');
-insert into results (uuid, result) values ('6972bbfc-c4df-4dec-bae7-4b870ffcf033', 'Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis.');
-insert into results (uuid, result) values ('24304dac-f297-44f5-ad2c-132888600af8', 'Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.');
-insert into results (uuid, result) values ('93120a68-2b67-4ce3-829a-ff5ccd5013dd', 'Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.');
-insert into results (uuid, result) values ('d9b38ca0-bb64-499f-a209-78384fde59fc', 'Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.');
-insert into results (uuid, result) values ('6742f7bb-daa6-4f01-8e16-39efa4699e8e', 'Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.');
-insert into results (uuid, result) values ('ce2e9e6b-b536-4d30-840c-6979fa262fd9', 'Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.');
-insert into results (uuid, result) values ('2fa6f774-b1ca-4799-9cc6-9dcd33eed30e', 'Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.');
-insert into results (uuid, result) values ('2f731b5b-b0f5-4c03-a91a-3d223fdc370c', 'Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.');
-insert into results (uuid, result) values ('34166a25-4347-40e5-acb5-caefbf938126', 'Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.');
-insert into results (uuid, result) values ('363e9dc7-1475-4fb7-b915-615b591bc52f', 'In hac habitasse platea dictumst. Etiam faucibus cursus urna. Ut tellus.');
 
