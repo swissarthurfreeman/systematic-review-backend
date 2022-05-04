@@ -61,6 +61,7 @@ public class JobService {
         JobDetail job_info = JobBuilder.newJob(Task.class)
             .withIdentity(ucnf)
             .usingJobData("job_uuid", commit_job.uuid)
+            .usingJobData("ucnf", commit_job.ucnf)
             .build();
         
         Trigger trigger = TriggerBuilder.newTrigger()

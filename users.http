@@ -7,8 +7,8 @@
 
 // test_uuid of john doe user. First post will create
 // this user, latter ones will create random uuids. 
-@test_uuid = c044a099-e489-43f8-9499-c04a371dbb61
-
+//@test_uuid = c044a099-e489-43f8-9499-c04a371dbb61
+@test_uuid = 4eb0018f-6b14-4d4d-bbb0-8f5622a914fd
 // première requête a faire a moins que y'ait déjà des
 // users de test.
 ###
@@ -33,7 +33,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "query": "HIV AND EBOLA",
+    "query": "HIV AND WUHAN",
     "user_uuid": "{{test_uuid}}"
 }
 
@@ -56,5 +56,15 @@ Accept: application/json
 
 ###
 GET {{host}}/results
+Content-Type: application/json
+Accept: application/json
+
+###
+GET {{host}}/results/dafc5b4a-b2cf-4cd1-9979-4f2f116bc066
+Content-Type: application/json
+Accept: application/json
+
+###
+GET {{host}}/results/dafc5b4a-b2cf-4cd1-9979-4f2f116bc066/articles
 Content-Type: application/json
 Accept: application/json

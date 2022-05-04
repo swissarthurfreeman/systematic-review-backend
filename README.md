@@ -58,8 +58,9 @@ All endpoints will only be accessible if the Oauth2 token is valid, otherwise 40
 | GET  | /users/:id/searches     | N/A                                               | 200         | Returns a list of [Search Object](#search-object). If job produced by search is done, will contain a [Result Object](result-object) id.    |
 | POST | /users/:id/searches     | {"query": "hiv OR malaria"}                       | 201         | Creates a [Search Object](#search-object).                                                                                                 |
 | GET  | /users/:id/searches/:id | N/A                                               | 200         | Returns a [Search Object](#search-object) belonging to user.                                                                               |
-| GET  | /results                | N/A                                               | 200         | Returns a [Result Object](#result-object)                                                                                                  |
+| GET  | /results                | N/A                                               | 200         | Returns a list of [Result Object](#result-object)                                                                                          |
 | GET  | /results/:id            | N/A                                               | 200         | Returns a [Result Object](#result-object)                                                                                                  |
+| GET  | /results/:id/searches   | N/A                                               | 200         | Returns a list of [Article Object](#article-object)                                                                                        |
 | GET  | /estimate               | N/A                                               | 200         | Returns an uint with a rough estimate of amount of articles yielded by search. Requires a querystring. /estimate?query=HIV%20AND%20MALARIA |
 
 # Resources types
@@ -88,7 +89,7 @@ All endpoints will only be accessible if the Oauth2 token is valid, otherwise 40
 
 | Field Name | Type                          | Description                                               |
 |------------|-------------------------------|-----------------------------------------------------------|
-| uuid       | UString                         | Unique identifier of the Job. (128 hexadecimal bit key)   |
+| uuid       | UString                         | Unique identifier of the Job. (128 hexadecimal bit key) |
 | ucnf       | string                        | The ucnf job query.                                       |
 | status     | ["queued", "running", "done"] | Self-explanatory.                                         |
 | percentage | uint                          | Percentage of completion.                                 |
@@ -97,12 +98,19 @@ All endpoints will only be accessible if the Oauth2 token is valid, otherwise 40
 #### Result Object
 | Field Name | Type                          | Description                                               |
 |------------|-------------------------------|-----------------------------------------------------------|
-| uuid       | String                          | Unique identifier of the result.                          |
+| uuid       | String                        | Unique identifier of the result.                          |
 | ucnf       | string                        | the ucnf job query.                                       |
-| content    | string                        | mock result                                               |
 
-We're waiting on the precise definition of what a job result will be from the Python analysis team. 
 
+#### Article Object
+| Field Name | Type                          | Description                                                        |
+|------------|-------------------------------|--------------------------------------------------------------------|
+| uuid       | String                        | Unique identifier of the article result.                           |
+| result_uuid| String                        | Unique identifier of the result to the which this article belongs. |
+| url        | string                        | Url of the article                                                 |
+| title      | String                        | article title                                                      |
+| authors    | String                        | list of article authors                                            |
+| abstract   | String                        | article abstract                                                   |
 
 ## Quarkus Usage
 

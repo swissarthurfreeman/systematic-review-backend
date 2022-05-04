@@ -1,3 +1,3 @@
-TIME=5;
+TIME=4;
 sleep $TIME;
 echo "Slept time of $TIME";

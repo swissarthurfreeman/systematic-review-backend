@@ -2,16 +2,17 @@ package ch.unige.pinfo3.domain.service;
 
 import java.io.BufferedReader;
 import org.jboss.logging.Logger;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.domain.model.Result;
 
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,6 +27,9 @@ public class Task implements org.quartz.Job {
     @Inject
     EntityManager em;
 
+    @Inject
+    SearchService search_service;
+
     // job execution Context provides the job instance with info
     // about it's runtime environment, it'll contain the ucnf query we run the clustering with
     @Transactional
@@ -38,22 +42,16 @@ public class Task implements org.quartz.Job {
             
             LOG.info("Launching Background sh Script at " + script_location);
             
-            // alternative method get array of commands and pass environment variables.
-            // read script into memory
-            // InputStream inputStream = getClass().getResourceAsStream("/test.sh");
-            // BufferedReader shreader = new BufferedReader(new InputStreamReader(inputStream));
-            // String contents = shreader.lines().collect(Collectors.joining(""));
-            // String[] commands = contents.split(";");
-            // String[] env = {"someEnvParameter"};
-            // File path = new File(script_location);
-            
             // TODO fix file not found error when using script_location
+            LOG.info("script_location=" + script_location);
             String location = "/home/gordon/Documents/gordon_bsci/Sem6/PInfo/backend/build/resources/main/test.sh";
             ProcessBuilder pb = new ProcessBuilder("/bin/sh", location);
             Process proc = pb.start();
 
             // wait for process to finish
             proc.waitFor();
+
+
             LOG.info("Background sh Script done " + script_location);
             
             // get process output
@@ -65,16 +63,58 @@ public class Task implements org.quartz.Job {
                 output.append(line + "\n");
 
             LOG.info("Ouput of sh script=\n" + output);
-
-            // remove job from entity manager and create result
-            // get job data provided from submit method
-            JobDataMap dataMap = context.getJobDetail().getJobDataMap();
             
-            // remove by uuid
-            em.remove(em.find(Job.class, dataMap.getString("job_uuid")));;
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        // remove job from entity manager and create result
+        // get job data provided from submit method, if contains job_uuid (in em) and ucnf. 
+        JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+        
+        // remove job by uuid since process is done
+        em.remove(em.find(Job.class, dataMap.getString("job_uuid")));;
+
+        // create corresponding result in database
+        // will be replaced by result_service.getResultsFromFile(job_uuid.csv)...
+    
+        Result res = new Result();
+
+        res.uuid = UUID.randomUUID().toString();
+        res.ucnf = dataMap.getString("ucnf");
+        
+        // create bogus mock articles yielded by result
+        Article article1 = new Article(
+            UUID.randomUUID().toString(),
+            res.uuid,
+            "Quarkus Nightmare", 
+            "A. Freeman, H. Haldi, C. Pendevill, L. D. Barta", 
+            "Attempting to use quarkus and the nighmarish java/javascript tech stack to solve a pathological problem",
+            "Get us some fucking garlic bread yes ?", 
+            "http://killme.org",
+            10.0,
+            20.0
+        );
+
+        Article article2 = new Article(
+            UUID.randomUUID().toString(),
+            res.uuid,
+            "Another Quarkus Nightmare", 
+            "A. Freeman, H. Haldi, C. Pendevill, L. D. Barta", 
+            "Attempting to use quarkus and the nighmarish java/javascript tech stack to solve a pathological problem",
+            "Get us some fucking garlic bread yes ?", 
+            "http://killme.org",
+            20.0,
+            40.0
+        );
+
+        // persist articles in db
+        em.persist(article1);
+        em.persist(article2);
+
+        em.persist(res);
+
+        //search_service.updateSearchesOf(dataMap.getString("ucnf"), res.uuid);
     }
 }
+

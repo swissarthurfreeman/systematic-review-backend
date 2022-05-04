@@ -94,4 +94,13 @@ public class SearchService {
         
         return userSearches;
     }
+
+    /***
+     * Sets all searches pointing towards ucnf to have a nul job_uuid and 
+     * sets result_uuid of search to the newly obtained result. 
+     */
+    @Transactional
+    public void updateSearchesOf(String ucnf, String result_uuid) {
+        
+    }
 }
