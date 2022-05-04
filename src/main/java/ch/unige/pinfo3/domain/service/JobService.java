@@ -18,8 +18,10 @@ import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import io.quarkus.scheduler.Scheduled;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
+import org.quartz.ObjectAlreadyExistsException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -38,8 +40,6 @@ public class JobService {
 
     @Transactional
     public String submit(String ucnf) {
-        // query external python interface here
-        // add to queue
         Job job = new Job();
         String job_uuid = UUID.randomUUID().toString(); 
         job.ucnf = ucnf;
@@ -53,10 +53,8 @@ public class JobService {
         // quartz.triggerJob(jobKey);
         // https://www.baeldung.com/quartz
         try {
-            System.out.println("Starting Scheduler");
             scheduler.start();
         } catch (SchedulerException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -74,8 +72,11 @@ public class JobService {
         try {
             scheduler.scheduleJob(quartz_job, trigger);
         } catch (SchedulerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            if(e instanceof ObjectAlreadyExistsException) {
+                
+            } else {
+                e.printStackTrace();
+            }
         }
         //queue.add(job);
         em.persist(job);
@@ -85,7 +86,7 @@ public class JobService {
     }
 
     // in order to mock functioning we remove a job after 10 seconds...
-    @Scheduled(every="10s")
+    /*@Scheduled(every="10s")
     @Transactional
     void convertJobToResult() {
         if(queue.size() > 0) {
@@ -99,7 +100,7 @@ public class JobService {
             newResult.Title = "Gordoing in the time of 10 Artours";
             em.persist(newResult);
         }
-    }
+    }*/
 
     @Transactional
     public List<Job> getAll() {
