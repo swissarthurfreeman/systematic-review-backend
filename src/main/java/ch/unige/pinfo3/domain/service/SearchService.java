@@ -48,13 +48,23 @@ public class SearchService {
         
         // search for job or result with said ucnf
         // create association
-        Job job = em.find(Job.class, search.ucnf);
-        Result res = em.find(Result.class, search.ucnf);
-        if(job != null) {
-            search.setJobUUID(job.uuid);
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Job> criteriaQuery = builder.createQuery(Job.class);
+        Root<Job> searchItem = criteriaQuery.from(Job.class);
+        criteriaQuery.where(builder.equal(searchItem.get("ucnf"), search.ucnf));
+        List<Job> jobs = em.createQuery(criteriaQuery).getResultList();
+        
+        CriteriaBuilder builder2 = em.getCriteriaBuilder();
+        CriteriaQuery<Result> criteriaQuery2 = builder.createQuery(Result.class);
+        Root<Result> searchItem2 = criteriaQuery2.from(Result.class);
+        criteriaQuery2.where(builder2.equal(searchItem2.get("ucnf"), search.ucnf));
+        List<Result> results = em.createQuery(criteriaQuery2).getResultList();
+        
+        if(jobs.size() == 1) {
+            search.setJobUUID(jobs.get(0).uuid);
             search.setResultUUID(null);
-        } else if(res != null) {
-                search.setResultUUID(res.uuid);
+        } else if(results.size() == 1) {
+                search.setResultUUID(results.get(0).uuid);
                 search.setJobUUID(null);
         } else {
             search.setJobUUID(jobService.submit(search.ucnf));
@@ -101,6 +111,16 @@ public class SearchService {
      */
     @Transactional
     public void updateSearchesOf(String ucnf, String result_uuid) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Search> criteriaQuery = builder.createQuery(Search.class);
+        Root<Search> searchItem = criteriaQuery.from(Search.class);
+        criteriaQuery.where(builder.equal(searchItem.get("ucnf"), ucnf));
         
-    }
+        List<Search> searches = em.createQuery(criteriaQuery).getResultList();
+        for(Search el: searches) {
+            el.setJobUUID(null);
+            el.setResultUUID(result_uuid);
+            em.persist(el);
+        }
+    }   
 }

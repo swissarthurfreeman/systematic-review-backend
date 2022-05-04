@@ -19,6 +19,21 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+/**
+ * This class is what gets fed to the quartz scheduler. 
+ * The quartz scheduler will maintain a thread pool and choose and dispatch
+ * execution of this method to one of them asynchronously. 
+ * It must contain a method called execute(context) where 
+ * context can be expanded by passing in parameters before scheduling. 
+ * 
+ * The goal for MVP of this class will be to : 
+ * - Execute Python program by running a process command. 
+ * - Wait for execution to finish
+ * - Read all results from disk via .csv
+ * - create the appropriate Result and Article instances, persist them
+ *   in database.
+ * - remove job from database (was created before scheduling task).  
+ */
 @ApplicationScoped
 public class Task implements org.quartz.Job {
     @Inject
@@ -114,7 +129,7 @@ public class Task implements org.quartz.Job {
 
         em.persist(res);
 
-        //search_service.updateSearchesOf(dataMap.getString("ucnf"), res.uuid);
+        search_service.updateSearchesOf(dataMap.getString("ucnf"), res.uuid);
     }
 }
 
