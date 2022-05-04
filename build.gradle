@@ -46,7 +46,7 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-client")
     implementation("io.quarkus:quarkus-rest-client-jackson")
     implementation "io.smallrye.reactive:mutiny"
-
+    implementation("io.quarkus:quarkus-quartz")
     implementation("io.quarkus:quarkus-scheduler")
 
 }

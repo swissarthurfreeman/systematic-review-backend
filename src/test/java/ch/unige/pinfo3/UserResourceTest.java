@@ -9,7 +9,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Assertions;
 
-import java.io.File;
 import java.io.InputStream;
 
 import static io.restassured.RestAssured.get;

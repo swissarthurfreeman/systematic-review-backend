@@ -28,7 +28,7 @@ public class SearchService {
     EntityManager em;
 
     @Inject
-    JobService jobber;
+    JobService jobService;
 
     /**
      * Create a search object linked to user.
@@ -39,7 +39,6 @@ public class SearchService {
      * - check syntax
      * - check search has valid user_uuid
      * - compute and assign ucnf form.
-     * - create association to job or result object.
      */
     @Transactional
     public Search create(Search search) {
@@ -53,14 +52,14 @@ public class SearchService {
         Result res = em.find(Result.class, search.ucnf);
         if(job != null) {
             search.setJobUUID(job.uuid);
-            //search.result_uuid = null;
+            search.setResultUUID(null);
         } else if(res != null) {
-                //search.result_uuid = res.uuid;
+                search.setResultUUID(res.uuid);
                 search.setJobUUID(null);
         } else {
-            search.setJobUUID(jobber.submit(search.ucnf));
+            search.setJobUUID(jobService.submit(search.ucnf));
         }
-        em.persist(search); 
+        em.persist(search);
         return em.find(Search.class, search.uuid);
     }
 

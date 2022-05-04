@@ -5,14 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "results")
 public class Result implements Serializable {
     @Id
     public String uuid;
-
+    // to refactor : a result is a set of articles.
     public String Title;
     public String Date; 
     public String DOI;

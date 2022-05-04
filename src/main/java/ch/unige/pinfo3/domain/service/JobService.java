@@ -12,21 +12,18 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
-
-import org.eclipse.microprofile.context.ManagedExecutor;
-import org.eclipse.microprofile.context.ThreadContext;
-import org.hibernate.engine.spi.Managed;
-
 import io.quarkus.scheduler.Scheduled;
-import io.quarkus.scheduler.ScheduledExecution;
-import io.quarkus.scheduler.Scheduled.SkipPredicate;
+
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 
 // there can only be one jobber.
 @ApplicationScoped
@@ -35,7 +32,7 @@ public class JobService {
     EntityManager em;
 
     @Inject
-    ManagedExecutor executor;
+    Scheduler scheduler;
 
     static final ArrayList<Job> queue = new ArrayList<Job>();
 
@@ -49,14 +46,41 @@ public class JobService {
         job.uuid = job_uuid;
         job.timestamp = new Date();
         job.status = "queued";
-
         queue.add(job);
+        
+        // schedule a job => check how to execute job immidiately 
+        // quartz.addJob(jobDetail, replace);
+        // quartz.triggerJob(jobKey);
+        // https://www.baeldung.com/quartz
+        try {
+            System.out.println("Starting Scheduler");
+            scheduler.start();
+        } catch (SchedulerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        System.out.println("Building Job Detail");
+        JobDetail quartz_job = JobBuilder.newJob(Task.class)
+            .withIdentity(ucnf)
+            .build();
+        
+        System.out.println("Building Trigger");
+        Trigger trigger = TriggerBuilder.newTrigger()
+            .startNow()
+            .build();
+        
+        System.out.println("Adding to scheduler");
+        try {
+            scheduler.scheduleJob(quartz_job, trigger);
+        } catch (SchedulerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //queue.add(job);
         em.persist(job);
 
-        // asynchronous call to python interface...
-        // ... fucking nightmare
-        // @Inject org.eclipse.microprofile.context.ManagedExecutor
-        // https://stackoverflow.com/questions/67444442/right-way-to-start-a-background-task-per-request-in-quarkus
+        // how to do asynchronous call to python interface...
         return job_uuid;
     }
 
