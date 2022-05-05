@@ -10,7 +10,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 

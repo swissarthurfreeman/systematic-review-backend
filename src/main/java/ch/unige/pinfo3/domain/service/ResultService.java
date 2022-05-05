@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.Transactional;
 import java.util.List;
 import ch.unige.pinfo3.domain.model.Result;
+import ch.unige.pinfo3.utils.QueryUtils;
+
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -18,13 +20,12 @@ public class ResultService {
     @Inject
     Logger LOG;
 
+    @Inject
+    QueryUtils qu;
+
     @Transactional
     public List<Result> getAll() {
-        LOG.info("Attempting to get results from db");
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<Result> criteria = builder.createQuery(Result.class);
-		criteria.from(Result.class);
-		return em.createQuery(criteria).getResultList();
+        return qu.getAll(Result.class, em);
     }
 
     @Transactional

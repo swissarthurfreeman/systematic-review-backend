@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.utils.QueryUtils;
 
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -31,17 +31,15 @@ public class JobService {
     @Inject
     Scheduler scheduler;
 
+    @Inject
+    QueryUtils qu;
+
     static final ArrayList<Job> queue = new ArrayList<Job>();
 
     @Transactional
-    public String submit(String ucnf) {
-        
+    public String submit(String ucnf) {        
         // check database if job with the provided ucnf exists
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<Job> criteria = builder.createQuery(Job.class);
-        Root<Job> root = criteria.from(Job.class);
-        criteria.select(root).where(builder.equal(root.get("ucnf"), ucnf));
-        List<Job> result = em.createQuery(criteria).getResultList();
+        List<Job> result = qu.select(Job.class, "ucnf", ucnf, em);
 
         if(result.size() == 1) { 
             System.out.println("Job with that UCNF already exists !");
@@ -79,10 +77,7 @@ public class JobService {
 
     @Transactional
     public List<Job> getAll() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<Job> criteria = builder.createQuery(Job.class);
-		criteria.from(Job.class);
-		return em.createQuery(criteria).getResultList();
+        return qu.getAll(Job.class, em);
     }
 
     public String getStatus(String uuid) {

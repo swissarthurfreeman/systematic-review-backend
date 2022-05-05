@@ -60,11 +60,11 @@ Content-Type: application/json
 Accept: application/json
 
 ###
-GET {{host}}/results/d8a00ecf-5d99-413c-af95-45610b67906a
+GET {{host}}/results/802008b8-af6c-4efe-9027-f2a854e239e5
 Content-Type: application/json
 Accept: application/json
 
 ###
-GET {{host}}/results/8c7d6903-fa39-4d1c-bf50-ea3c24513de4/articles
+GET {{host}}/results/b209d4d7-2541-46e9-b1df-1b56e70580b0/articles
 Content-Type: application/json
 Accept: application/json

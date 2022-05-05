@@ -3,6 +3,7 @@ package ch.unige.pinfo3.domain.model;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -22,9 +23,11 @@ public class Article implements Serializable {
     public String Authors;
     
     @NotNull
+    @Lob
     public String Abstract;
     
     @NotNull
+    @Lob    // large object
     public String Full_text;
     
     @NotNull
