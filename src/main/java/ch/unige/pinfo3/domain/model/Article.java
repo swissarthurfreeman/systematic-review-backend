@@ -7,6 +7,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+
 @Entity
 @Table(name="articles")
 public class Article implements Serializable {
