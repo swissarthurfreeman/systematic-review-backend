@@ -1,18 +1,11 @@
 package ch.unige.pinfo3.domain.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
-import org.jboss.logging.Logger;
-import java.io.InputStreamReader;
-
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Random;
 import java.util.UUID;
 
@@ -20,6 +13,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+
+import org.jboss.logging.Logger;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
  * This class is what gets fed to the quartz scheduler. 
@@ -95,7 +93,7 @@ public class Task implements org.quartz.Job {
         // we can get the .sh script location like this, python could be a property of resource...
         // beware URL.toString() contains path prefixed by protocol. 
         String script_location = this.getClass().getResource("/test.sh").getPath();
-            
+
         LOG.info("Launching Background sh Script at " + script_location);
         
         LOG.info("script_location=" + script_location);

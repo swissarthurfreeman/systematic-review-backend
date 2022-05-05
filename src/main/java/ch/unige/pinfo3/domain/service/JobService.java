@@ -13,6 +13,7 @@ import java.util.UUID;
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.utils.QueryUtils;
 
+import org.jboss.logging.Logger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -30,6 +31,9 @@ public class JobService {
     Scheduler scheduler;
 
     @Inject
+    Logger LOG;
+
+    @Inject
     QueryUtils qu;
 
     static final ArrayList<Job> queue = new ArrayList<Job>();
@@ -40,7 +44,7 @@ public class JobService {
         List<Job> result = qu.select(Job.class, "ucnf", ucnf, em);
 
         if(result.size() == 1) { 
-            System.out.println("Job with that UCNF already exists !");
+            LOG.info("Job with that UCNF already exists, returning job_uuid...");
             return result.get(0).uuid;
         }
         

@@ -53,7 +53,6 @@ public class UserService {
 
     @Transactional
     public User find(String uuid) {
-        System.out.println(uuid);
         return em.find(User.class, uuid);
     }
 }
