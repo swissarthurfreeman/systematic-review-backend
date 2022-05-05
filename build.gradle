@@ -18,6 +18,7 @@ repositories {
     maven {
         url "https://mvnrepository.com/"
     }
+
 }
 
 dependencies {
@@ -49,6 +50,8 @@ dependencies {
     implementation("io.quarkus:quarkus-quartz")
     implementation("io.quarkus:quarkus-scheduler")
 
+    implementation ('com.github.javafaker:javafaker:0.14') { exclude module: 'snakeyaml' }
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.17'
 }
 
 group 'ch.unige.pinfo3'

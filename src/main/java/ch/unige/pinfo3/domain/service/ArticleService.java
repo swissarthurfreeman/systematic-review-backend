@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import com.github.javafaker.*;
 
 import ch.unige.pinfo3.domain.model.Article;
 
@@ -24,5 +25,19 @@ public class ArticleService {
         criteriaQuery.where(builder.equal(searchItem.get("result_uuid"), result_uuid));
         List<Article> result_articles = em.createQuery(criteriaQuery).getResultList();
         return result_articles;
+    }
+
+
+    public Article getRandomArticle(String result_uuid) {
+        Faker fk = new Faker();
+        Article ar = new Article();
+        ar.result_uuid = result_uuid;
+        ar.Full_text = fk.lorem().fixedString(500);
+        ar.Authors = fk.name().fullName() + ", " + fk.name().fullName();
+        ar.Abstract = fk.lorem().toString();
+        ar.Title = fk.book().title();
+        ar.URL = fk.internet().url();
+        ar.university = fk.university().name();
+        return ar;
     }
 }

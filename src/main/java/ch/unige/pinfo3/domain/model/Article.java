@@ -31,6 +31,9 @@ public class Article implements Serializable {
     public String URL;
 
     @NotNull
+    public String university;
+
+    @NotNull
     public double x;
     
     @NotNull
@@ -41,6 +44,7 @@ public class Article implements Serializable {
     public Article(String uuid, String result_uuid, String Title, 
                    String Authors, String Abstract, 
                    String Full_text, String URL,
+                   String university,
                    double x, double y) {
         this.uuid = uuid;
         this.result_uuid = result_uuid;
@@ -49,6 +53,7 @@ public class Article implements Serializable {
         this.Abstract = Abstract;
         this.Full_text = Full_text;
         this.URL = URL;
+        this.university = university;
         this.x = x;
         this.y = y;
     }

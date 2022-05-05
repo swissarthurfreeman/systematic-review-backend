@@ -48,6 +48,7 @@ public class SearchService {
         
         // search for job or result with said ucnf
         // create association
+        // TODO create helper function to execute simple criteria generically.
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Job> criteriaQuery = builder.createQuery(Job.class);
         Root<Job> searchItem = criteriaQuery.from(Job.class);
