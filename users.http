@@ -33,7 +33,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "query": "HIV AND WUHAN",
+    "query": "HIV AAaaND WUHAN",
     "user_uuid": "{{test_uuid}}"
 }
 

@@ -60,8 +60,6 @@ public class Task implements org.quartz.Job {
         // launch sh script that sleeps 
     
         executeProcess();
-
-        LOG.info("Background Script done ");
             
         // get/stream process standard output if needed, we can write updates to db if required. 
         // String output = getProcessOutput();
@@ -95,19 +93,19 @@ public class Task implements org.quartz.Job {
 
     public void executeProcess() {
         // we can get the .sh script location like this, python could be a property of resource...
-        String script_location = this.getClass().getResource("/test.sh").toString();
+        // beware URL.toString() contains path prefixed by protocol. 
+        String script_location = this.getClass().getResource("/test.sh").getPath();
             
         LOG.info("Launching Background sh Script at " + script_location);
         
-        // TODO fix file not found error when using script_location
         LOG.info("script_location=" + script_location);
-        String location = "/home/gordon/Documents/gordon_bsci/Sem6/PInfo/backend/build/resources/main/test.sh";
-        ProcessBuilder pb = new ProcessBuilder("/bin/sh", location);
+        ProcessBuilder pb = new ProcessBuilder("/bin/sh", script_location);
         
         // start and wait for process to finish
         try {
             this.proc = pb.start();
             this.proc.waitFor();
+            LOG.info("Background Script done ");
         } catch (Exception e) {
             LOG.error(e.getMessage());
         } 
