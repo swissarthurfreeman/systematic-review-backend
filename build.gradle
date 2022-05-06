@@ -12,6 +12,7 @@ jacocoTestReport {
 }
 test.finalizedBy jacocoTestReport
 
+
 sonarqube {
     properties {
         property "sonar.projectKey", "ch.unige.pinfo3.backend"
