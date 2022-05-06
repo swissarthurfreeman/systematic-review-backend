@@ -27,7 +27,7 @@ push-image-staging:
       -Dquarkus.container-image.push=true
       -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
       -Dquarkus.container-image.name=${CI_PROJECT_NAME}
-      -Dquarkus.container-image.tag=${CI_COMMIT_REF_SLUG}
+      -Dquarkus.container-image.tag=${CI_COMMIT_SHORT_SHA}
       -Dquarkus.container-image.additional-tags=staging
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
