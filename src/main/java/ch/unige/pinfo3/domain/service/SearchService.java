@@ -12,15 +12,12 @@ import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
+import ch.unige.pinfo3.utils.QueryUtils;
 
 @ApplicationScoped
 public class SearchService {
@@ -28,7 +25,10 @@ public class SearchService {
     EntityManager em;
 
     @Inject
-    JobService jobber;
+    JobService jobService;
+
+    @Inject
+    QueryUtils qu;
 
     /**
      * Create a search object linked to user.
@@ -39,7 +39,6 @@ public class SearchService {
      * - check syntax
      * - check search has valid user_uuid
      * - compute and assign ucnf form.
-     * - create association to job or result object.
      */
     @Transactional
     public Search create(Search search) {
@@ -48,51 +47,43 @@ public class SearchService {
         search.ucnf = search.query;
         
         // search for job or result with said ucnf
-        // create association
-        Job job = em.find(Job.class, search.ucnf);
-        Result res = em.find(Result.class, search.ucnf);
-        if(job != null) {
-            search.setJobUUID(job.uuid);
-            //search.result_uuid = null;
-        } else if(res != null) {
-                //search.result_uuid = res.uuid;
+        List<Job> jobs = qu.select(Job.class, "ucnf", search.ucnf, em);
+        List<Result> results = qu.select(Result.class, "ucnf", search.ucnf, em);
+        
+        if(jobs.size() == 1) {
+            search.setJobUUID(jobs.get(0).uuid);
+            search.setResultUUID(null);
+        } else if(results.size() == 1) {
+                search.setResultUUID(results.get(0).uuid);
                 search.setJobUUID(null);
         } else {
-            search.setJobUUID(jobber.submit(search.ucnf));
+            search.setJobUUID(jobService.submit(search.ucnf));
         }
-        em.persist(search); 
+        em.persist(search);
         return em.find(Search.class, search.uuid);
     }
 
     @Transactional
     public List<Search> getAll() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<Search> criteria = builder.createQuery(Search.class);
-		criteria.from(Search.class);
-		return em.createQuery(criteria).getResultList();
+        return qu.getAll(Search.class, em);
     }
 
     @Transactional
     public List<Search> getSearchesOf(String user_uuid) {
-        // building queries uses the builder design pattern.
-        // the builder allows us to build a complex query (SQL under the hood)
-        // we build the query once we've applied all the predicates. 
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        
-        // create empty query which gets gradually built.
-        CriteriaQuery<Search> criteriaQuery = builder.createQuery(Search.class);
-        
-        // allows accessing underlying sql schema columns. 
-        Root<Search> searchItem = criteriaQuery.from(Search.class);
-
-        // column of db user_uuid = user_uuid var parameter.
-        Predicate userIdPredicate = builder.equal(searchItem.get("user_uuid"), user_uuid);
-
-        // use previously defined Predicates to build the query.
-        criteriaQuery.where(userIdPredicate);
-
-        List<Search> userSearches = em.createQuery(criteriaQuery).getResultList();
-        
-        return userSearches;
+        return qu.select(Search.class, "user_uuid", user_uuid, em);
     }
+
+    /***
+     * Sets all searches pointing towards ucnf to have a nul job_uuid and 
+     * sets result_uuid of search to the newly obtained result. 
+     */
+    @Transactional
+    public void updateSearchesOf(String ucnf, String result_uuid) {
+        List<Search> searches = qu.select(Search.class, "ucnf", ucnf, em);
+        for(Search el: searches) {
+            el.setJobUUID(null);
+            el.setResultUUID(result_uuid);
+            em.persist(el);
+        }
+    }   
 }

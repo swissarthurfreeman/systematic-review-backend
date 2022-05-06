@@ -18,6 +18,7 @@ repositories {
     maven {
         url "https://mvnrepository.com/"
     }
+
 }
 
 dependencies {
@@ -29,8 +30,8 @@ dependencies {
     implementation 'io.quarkus:quarkus-arc'
     implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testImplementation 'io.quarkus:quarkus-junit5'
-    testImplementation 'io.quarkus:quarkus-test-h2'
+    implementation 'io.quarkus:quarkus-junit5'
+    implementation 'io.quarkus:quarkus-test-h2'
     implementation 'io.rest-assured:rest-assured'
     implementation 'io.quarkus:quarkus-hibernate-orm'
     implementation 'io.quarkus:quarkus-narayana-jta'
@@ -42,14 +43,24 @@ dependencies {
     implementation 'com.github.cliftonlabs:json-simple:3.1.0' //pour le json
     implementation 'commons-validator:commons-validator:1.7' // pour le validateur de email
 
+    implementation "io.quarkus:quarkus-junit5-mockito"
+    implementation platform("io.smallrye.reactive:mutiny-bom:1.4.0")
+    implementation("io.quarkus:quarkus-rest-client")
+    implementation("io.quarkus:quarkus-rest-client-jackson")
+    implementation "io.smallrye.reactive:mutiny"
+    implementation("io.quarkus:quarkus-quartz")
+    implementation("io.quarkus:quarkus-scheduler")
+
+    implementation ('com.github.javafaker:javafaker:0.14') { exclude module: 'snakeyaml' }
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.17'
 }
 
 group 'ch.unige.pinfo3'
 version '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 compileJava {

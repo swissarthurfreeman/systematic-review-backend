@@ -9,7 +9,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Assertions;
 
-import java.io.File;
 import java.io.InputStream;
 
 import static io.restassured.RestAssured.get;
@@ -113,7 +112,7 @@ public class UserResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(31)); // verifie qu'il y a bien 101 users dans la bd
+                .body("size()", equalTo(31)); // verifie qu'il y a bien 31 users dans la bd
     }
 
     @Test
