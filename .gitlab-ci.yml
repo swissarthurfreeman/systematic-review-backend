@@ -13,18 +13,23 @@ variables:
 cache:
   paths:
     - .cache
+    - build
 
 test:
   stage: test
   script:
-    - gradle test
+    - gradle clean test
 
 push-image-staging:
   stage: deploy
   script:
     - gradle build
       -Dquarkus.container-image.push=true
-      -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}:staging
+      -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
+      -Dquarkus.container-image.name=${CI_PROJECT_NAME}
+      -Dquarkus.container-image.tag=${CI_COMMIT_REF_SLUG}
+      -Dquarkus.container-image.additional-tags=staging
+      -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
   rules:
