@@ -13,8 +13,6 @@
 package ch.unige.pinfo3.api.rest;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -36,6 +34,7 @@ import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.model.User;
 import ch.unige.pinfo3.domain.service.SearchService;
 import ch.unige.pinfo3.domain.service.UserService;
+
 
 /**
  * This class calls appropriate services for all routes 
@@ -65,20 +64,19 @@ public class UserRestService {
     @Path("{uuid}")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("user_uuid") String user_uuid) {
-        var maybe_an_error = validateUUID(user_uuid);
-        if(maybe_an_error.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(maybe_an_error.get()).build();
+    public Response getUser(@PathParam("user_uuid") @VALID_UUID String user_uuid) {
         User usr = userService.find(user_uuid);
-
-        if(usr == null)
-            return Response.status(Response.Status.NOT_FOUND).entity(
+        if(usr == null) {
+            var err = new ErrorReport();
+            err.errors.add(
                 new Error(
-                    "invalid user_uuid",
-                    "a user with that uuid does not exist",
+                    "User with that uuid does not exist",
+                "Try a different uuid", 
                     Response.Status.NOT_FOUND
                 )
-            ).build();
+            );
+            return Response.status(Response.Status.NOT_FOUND).entity(err).build();
+        }
         return Response.ok(usr).build();
     }
 
@@ -86,15 +84,7 @@ public class UserRestService {
     @Path("{user_uuid}")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response putUser(@PathParam("user_uuid") String user_uuid, User user) {
-        var maybe_an_error = validateUUID(user_uuid);
-        if(maybe_an_error.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(maybe_an_error.get()).build();
-        
-        maybe_an_error = userService.validateUser(user_uuid);
-        if(maybe_an_error.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(maybe_an_error.get()).build();
-
+    public Response putUser(@PathParam("user_uuid") @VALID_UUID String user_uuid, @Valid User user) {
         user.uuid = user_uuid;
         User updated_user;
         try {
@@ -114,40 +104,30 @@ public class UserRestService {
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(@Valid User user) {
-        var error = userService.validateEmail(user.email);
-        if(error.isPresent())
-        //   return Response.status(Response.Status.BAD_REQUEST).entity(error.get()).build();
-        
-        var error = userService.validateUsername(user.username);
-        if(error.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(error.get()).build();
-
         User created_user;
         try {
             created_user = userService.create(user);
         } catch(Exception e) {
             LOG.error(e.getMessage());
-            var err = new Error(
-                "Username or email already exists",
-                "Try a different username or email", 
-                Response.Status.CONFLICT
+            var err = new ErrorReport();
+            err.errors.add(
+                new Error(
+                    "Username or email already exists",
+                  "Try a different username or email", 
+                    Response.Status.CONFLICT
+                )
             );
             return Response.status(Response.Status.CONFLICT).entity(err).build();
         }
-        
-        return Response.ok("passed the @Valid").build();
+        return Response.ok(created_user).build();
     }
 
     @GET
     @Path("{uuid}/searches")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserSearches(@PathParam("uuid") String user_uuid) {
-        var err = validateUUID(user_uuid);
-        if(err.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
-        
-        err = userService.validateUser(user_uuid);
+    public Response getUserSearches(@PathParam("uuid") @VALID_UUID String user_uuid) {
+        var err = userService.checkExistence(user_uuid);
         if(err.isPresent())
             return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
         
@@ -159,12 +139,9 @@ public class UserRestService {
     @Path("{uuid}/searches")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postUserSearch(@PathParam("uuid") String user_uuid, Search search) {
-        var err = validateUUID(user_uuid);
-        if(err.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
+    public Response postUserSearch(@PathParam("uuid") @VALID_UUID String user_uuid, @Valid Search search) {
         
-        err = userService.validateUser(user_uuid);
+        var err = userService.checkExistence(user_uuid);
         if(err.isPresent())
             return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
         
@@ -181,39 +158,11 @@ public class UserRestService {
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserSearch(@PathParam("user_uuid") String user_uuid, @PathParam("search_uuid") String search_uuid) {
-        var err = validateUUID(user_uuid);
-        if(err.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
         
-        err = userService.validateUser(user_uuid);
-        if(err.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
-        
-        err = searchService.validateSearch(search_uuid);
+        var err = searchService.checkExistence(search_uuid);
         if(err.isPresent())
             return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
         
         return Response.ok(searchService.getSearchOfUser(user_uuid, search_uuid)).build();
-    }
-
-    /**
-     * Helper function to check user validity. Username and email must be 
-     * correctly formatted, if so returns null, if not returns a response
-     * with the appropriate Error configured. 
-     * @param user a User object. 
-     * @return an optional containing or not a Response. 
-     */
-    private static Optional<Error> validateUUID(String uuid) {
-        try {
-            UUID.fromString(uuid);     // make sure it's a valid uuid
-        } catch(IllegalArgumentException e) {
-            var err = new Error(
-                "invalid uuid",
-                "The uuid provided is syntaxically incorrect", 
-                Response.Status.BAD_REQUEST
-            );
-            return Optional.of(err);
-        }
-        return Optional.empty();
     }
 }

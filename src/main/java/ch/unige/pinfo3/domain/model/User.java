@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -22,9 +21,12 @@ public class User implements Serializable {
     @Id
     public String uuid;
 
-    @NotBlank(message="Username may not be blank")
     @NotNull
     @Column(unique=true)
+    @Pattern(
+        regexp="^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", 
+        message = "Please provide a valid username"
+    )
     public String username;
     
     @NotNull

@@ -22,6 +22,7 @@ import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
 import ch.unige.pinfo3.api.rest.Error;
+import ch.unige.pinfo3.api.rest.ErrorReport;
 
 
 @ApplicationScoped
@@ -99,7 +100,7 @@ public class SearchService {
     /***
      * Perform syntactic analysis of query. 
      */
-    public Optional<Error> syntaxAnalysis(String query) {
+    public Optional<ErrorReport> syntaxAnalysis(String query) {
         // TODO use ANTLR java syntactic analyser to validate query.
         return Optional.empty();
     }
@@ -108,7 +109,7 @@ public class SearchService {
         return qu.select(Search.class, "user_uuid", user_uuid, "search_uuid", search_uuid, em).get(0);
     }
 
-    public Optional<Error> validateSearch(String search_uuid) {
+    public Optional<Error> checkExistence(String search_uuid) {
         //return qu.select(Search.class, "search_uuid", search_uuid, em);
         return Optional.empty();
     }

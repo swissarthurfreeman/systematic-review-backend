@@ -10,7 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,12 +27,13 @@ public class Search implements Serializable {
     public String user_uuid;
     
     @NotNull
+    @NotBlank(message = "Query cannot be blank you madman")
+    @Size(min = 15, message = "Query is too short !")
     public String query;
     
     @NotNull
     public String ucnf;
 
-    @NotNull
     public Date timestamp;
 
     private String job_uuid;
