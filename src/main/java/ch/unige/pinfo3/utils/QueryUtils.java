@@ -34,6 +34,21 @@ public class QueryUtils {
     }
 
     @Transactional
+    public <T> List<T> select(Class<T> entity, String col1, String is1, String col2, String is2, EntityManager em) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(entity);
+        Root<T> root = criteria.from(entity);
+        criteria.select(root).where(
+            builder.and(
+                builder.equal(root.get(col1), is1), 
+                builder.equal(root.get(col2), is2)
+            )
+        );
+        List<T> result = em.createQuery(criteria).getResultList();
+        return result;
+    }
+
+    @Transactional
     public <T> List<T> getAll(Class<T> entity, EntityManager em) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = builder.createQuery(entity);

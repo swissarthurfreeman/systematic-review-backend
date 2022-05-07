@@ -7,6 +7,7 @@ package ch.unige.pinfo3.domain.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -20,6 +21,8 @@ import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
+import ch.unige.pinfo3.api.rest.Error;
+
 
 @ApplicationScoped
 public class SearchService {
@@ -37,7 +40,7 @@ public class SearchService {
 
     /**
      * Create a search object linked to user.
-     * @param search a search object containing a query and valid user_uuid.
+     * @param search a search object containing a syntatically valid query and valid user_uuid.
      * @return the newly created search object. Succeeds no matter what. 
      * 
      * To Do :
@@ -92,4 +95,21 @@ public class SearchService {
             em.persist(el);
         }
     }   
+
+    /***
+     * Perform syntactic analysis of query. 
+     */
+    public Optional<Error> syntaxAnalysis(String query) {
+        // TODO use ANTLR java syntactic analyser to validate query.
+        return Optional.empty();
+    }
+
+    public Search getSearchOfUser(String user_uuid, String search_uuid) {
+        return qu.select(Search.class, "user_uuid", user_uuid, "search_uuid", search_uuid, em).get(0);
+    }
+
+    public Optional<Error> validateSearch(String search_uuid) {
+        //return qu.select(Search.class, "search_uuid", search_uuid, em);
+        return Optional.empty();
+    }
 }

@@ -60,6 +60,6 @@ public class Search implements Serializable {
 
     public void setResultUUID(String uuid) {
         this.result_uuid = uuid;
-        this.job_uuid = null; // ajouter??
+        this.job_uuid = null; 
     }
 }
