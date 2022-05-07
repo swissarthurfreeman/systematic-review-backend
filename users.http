@@ -16,7 +16,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "username": "Steven",
+    "username": "Sven",
     "email": "steven@steve.net"
 }
 
