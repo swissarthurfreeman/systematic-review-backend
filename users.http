@@ -16,8 +16,19 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "username": "Sven",
+    //"uuid": "{{test_uuid}}",
+    "username": "asasfasfg",
     "email": "steven@steve.net"
+}
+
+###
+PUT {{host}}/users/{{test_uuid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "NEwNewUsername",
+    "email": "steven@stevenewman.net"
 }
 
 ###
