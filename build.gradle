@@ -60,8 +60,8 @@ dependencies {
 
     implementation ('com.github.javafaker:javafaker:0.14') { exclude module: 'snakeyaml' }
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-    implementation 'commons-validator:commons-validator:1.7'
-    implementation group: 'org.jboss.resteasy', name: 'resteasy-validator-provider', version: '3.7.0.Final'
+    implementation 'commons-validator:commons-validator:1.7'    // manual validation interface
+    implementation("io.quarkus:quarkus-hibernate-validator")
 }
 
 group 'ch.unige.pinfo3'

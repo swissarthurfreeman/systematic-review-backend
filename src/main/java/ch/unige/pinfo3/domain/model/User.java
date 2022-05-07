@@ -11,8 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "users")
@@ -20,12 +22,14 @@ public class User implements Serializable {
     @Id
     public String uuid;
 
+    @NotBlank(message="Username may not be blank")
     @NotNull
     @Column(unique=true)
     public String username;
     
     @NotNull
     @Column(unique=true)
+    @Email(message="Please provide a valid email address")
     public String email;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -19,6 +19,7 @@ import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -112,12 +113,12 @@ public class UserRestService {
     @POST // /users
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(User user) {
+    public Response create(@Valid User user) {
         var error = userService.validateEmail(user.email);
         if(error.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(error.get()).build();
-
-        error = userService.validateUsername(user.username);
+        //   return Response.status(Response.Status.BAD_REQUEST).entity(error.get()).build();
+        
+        var error = userService.validateUsername(user.username);
         if(error.isPresent())
             return Response.status(Response.Status.BAD_REQUEST).entity(error.get()).build();
 
@@ -133,7 +134,8 @@ public class UserRestService {
             );
             return Response.status(Response.Status.CONFLICT).entity(err).build();
         }
-        return Response.ok(created_user).build();
+        
+        return Response.ok("passed the @Valid").build();
     }
 
     @GET
