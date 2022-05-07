@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -20,9 +21,11 @@ public class User implements Serializable {
     public String uuid;
 
     @NotNull
+    @Column(unique=true)
     public String username;
     
     @NotNull
+    @Column(unique=true)
     public String email;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -31,7 +34,7 @@ public class User implements Serializable {
 
     // required to be able to marshall objects since a constructor
     // was provided default empty one is not generated.
-    public User() {}    
+    public User() {}
 
     public User(String username, String email, String id) {
         this.username = username;

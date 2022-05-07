@@ -14,6 +14,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import org.jboss.logging.Logger;
+
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
@@ -24,6 +26,9 @@ public class SearchService {
     @Inject
     EntityManager em;
 
+    @Inject
+    Logger LOG;
+    
     @Inject
     JobService jobService;
 
@@ -45,7 +50,7 @@ public class SearchService {
         search.timestamp = new Date();
         search.uuid = UUID.randomUUID().toString();
         search.ucnf = search.query;
-        
+        LOG.info(search.user_uuid);
         // search for job or result with said ucnf
         List<Job> jobs = qu.select(Job.class, "ucnf", search.ucnf, em);
         List<Result> results = qu.select(Result.class, "ucnf", search.ucnf, em);
@@ -57,6 +62,7 @@ public class SearchService {
                 search.setResultUUID(results.get(0).uuid);
                 search.setJobUUID(null);
         } else {
+            // submits job
             search.setJobUUID(jobService.submit(search.ucnf));
         }
         em.persist(search);

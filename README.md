@@ -1,21 +1,9 @@
 # PInfo Back-End Project
 
-# Questions : 
+# TODO : 
 
-- Comment faire uen requête asynchrone et renvoyer un résultat direct, en passant un callback pour quand un résultat est disponible ?
-- Utilsier quartz : crée une task avec (y'a un job manager complet avec quartz intéréssant...) 
-- Modèle réactif ou purement REST => C'est quoi le plus simple / efficace ?
-- Comment communiquer entre micro-services, comment setup Kafka ?
-- MVP 13 Mai à présenter
-- Voir des trucs qui marchent qu'est ce qui a changé dans le plan qu'avez vous appris ? 
-- Architecture : Comment à t'elle évoluée ? Queles nouveaux microservices ?  
-- Qualité du code ou en sont ils ? 
-- La ci comment ça se passe ? (code coverage?)
-- velocité ou en êtes vous ? 
-- quarkus guide open id connect
-- modifier app.properties afin d'utiliser h2 in ram au lieu d'un service postgre via sql
-- implémenter webSocket en frontal afin de pouvoir m.à.j les status de job en direct
-- on peut faire un appel rest entre microservices sans passer par Kafka
+- have test dependencies in gradle to avoid filling final jar with shit
+- use @Before / @BeforeAll to initialise
 
 Autre option : 
 
@@ -37,14 +25,16 @@ Avoir une comm entre Robert et Backend via Kafka
 All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
 All endpoints will only be accessible if the Oauth2 token is valid, otherwise 403 Forbidden error will be sent back.
 
-| Endpoints             | Allowed Verbs                  |                                                      
+| Endpoints             | Allowed Verbs                  | 
 |-----------------------|--------------------------------|  
 | /users                | GET, POST                      |
 | /users/:id            | GET, PUT                       |
 | /users/:id/jobs       | GET                            |   
-| /users/:id/searches   | GET, POST                      |    
+| /users/:id/searches   | GET                            |    
+| /searches             | GET                            |    
 | /results              | GET                            |
 | /results/:id          | GET                            |
+| /results/:id/articles | GET                            |
 | /estimate/            | GET                            |
 
 | Verb | URL                     | Body                                              | Return code | Description                                                                                                                  

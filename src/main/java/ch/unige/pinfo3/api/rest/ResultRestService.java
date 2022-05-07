@@ -26,14 +26,22 @@ public class ResultRestService {
     @Inject
     ArticleService ass;
 
-    @GET
+    @GET // /results
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public List<Result> getResults(@QueryParam("page") int page) {
         return resultService.getAll();
     }
 
-    @GET
+    @GET // /results/:id
+    @Path("{uuid}")
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    public Result getResult(@PathParam("uuid") String result_uuid) {
+        return resultService.getResult(result_uuid);
+    }
+
+    @GET // /results/:id/articles
     @Path("{uuid}/articles")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
@@ -41,11 +49,5 @@ public class ResultRestService {
         return ass.getArticlesOf(result_uuid);
     }
 
-    @GET
-    @Path("{uuid}")
-    @Transactional
-    @Produces(MediaType.APPLICATION_JSON)
-    public Result getResult(@PathParam("uuid") String result_uuid) {
-        return resultService.getResult(result_uuid);
-    }
+    
 }

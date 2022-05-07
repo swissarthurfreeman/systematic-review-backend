@@ -1,5 +1,6 @@
 package ch.unige.pinfo3.domain.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,6 +8,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
+
+import org.jboss.logging.Logger;
 
 import ch.unige.pinfo3.domain.model.User;
 import ch.unige.pinfo3.utils.QueryUtils;
@@ -24,6 +28,9 @@ public class UserService {
     @Inject
     QueryUtils qu;
 
+    @Inject
+    Logger LOG;
+
     @Transactional
     public List<User> getAll() {
         return qu.getAll(User.class, em);
@@ -40,14 +47,26 @@ public class UserService {
      * <li>check email is valid</li>
      */
     @Transactional
-    public User create(User user) {
-        if(getAll().size() == 0) { // create John Doe user with fixed uuid.
-            User cedric = new User("pendeville_ced", "bae@dieudonne", "c044a099-e489-43f8-9499-c04a371dbb61");
-            em.persist(cedric);
-            return cedric;
-        } 
-        user.uuid = UUID.randomUUID().toString();
-        em.persist(user);
+    public User create(User user) throws Exception {
+        if(user.uuid == null)
+            user.uuid = UUID.randomUUID().toString();
+        try {
+            em.persist(user);
+            em.flush();
+        } catch(Exception e) {
+            throw e;
+        }
+        return user;
+    }
+
+    @Transactional
+    public User update(User user) throws Exception {
+        try {
+            em.merge(user);
+            em.flush();
+        } catch(Exception e) {
+            throw e;
+        }
         return user;
     }
 
