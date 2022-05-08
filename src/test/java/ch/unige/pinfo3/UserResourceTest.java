@@ -42,7 +42,7 @@ public class UserResourceTest{
     public void postUsers(){
         Log.info("Post verification");
         Log.info("Populating DB with users");
-        for(int i = 0; i < testUsers.length; i++){
+        for(int i = 0; i < testUsers.length-1; i++){
             User user = testUsers[i];
             String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}", user.username, user.email);
             given()
@@ -55,6 +55,16 @@ public class UserResourceTest{
                     .assertThat()
                     .statusCode(is(200)); // verifie si le post est fait avec succes
         }
+        String userJson = String.format("{\"uuid\": \"%s\", \"username\": \"%s\", \"email\": \"%s\"}", testUsers[testUsers.length-1].uuid, testUsers[testUsers.length-1].username, testUsers[testUsers.length-1].email);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(is(200)); // verifie si le post est fait avec succes
     }
 
     @Test
@@ -69,6 +79,7 @@ public class UserResourceTest{
             .statusCode(is(200))
             .and()
             .body("size()", equalTo(10)); // verifie si les 10 users ont bien été persisté dans la bd
+        Log.info((get("/users").body()).toString());
     }
 
     @Test
@@ -77,15 +88,15 @@ public class UserResourceTest{
         Log.info("User data verification");
         given()
                 .when()
-                .get("/users/"+testUsers[3].uuid)
+                .get("/users/"+testUsers[testUsers.length-1].uuid)
                 .then()
                 .assertThat()
                 .statusCode(is(200))
                 .body("size()", equalTo(3)) // il y a 3 attributs pour un utilisateur
                 .and()
-                .body("username", equalTo(testUsers[3].username))
+                .body("username", equalTo(testUsers[testUsers.length-1].username))
                 .and()
-                .body("email", equalTo(testUsers[3].email));
+                .body("email", equalTo(testUsers[testUsers.length-1].email));
     }
 
     @Test
