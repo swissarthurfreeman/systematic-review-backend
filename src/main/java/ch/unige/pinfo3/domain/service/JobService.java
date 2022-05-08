@@ -17,6 +17,7 @@ import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
 
 import com.github.javafaker.Faker;
+import io.smallrye.common.constraint.NotNull;
 import org.jboss.logging.Logger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -104,7 +105,7 @@ public class JobService {
         return Optional.ofNullable(em.find(Job.class, job_uuid));
     }
 
-    public Job getRandomJob(){
+    public static Job getRandomJob(){
         String[] status = {"queued"};
         Job job = new Job();
         Faker fk = new Faker();
