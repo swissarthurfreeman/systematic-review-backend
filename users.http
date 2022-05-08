@@ -40,13 +40,20 @@ GET {{host}}/users/{{test_uuid}}/searches
 Content-Type: application/json
 Accept: application/json
 
+@job_uuid = 26d0d2e7-2104-4780-afb5-cb7d63e38819
+
+###
+GET {{host}}/jobs/{{job_uuid}}
+Content-Type: application/json
+Accept: application/json
+
 ###
 GET {{host}}/users/{{test_uuid}}/searches
 Content-Type: application/json
 Accept: application/json
 
-@result_uuid=616ade11-5ad1-4ce6-8e0a-97bb76f17693
+@result_uuid=5182f5d7-9354-4bf9-a7a9-fd6b088ed4ed
 ###
-GET {{host}}/results/{{result_uuid}}/articles
+GET {{host}}/results/{{result_uuid}}
 Content-Type: application/json
 Accept: application/json

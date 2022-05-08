@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -33,7 +34,8 @@ public class Search implements Serializable {
 
     public Date timestamp;
 
-    private String job_uuid;
+    @JsonIgnore
+    public String job_uuid;
 
     // maybe to refactor to optional.
     // many searches can refer to one job.

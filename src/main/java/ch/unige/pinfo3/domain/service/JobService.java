@@ -5,12 +5,16 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import static org.junit.jupiter.api.DynamicTest.stream;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
 
 import org.jboss.logging.Logger;
@@ -34,6 +38,9 @@ public class JobService {
     Logger logger;
 
     @Inject
+    SearchService searchService;
+
+    @Inject
     QueryUtils qu;
 
     static final ArrayList<Job> queue = new ArrayList<Job>();
@@ -47,8 +54,6 @@ public class JobService {
             logger.info("Job with that UCNF already exists, returning job_uuid...");
             return result.get(0).uuid;
         }
-        
-        // TODO check database if a result with that ucnf already exists
 
         // persist job in database
         Job commit_job = new Job();
@@ -78,11 +83,18 @@ public class JobService {
     }
 
     @Transactional
-    public List<Job> getAll() {
-        return qu.getAll(Job.class, em);
+    public List<Job> getJobsOfUser(String user_uuid) {
+        List<Search> searches = searchService.getSearchesOf(user_uuid);
+        List<Job> jobs = new ArrayList<>();
+        for(Search s: searches) {
+            if(s.job_uuid != null)
+                jobs.add(em.find(Job.class, s.job_uuid));
+        }
+        return jobs;   
     }
 
-    public String getStatus(String uuid) {
-        return "All good captain !";
+    @Transactional
+    public Optional<Job> getJob(String job_uuid) {
+        return Optional.ofNullable(em.find(Job.class, job_uuid));
     }
 }

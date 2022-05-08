@@ -32,6 +32,7 @@ import org.jboss.logging.Logger;
 
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.model.User;
+import ch.unige.pinfo3.domain.service.JobService;
 import ch.unige.pinfo3.domain.service.SearchService;
 import ch.unige.pinfo3.domain.service.UserService;
 import ch.unige.pinfo3.utils.ErrorReport;
@@ -51,6 +52,9 @@ public class UserRestService {
 
     @Inject
     SearchService searchService;
+
+    @Inject
+    JobService jobService;
 
     @Inject
     Logger logger;
@@ -166,5 +170,13 @@ public class UserRestService {
             return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
         
         return Response.ok(searchService.getSearchOfUser(user_uuid, search_uuid)).build();
+    }
+
+    @GET
+    @Path("{user_uuid}/jobs")
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserJobs(@PathParam("user_uuid") String user_uuid) {
+        return Response.ok(jobService.getJobsOfUser(user_uuid)).build();
     }
 }

@@ -30,6 +30,7 @@ All endpoints will only be accessible if the Oauth2 token is valid, otherwise 40
 | /users                | GET, POST                      | yes         |
 | /users/:id            | GET, PUT                       | yes         |
 | /users/:id/jobs       | GET                            | yes         |
+| /jobs/:id             | GET                            | yes         |
 | /users/:id/searches   | GET, POST                      | yes         |
 | /results              | GET                            | yes         |
 | /results/:id          | GET                            | yes         |
