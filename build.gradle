@@ -58,6 +58,9 @@ dependencies {
     implementation("io.quarkus:quarkus-quartz")
     implementation("io.quarkus:quarkus-scheduler")
 
+    testImplementation("io.quarkus:quarkus-junit5")
+    testImplementation("io.rest-assured:rest-assured")
+
     implementation ('com.github.javafaker:javafaker:0.14') { exclude module: 'snakeyaml' }
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.17'
     implementation 'commons-validator:commons-validator:1.7'    // manual validation interface

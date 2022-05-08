@@ -29,7 +29,7 @@ import org.quartz.TriggerBuilder;
 // there can only be one jobber.
 @ApplicationScoped
 public class JobService {
-    @Inject 
+    @Inject
     EntityManager em;
 
     @Inject
@@ -47,7 +47,7 @@ public class JobService {
     static final ArrayList<Job> queue = new ArrayList<Job>();
 
     @Transactional
-    public String submit(String ucnf) {        
+    public String submit(String ucnf) {
         // check database if job with the provided ucnf exists
         List<Result> results = qu.select(Result.class, "ucnf", ucnf, em);
         
@@ -111,7 +111,7 @@ public class JobService {
         Faker fk = new Faker();
         job.uuid = UUID.randomUUID().toString();
         job.ucnf = fk.expression("#{lorem.word} AND #{lorem.word}");
-        job.timestamp = fk.date().birthday(1,3);
+        job.timestamp = new Date();
         job.status = status[(int) (Math.random() * status.length)];
         return job;
     }
