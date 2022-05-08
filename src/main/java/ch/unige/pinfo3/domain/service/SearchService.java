@@ -14,8 +14,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.validation.constraints.Null;
 import javax.ws.rs.core.Response;
 
+import com.github.javafaker.Faker;
 import org.jboss.logging.Logger;
 
 import ch.unige.pinfo3.domain.model.Job;
@@ -122,5 +124,24 @@ public class SearchService {
             return Optional.of(err);
         }
         return Optional.empty();
+    }
+
+    /// todo effacer????
+    public static Search getRandomSearch(String user_uuid, String job_uuid, String result_uuid){
+        Search search = new Search();
+        Faker fk = new Faker();
+        search.uuid = UUID.randomUUID().toString();
+        search.user_uuid = user_uuid;
+        search.query = fk.expression("#{lorem.word} AND #{lorem.word}");
+        search.ucnf = search.query; /// todo tranformer les query en ucnf
+        search.timestamp = new Date();
+        search.job_uuid = job_uuid;
+        search.setResultUUID(null);
+        if(result_uuid != null){
+            search.setResultUUID(result_uuid);
+            search.setJobUUID(null);
+        }
+
+        return search;
     }
 }
