@@ -30,8 +30,6 @@ public class Search implements Serializable {
     @NotBlank(message = "Query cannot be blank you madman")
     @Size(min = 15, message = "Query is too short !")
     public String query;
-    
-    @NotNull
     public String ucnf;
 
     public Date timestamp;
@@ -49,7 +47,7 @@ public class Search implements Serializable {
 
     public void setJobUUID(String uuid) {
         this.job_uuid = uuid;
-        this.result_uuid = null; // ajouter???
+        this.result_uuid= null; // ajouter???
     }
 
     private String result_uuid;
@@ -62,7 +60,7 @@ public class Search implements Serializable {
     }
 
     public void setResultUUID(String uuid) {
-        this.result_uuid = uuid;
+        this.result_uuid= uuid;
         this.job_uuid = null; 
     }
 }

@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
+
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.utils.QueryUtils;
 
@@ -16,7 +18,7 @@ public class ResultService {
     EntityManager em;
 
     @Inject
-    Logger LOG;
+    Logger logger;
 
     @Inject
     QueryUtils qu;
@@ -27,7 +29,7 @@ public class ResultService {
     }
 
     @Transactional
-    public Result getResult(String result_uuid) {
-        return em.find(Result.class, result_uuid);
+    public Optional<Result> getResult(String result_uuid) {
+        return Optional.of(em.find(Result.class, result_uuid));
     }
 }

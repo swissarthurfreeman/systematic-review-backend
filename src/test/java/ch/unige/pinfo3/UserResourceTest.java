@@ -18,13 +18,13 @@ import static org.hamcrest.CoreMatchers.*;
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserResourceTest{
+class UserResourceTest {
 
     InputStream testUser = getClass().getClassLoader().getResourceAsStream("testUser.json");
 
     @Test
     @Order(1)
-    public void shouldGetAllUsers() {
+    void shouldGetAllUsers() {
         given()
             .when()
             .get("/users")
@@ -38,7 +38,7 @@ public class UserResourceTest{
     @Test
     @Order(2)
     //verifie le nb d'attributs pour un utilisateur, et les attributs pour un utilisateur test
-    public void shouldGetUserById(){
+    void shouldGetUserById(){
         given()
                 .when()
                 .get("/users/c044a099-e489-43f8-9499-c04a371dbb62")
@@ -55,7 +55,7 @@ public class UserResourceTest{
 
     @Test
     @Order(3)
-    public void shouldDeleteUserById(){
+    void shouldDeleteUserById(){
         given()
                 .when()
                 .delete("/users/c044a099-e489-43f8-9499-c04a371dbb62")
@@ -82,7 +82,7 @@ public class UserResourceTest{
 
     @Test
     @Order(4)
-    public void shouldPostUser(){
+    void shouldPostUser(){
         given()
                 .contentType(ContentType.JSON)
                 .body(testUser)
@@ -118,7 +118,7 @@ public class UserResourceTest{
     @Test
     @Order(5)
     // test si tous les emails sont valides
-    public void testEmails(){
+    void testEmails(){
 
         String[] emails = new String[]{};
 

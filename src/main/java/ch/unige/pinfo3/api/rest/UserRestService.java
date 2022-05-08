@@ -7,7 +7,7 @@
  * /users/:id/searches POST, GET
  * /users/:id/searches/:id GET
  * /users/:id/jobs GET
- * 
+ * TODO comment interface thoroughly
  */
 
 package ch.unige.pinfo3.api.rest;
@@ -34,6 +34,8 @@ import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.model.User;
 import ch.unige.pinfo3.domain.service.SearchService;
 import ch.unige.pinfo3.domain.service.UserService;
+import ch.unige.pinfo3.utils.ErrorReport;
+import ch.unige.pinfo3.utils.VALID_UUID;
 
 
 /**
@@ -51,7 +53,7 @@ public class UserRestService {
     SearchService searchService;
 
     @Inject
-    Logger LOG;
+    Logger logger;
 
     @GET // /users
     @Transactional
@@ -69,7 +71,7 @@ public class UserRestService {
         if(usr == null) {
             var err = new ErrorReport();
             err.errors.add(
-                new Error(
+                new ErrorReport.Error(
                     "User with that uuid does not exist",
                 "Try a different uuid", 
                     Response.Status.NOT_FOUND
@@ -90,7 +92,7 @@ public class UserRestService {
         try {
             updated_user = userService.update(user);
         } catch(Exception e) {
-            var err = new Error(
+            var err = new ErrorReport.Error(
                 "Username or email being updated to already exists",
                 "Try a different username or email", 
                 Response.Status.CONFLICT
@@ -108,10 +110,10 @@ public class UserRestService {
         try {
             created_user = userService.create(user);
         } catch(Exception e) {
-            LOG.error(e.getMessage());
+            logger.error(e.getMessage());
             var err = new ErrorReport();
             err.errors.add(
-                new Error(
+                new ErrorReport.Error(
                     "Username or email already exists",
                   "Try a different username or email", 
                     Response.Status.CONFLICT

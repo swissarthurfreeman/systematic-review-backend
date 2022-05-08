@@ -21,6 +21,33 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "username": "",
-    "email":"bullshit@co.uk"
+    "uuid": "{{test_uuid}}",
+    "username": "brody",
+    "email":"brody@co.uk"
 }
+
+###
+POST {{host}}/users/{{test_uuid}}/searches
+Content-Type: application/json
+Accept: application/json
+
+{
+    "user_uuid": "{{test_uuid}}",
+    "query": "HIV OR NOT WUHAN"
+}
+
+###
+GET {{host}}/users/{{test_uuid}}/searches
+Content-Type: application/json
+Accept: application/json
+
+###
+GET {{host}}/users/{{test_uuid}}/searches
+Content-Type: application/json
+Accept: application/json
+
+@result_uuid=b17dd9ad-58d5-4a91-9aa6-4e364e351582
+###
+GET {{host}}/results/{{result_uuid}}/articles
+Content-Type: application/json
+Accept: application/json

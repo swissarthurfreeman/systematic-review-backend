@@ -25,17 +25,16 @@ Avoir une comm entre Robert et Backend via Kafka
 All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
 All endpoints will only be accessible if the Oauth2 token is valid, otherwise 403 Forbidden error will be sent back.
 
-| Endpoints             | Allowed Verbs                  | 
-|-----------------------|--------------------------------|  
-| /users                | GET, POST                      |
-| /users/:id            | GET, PUT                       |
-| /users/:id/jobs       | GET                            |   
-| /users/:id/searches   | GET                            |    
-| /searches             | GET                            |    
-| /results              | GET                            |
-| /results/:id          | GET                            |
-| /results/:id/articles | GET                            |
-| /estimate/            | GET                            |
+| Endpoints             | Allowed Verbs                  | Implemented |
+|-----------------------|--------------------------------|-------------|
+| /users                | GET, POST                      | yes         |
+| /users/:id            | GET, PUT                       | yes         |
+| /users/:id/jobs       | GET                            | yes         |
+| /users/:id/searches   | GET, POST                      | yes         |
+| /results              | GET                            | yes         |
+| /results/:id          | GET                            | yes         |
+| /results/:id/articles | GET                            | yes         |
+| /estimate/            | GET                            | no          |
 
 | Verb | URL                     | Body                                              | Return code | Description                                                                                                                  
 |------|-------------------------|---------------------------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------|

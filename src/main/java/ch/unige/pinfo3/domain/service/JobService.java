@@ -31,7 +31,7 @@ public class JobService {
     Scheduler scheduler;
 
     @Inject
-    Logger LOG;
+    Logger logger;
 
     @Inject
     QueryUtils qu;
@@ -44,7 +44,7 @@ public class JobService {
         List<Job> result = qu.select(Job.class, "ucnf", ucnf, em);
 
         if(result.size() == 1) { 
-            LOG.info("Job with that UCNF already exists, returning job_uuid...");
+            logger.info("Job with that UCNF already exists, returning job_uuid...");
             return result.get(0).uuid;
         }
         
@@ -71,7 +71,7 @@ public class JobService {
         try {
             scheduler.scheduleJob(job_info, trigger);
         } catch(SchedulerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return commit_job.getUUID();

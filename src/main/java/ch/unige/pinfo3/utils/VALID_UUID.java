@@ -1,4 +1,4 @@
-package ch.unige.pinfo3.api.rest;
+package ch.unige.pinfo3.utils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
