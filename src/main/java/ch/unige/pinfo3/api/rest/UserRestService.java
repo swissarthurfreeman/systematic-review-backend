@@ -67,7 +67,7 @@ public class UserRestService {
     }
     
     @GET // /users/:id
-    @Path("{uuid}")
+    @Path("{user_uuid}")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("user_uuid") @VALID_UUID String user_uuid) {

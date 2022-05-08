@@ -27,6 +27,11 @@ Accept: application/json
 }
 
 ###
+GET {{host}}/users/{{test_uuid}}
+Content-Type: application/json
+Accept: application/json
+
+###
 POST {{host}}/users/{{test_uuid}}/searches
 Content-Type: application/json
 Accept: application/json
