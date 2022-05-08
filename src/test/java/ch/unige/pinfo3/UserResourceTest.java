@@ -1,8 +1,10 @@
 package ch.unige.pinfo3;
 
 import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.model.User;
 import ch.unige.pinfo3.domain.service.JobService;
+import ch.unige.pinfo3.domain.service.SearchService;
 import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -411,32 +413,28 @@ class UserResourceTest{
                 .statusCode(is(400));
     }
 
-    //tests sur les jobs
 
-    @Inject
-    EntityManager em;
-
+    // Test endpoint POST /user/:id/searches
     @Test
     @Order(18)
-    @Transactional
-    void getJob(){
-        Job job = getRandomJob();
-        em.persist(job);
-
-        String jobId = JobService.submit("hiv AND malaria");
+    void postSearch(){
+        Log.info("Test endpoint POST /user/:id/searches");
+        //Search search = SearchService.getRandomSearch(testUsers[testUsers.length-1].uuid, null, UUID.randomUUID().toString());
+        //SearchService.create(search);
+        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+        Log.info(searchJson);
 
         given()
                 .when()
-                .get("/jobs/"+jobId)
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
                 .then()
                 .assertThat()
-                .statusCode(is(200))
-                .and()
-                .assertThat()
-                .body("size()", equalTo(1));
+                .statusCode(is(200));
 
     }
-
 
 
 
