@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 
+import com.github.javafaker.Faker;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import org.jboss.logging.Logger;
@@ -95,5 +96,14 @@ public class UserService {
             return Optional.of(err);
         }
         return Optional.empty();
+    }
+
+    public static User getRandomUser(){
+        Faker fk= new Faker();
+        User user = new User();
+        user.uuid = UUID.randomUUID().toString();
+        user.username = fk.name().username();
+        user.email = fk.internet().emailAddress();
+        return user;
     }
 }
