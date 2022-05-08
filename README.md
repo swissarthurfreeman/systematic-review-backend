@@ -79,6 +79,22 @@ All endpoints will only be accessible if the Oauth2 token is valid, otherwise 40
 | uuid       | String                        | Unique identifier of the result.                          |
 | ucnf       | string                        | the ucnf job query.                                       |
 
+#### ErrorReport Object
+
+ErrorReports are generated when validation fails or requests to inexistant resources are made. 
+
+| Field Name | Type                          | Description                                               |
+|------------|-------------------------------|-----------------------------------------------------------|
+| help       | String                        | A help string, for now just a jest.|
+| errors     | Error\[\]                     | An array of [Error Object](#error-object).|
+
+#### Error Object
+| Field Name | Type                          | Description                                               |
+|------------|-------------------------------|-----------------------------------------------------------|
+| cause      | String                        | The error cause. |
+| message    | String                        | a message detailing error and potential fixes.|
+| status     | String                        | The http error associated with this error. |
+
 
 #### Article Object
 | Field Name | Type                          | Description                                                        |
