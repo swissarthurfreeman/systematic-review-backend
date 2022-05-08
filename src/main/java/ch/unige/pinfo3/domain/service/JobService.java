@@ -5,8 +5,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.DynamicTest.stream;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
 
@@ -48,11 +47,17 @@ public class JobService {
     @Transactional
     public String submit(String ucnf) {        
         // check database if job with the provided ucnf exists
-        List<Job> result = qu.select(Job.class, "ucnf", ucnf, em);
-
-        if(result.size() == 1) { 
+        List<Result> results = qu.select(Result.class, "ucnf", ucnf, em);
+        
+        if(!results.isEmpty()) { 
+            logger.info("Result with that UCNF already exists, returning result_uuid...");
+            return results.get(0).uuid;
+        }
+        
+        List<Job> jobs = qu.select(Job.class, "ucnf", ucnf, em);
+        if(!jobs.isEmpty()) { 
             logger.info("Job with that UCNF already exists, returning job_uuid...");
-            return result.get(0).uuid;
+            return jobs.get(0).uuid;
         }
 
         // persist job in database

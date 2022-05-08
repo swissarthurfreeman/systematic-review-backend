@@ -22,7 +22,7 @@ Accept: application/json
 
 {
     "uuid": "{{test_uuid}}",
-    "username": "eminem",
+    "username": "aaaaaaaaaa",
     "email":"eminem@brody.co.uk"
 }
 

@@ -57,10 +57,10 @@ public class SearchService {
         List<Job> jobs = qu.select(Job.class, "ucnf", search.ucnf, em);
         List<Result> results = qu.select(Result.class, "ucnf", search.ucnf, em);
         
-        if(jobs.size() == 1) {
+        if(!jobs.isEmpty()) {
             search.setJobUUID(jobs.get(0).uuid);
             search.setResultUUID(null);
-        } else if(results.size() == 1) {
+        } else if(!results.isEmpty()) {
                 search.setResultUUID(results.get(0).uuid);
                 search.setJobUUID(null);
         } else {

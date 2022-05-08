@@ -48,7 +48,6 @@ public class Search implements Serializable {
 
     public void setJobUUID(String uuid) {
         this.job_uuid = uuid;
-        this.result_uuid= null; // ajouter???
     }
 
     private String result_uuid;
@@ -62,6 +61,5 @@ public class Search implements Serializable {
 
     public void setResultUUID(String uuid) {
         this.result_uuid= uuid;
-        this.job_uuid = null; 
     }
 }
