@@ -56,6 +56,11 @@ GET {{host}}/users/{{test_uuid}}/searches
 Content-Type: application/json
 Accept: application/json
 
+###
+GET {{host}}/users/{{test_uuid}}/searches/{{test_uuid}}
+Content-Type: application/json
+Accept: application/json
+
 @job_uuid = 26d0d2e7-2104-4780-afb5-cb7d63e38819
 
 ###

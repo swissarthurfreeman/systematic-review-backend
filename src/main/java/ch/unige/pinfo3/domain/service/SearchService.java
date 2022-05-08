@@ -14,6 +14,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
 
 import org.jboss.logging.Logger;
 
@@ -107,8 +108,19 @@ public class SearchService {
         return qu.select(Search.class, "user_uuid", user_uuid, "search_uuid", search_uuid, em).get(0);
     }
 
-    public Optional<Error> checkExistence(String search_uuid) {
-        //return qu.select(Search.class, "search_uuid", search_uuid, em);
+    public Optional<ErrorReport> checkExistence(String search_uuid) {
+        var search = Optional.ofNullable(em.find(Search.class, search_uuid));
+        if(search.isEmpty()) {
+            var err = new ErrorReport();
+            err.errors.add(
+                new ErrorReport.Error(
+                    "invalid search uuid", 
+                    "uuid provided does not refer to a search, please try another", 
+                    Response.Status.NOT_FOUND
+                )
+            );
+            return Optional.of(err);
+        }
         return Optional.empty();
     }
 }
