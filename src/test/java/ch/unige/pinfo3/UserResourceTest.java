@@ -1,5 +1,6 @@
 package ch.unige.pinfo3;
 
+import ch.unige.pinfo3.domain.model.User;
 import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.io.InputStream;
 
+import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
@@ -22,9 +24,43 @@ public class UserResourceTest{
 
     InputStream testUser = getClass().getClassLoader().getResourceAsStream("testUser.json");
 
+    // verifier les type de UUID
+    // verifier ce qui se pase si je donne, si je donne pas, sie je donne la merde, etc...
+    // verifier si je donne un UUID existant
+
+    static User[] testUsers = new User[10];
+
+    @BeforeAll
+    static void createTestUsers(){
+        for(int i = 0; i < testUsers.length; i++){
+            testUsers[i] = getRandomUser();
+        }
+    }
+
     @Test
     @Order(1)
-    public void shouldGetAllUsers() {
+    public void postUsers(){
+        Log.info("Post verification");
+        Log.info("Populating DB with users");
+        for(int i = 0; i < testUsers.length; i++){
+            User user = testUsers[i];
+            String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}", user.username, user.email);
+            given()
+                    .when()
+                    .contentType(ContentType.JSON)
+                    .body(userJson)
+                    .when()
+                    .post("/users")
+                    .then()
+                    .assertThat()
+                    .statusCode(is(200)); // verifie si le post est fait avec succes
+        }
+    }
+
+    @Test
+    @Order(2)
+    public void getAllUsers() {
+        Log.info("User persistence in db verification");
         given()
             .when()
             .get("/users")
@@ -32,9 +68,39 @@ public class UserResourceTest{
             .assertThat()
             .statusCode(is(200))
             .and()
-            .body("size()", equalTo(30)); // 30 user in the DB on startup
+            .body("size()", equalTo(10)); // verifie si les 10 users ont bien été persisté dans la bd
     }
 
+    @Test
+    @Order(3)
+    public void verifyUser(){
+        Log.info("User data verification");
+        given()
+                .when()
+                .get("/users/"+testUsers[3].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .body("size()", equalTo(3)) // il y a 3 attributs pour un utilisateur
+                .and()
+                .body("username", equalTo(testUsers[3].username))
+                .and()
+                .body("email", equalTo(testUsers[3].email));
+    }
+
+    @Test
+    @Order(4)
+    // test si tous les emails sont valides
+    public void testEmails(){
+        Log.info("User email verification");
+        String[] emails = new String[]{};
+        emails = get("/users").body().jsonPath().getObject("email",String[].class );
+        for(String e: emails){
+            Assertions.assertTrue(EmailValidator.getInstance().isValid(e));
+        }
+    }
+
+    /*
     @Test
     @Order(2)
     //verifie le nb d'attributs pour un utilisateur, et les attributs pour un utilisateur test
@@ -53,6 +119,9 @@ public class UserResourceTest{
                 .body("email", equalTo("test@lazar.com"));
     }
 
+     */
+
+    /*
     @Test
     @Order(3)
     public void shouldDeleteUserById(){
@@ -62,7 +131,7 @@ public class UserResourceTest{
                 .then()
                 .assertThat()
                 .statusCode(is(405)); // un utilisateur ne peut pas être effacé
-        /*
+
         given()
                 .when()
                 .delete("/users/c044a099-e489-43f8-9499-c04a371dbb62")
@@ -76,10 +145,11 @@ public class UserResourceTest{
                 .assertThat()
                 .statusCode(is(201));
 
-         */
+
     }
+    */
 
-
+    /*
     @Test
     @Order(4)
     public void shouldPostUser(){
@@ -95,15 +165,15 @@ public class UserResourceTest{
         System.out.println("-----------------------------------");
         Log.info("Log test!");
 
-        /*
-        Pas très utile pour le moment
+
+        //Pas très utile pour le moment
         given()
                 .when()
                 .get("/users/1ebf2120-40fb-462c-ad90-b6786b28c305")
                 .then()
                 .assertThat()
                 .statusCode(is(204)); // pourquoi il ne trouve pas????
-         */
+
 
         given()
                 .when()
@@ -115,20 +185,8 @@ public class UserResourceTest{
                 .body("size()", equalTo(31)); // verifie qu'il y a bien 31 users dans la bd
     }
 
-    @Test
-    @Order(5)
-    // test si tous les emails sont valides
-    public void testEmails(){
 
-        String[] emails = new String[]{};
+     */
 
-        emails = get("/users").body().jsonPath().getObject("email",String[].class );
-
-        //System.out.println(emails[1]);
-
-        for(String e: emails){
-            Assertions.assertTrue(EmailValidator.getInstance().isValid(e));
-        }
-    }
 
 }
