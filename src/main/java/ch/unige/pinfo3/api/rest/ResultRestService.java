@@ -1,6 +1,5 @@
 package ch.unige.pinfo3.api.rest;
 
-import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.service.ArticleService;
 import ch.unige.pinfo3.domain.service.ResultService;
@@ -37,25 +36,35 @@ public class ResultRestService {
     }
 
     @GET // /results/:id
-    @Path("{uuid}")
+    @Path("{result_uuid}")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getResult(@PathParam("uuid") @VALID_UUID String result_uuid) {
+    public Response getResult(@PathParam("result_uuid") @VALID_UUID String result_uuid) {
         var res = resultService.getResult(result_uuid);
-        if(!res.isPresent())
-            Response.status(Response.Status.NOT_FOUND)
-            .entity(
-                new ErrorReport().errors.add(
-                    new ErrorReport.Error("A Result with result_uuid does not exist", "Please provide a valid result_uuid", Response.Status.NOT_FOUND)
-                ));
-        return Response.ok(res.get()).build();
+        if(!res.isPresent()) {
+            var err = new ErrorReport();
+            err.errors
+                .add(
+                    new ErrorReport.Error(
+                        "A Result with result_uuid does not exist", 
+                        "Please provide a valid result_uuid", 
+                        Response.Status.NOT_FOUND)
+                );
+            return Response.status(Response.Status.NOT_FOUND).entity(err).build();
+        } else {
+            return Response.ok(res.get()).build();
+        }
     }
 
     @GET // /results/:id/articles
-    @Path("{uuid}/articles")
+    @Path("{result_uuid}/articles")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Article> getResultArticles(@PathParam("uuid") @VALID_UUID String result_uuid) {
-        return ass.getArticlesOf(result_uuid);
+    public Response getResultArticles(@PathParam("result_uuid") @VALID_UUID String result_uuid) {
+        var err = resultService.checkExistence(result_uuid);
+        if(err.isPresent())
+            return Response.status(Response.Status.NOT_FOUND).entity(err.get()).build();
+
+        return Response.ok(ass.getArticlesOf(result_uuid)).build();
     }
 }

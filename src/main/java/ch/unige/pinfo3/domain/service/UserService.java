@@ -76,19 +76,19 @@ public class UserService {
     }
 
     @Transactional
-    public User find(String uuid) {
-        return em.find(User.class, uuid);
+    public Optional<User> find(String uuid) {
+        return Optional.ofNullable(em.find(User.class, uuid));
     }
 
     @Transactional
     public Optional<ErrorReport> checkExistence(String user_uuid) {
-        if(find(user_uuid) == null) {
+        if(find(user_uuid).isEmpty()) {
             var err = new ErrorReport();
             err.errors.add(
                 new ErrorReport.Error(
                     "invalid user_uuid",
                     "The uuid provided does not refer to an existing user", 
-                    Response.Status.BAD_REQUEST
+                    Response.Status.NOT_FOUND
                 )
             );
             return Optional.of(err);

@@ -6,7 +6,9 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import javax.ws.rs.core.Response;
 
+import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.utils.QueryUtils;
 
@@ -30,6 +32,22 @@ public class ResultService {
 
     @Transactional
     public Optional<Result> getResult(String result_uuid) {
-        return Optional.of(em.find(Result.class, result_uuid));
+        return Optional.ofNullable(em.find(Result.class, result_uuid));
+    }
+
+    @Transactional
+    public Optional<ErrorReport> checkExistence(String result_uuid) {
+        var res = Optional.ofNullable(em.find(Result.class, result_uuid));
+        if(res.isPresent())
+            return Optional.empty();
+        
+        var err = new ErrorReport();
+        err.errors.add(
+            new ErrorReport.Error(
+                "Invalid result uuid",
+                "A result with the specified uuid does not exist, try another one",
+                Response.Status.NOT_FOUND
+        ));
+        return Optional.of(err);
     }
 }

@@ -71,8 +71,8 @@ public class UserRestService {
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("user_uuid") @VALID_UUID String user_uuid) {
-        User usr = userService.find(user_uuid);
-        if(usr == null) {
+        var usr = userService.find(user_uuid);
+        if(usr.isEmpty()) {
             var err = new ErrorReport();
             err.errors.add(
                 new ErrorReport.Error(
@@ -83,7 +83,7 @@ public class UserRestService {
             );
             return Response.status(Response.Status.NOT_FOUND).entity(err).build();
         }
-        return Response.ok(usr).build();
+        return Response.ok(usr.get()).build();
     }
 
     @PUT // /users/:id
@@ -129,23 +129,23 @@ public class UserRestService {
     }
 
     @GET
-    @Path("{uuid}/searches")
+    @Path("{user_uuid}/searches")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserSearches(@PathParam("uuid") @VALID_UUID String user_uuid) {
+    public Response getUserSearches(@PathParam("user_uuid") @VALID_UUID String user_uuid) {
         var err = userService.checkExistence(user_uuid);
         if(err.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(err.get()).build();
         
         List<Search> searches = searchService.getSearchesOf(user_uuid);
         return Response.ok(searches).build();
     }
 
     @POST
-    @Path("{uuid}/searches")
+    @Path("{user_uuid}/searches")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postUserSearch(@PathParam("uuid") @VALID_UUID String user_uuid, @Valid Search search) {
+    public Response postUserSearch(@PathParam("user_uuid") @VALID_UUID String user_uuid, @Valid Search search) {
         
         var err = userService.checkExistence(user_uuid);
         if(err.isPresent())
@@ -177,6 +177,10 @@ public class UserRestService {
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserJobs(@PathParam("user_uuid") String user_uuid) {
+        var err = userService.checkExistence(user_uuid);
+        if(err.isPresent())
+            return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
+            
         return Response.ok(jobService.getJobsOfUser(user_uuid)).build();
     }
 }
