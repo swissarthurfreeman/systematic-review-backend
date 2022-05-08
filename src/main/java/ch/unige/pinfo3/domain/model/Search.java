@@ -23,7 +23,6 @@ public class Search implements Serializable {
     @Id
     public String uuid;
     
-    @NotNull
     public String user_uuid;
     
     @NotNull

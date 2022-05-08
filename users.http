@@ -22,8 +22,8 @@ Accept: application/json
 
 {
     "uuid": "{{test_uuid}}",
-    "username": "brody",
-    "email":"brody@co.uk"
+    "username": "eminem",
+    "email":"eminem@brody.co.uk"
 }
 
 ###
@@ -32,8 +32,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "user_uuid": "{{test_uuid}}",
-    "query": "HIV OR NOT WUHAN"
+    "query": "sdlkhgsdio$è$$$¨éé"
 }
 
 ###
@@ -46,7 +45,7 @@ GET {{host}}/users/{{test_uuid}}/searches
 Content-Type: application/json
 Accept: application/json
 
-@result_uuid=b17dd9ad-58d5-4a91-9aa6-4e364e351582
+@result_uuid=616ade11-5ad1-4ce6-8e0a-97bb76f17693
 ###
 GET {{host}}/results/{{result_uuid}}/articles
 Content-Type: application/json
