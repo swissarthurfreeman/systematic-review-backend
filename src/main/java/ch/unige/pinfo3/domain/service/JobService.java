@@ -16,6 +16,7 @@ import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
 
+import com.github.javafaker.Faker;
 import org.jboss.logging.Logger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -101,5 +102,16 @@ public class JobService {
     @Transactional
     public Optional<Job> getJob(String job_uuid) {
         return Optional.ofNullable(em.find(Job.class, job_uuid));
+    }
+
+    public Job getRandomJob(){
+        String[] status = {"queued"};
+        Job job = new Job();
+        Faker fk = new Faker();
+        job.uuid = UUID.randomUUID().toString();
+        job.ucnf = fk.expression("#{lorem.word} AND #{lorem.word}");
+        job.timestamp = fk.date().birthday(1,3);
+        job.status = status[(int) (Math.random() * status.length)];
+        return job;
     }
 }
