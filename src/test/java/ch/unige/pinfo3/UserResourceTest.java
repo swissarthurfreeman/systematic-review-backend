@@ -36,7 +36,7 @@ class UserResourceTest{
 
     @BeforeAll
     static void logStatus(){
-        Log.info("Testing /user endpoint");
+        Log.info("Testing /users endpoint");
     }
 
     @BeforeAll
@@ -89,15 +89,15 @@ class UserResourceTest{
             .assertThat()
             .statusCode(is(200))
             .and()
-            .body("size()", equalTo(10)); // verifie si les 10 users ont bien été persisté dans la bd
+            .body("size()", equalTo(testUsers.length)); // verifie si les 10 users ont bien été persisté dans la bd
         Log.info((get("/users").body()).toString());
     }
 
-    // Test endpoint GET /user/id with existing user
+    // Test endpoint GET /users/id with existing user
     @Test
     @Order(3)
     void verifyUser(){
-        Log.info("Test endpoint GET /user/id with existing user");
+        Log.info("Test endpoint GET /users/id with existing user");
         given()
                 .when()
                 .get("/users/"+testUsers[testUsers.length-1].uuid)
@@ -111,11 +111,11 @@ class UserResourceTest{
                 .body("email", equalTo(testUsers[testUsers.length-1].email));
     }
 
-    //Test endpoint GET /user/id with not existing user
+    //Test endpoint GET /users/id with not existing user
     @Test
     @Order(4)
     void getNotExistingUser(){
-        Log.info("Test endpoint GET /user/id with not existing user");
+        Log.info("Test endpoint GET /users/id with not existing user");
         given()
                 .when()
                 .get("/users/0")
@@ -124,12 +124,12 @@ class UserResourceTest{
                 .statusCode(is(400));
     }
 
-    //Test endpoint POST /user with already existing username
+    //Test endpoint POST /users with already existing username
     @Test
     @Order(5)
     void postExistingUserName(){
         Faker fk = new Faker();
-        Log.info("Test endpoint POST /user with already existing username");
+        Log.info("Test endpoint POST /users with already existing username");
         String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}",testUsers[1].username, fk.internet().emailAddress());
         given()
                 .when()
@@ -142,12 +142,12 @@ class UserResourceTest{
                 .statusCode(is(409));
     }
 
-    //Test endpoint POST /user with already existing email
+    //Test endpoint POST /users with already existing email
     @Test
     @Order(6)
     void postExistingUserEmail(){
         Faker fk = new Faker();
-        Log.info("Test endpoint POST /user with already existing email");
+        Log.info("Test endpoint POST /users with already existing email");
         String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}",fk.name().username(), testUsers[1].email);
         given()
                 .when()
@@ -160,12 +160,12 @@ class UserResourceTest{
                 .statusCode(is(409));
     }
 
-    //Test endpoint POST /user with already existing uuid
+    //Test endpoint POST /users with already existing uuid
     @Test
     @Order(7)
     void postExistingUserUUID(){
         Faker fk = new Faker();
-        Log.info("Test endpoint POST /user with already existing uuid");
+        Log.info("Test endpoint POST /users with already existing uuid");
         String userJson = String.format("{\"uuid\": \"%s\", \"username\": \"%s\", \"email\": \"%s\"}", testUsers[testUsers.length-1].uuid ,fk.name().username(), fk.internet().emailAddress());
         given()
                 .when()
@@ -178,12 +178,12 @@ class UserResourceTest{
                 .statusCode(is(409));
     }
 
-    // Test endpoint POST /user with invalid username
+    // Test endpoint POST /users with invalid username
     @Test
     @Order(8)
     void postInvalidUserName(){
         Faker fk = new Faker();
-        Log.info("Test endpoint POST /user with invalid username");
+        Log.info("Test endpoint POST /users with invalid username");
         String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}","feédàep?fe!|wckowcm", fk.internet().emailAddress());
         given()
                 .when()
@@ -196,12 +196,12 @@ class UserResourceTest{
                 .statusCode(is(400));
     }
 
-    // Test endpoint POST /user with invalid email
+    // Test endpoint POST /users with invalid email
     @Test
     @Order(9)
     void postInvalidUserEmail(){
         Faker fk = new Faker();
-        Log.info("Test endpoint POST /user with invalid email");
+        Log.info("Test endpoint POST /users with invalid email");
         String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}",fk.name().username(), "test[at]test.com");
         given()
                 .when()
@@ -214,12 +214,12 @@ class UserResourceTest{
                 .statusCode(is(400));
     }
 
-    // Test endpoint POST /user with invalid uuid
+    // Test endpoint POST /users with invalid uuid
     @Test
     @Order(10)
     void postInvalidUserUUID(){
         Faker fk = new Faker();
-        Log.info("Test endpoint POST /user with invalid uuid");
+        Log.info("Test endpoint POST /users with invalid uuid");
         String userJson = String.format("{\"uuid\": \"%s\", \"username\": \"%s\", \"email\": \"%s\"}", "0123" ,fk.name().username(), fk.internet().emailAddress());
         given()
                 .when()
@@ -227,6 +227,176 @@ class UserResourceTest{
                 .body(userJson)
                 .when()
                 .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint PUT /users with new user
+    @Test
+    @Order(11)
+    void putNewUser(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint PUT /users with new user");
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" ,fk.name().username(), fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+ UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+        given()
+                .when()
+                .get("/users")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .assertThat()
+                .body("size()", equalTo(testUsers.length+1));
+    }
+
+    //Test endpoint PUT /users with existing user, changing the username
+    @Test
+    @Order(12)
+    void putUserName(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint PUT /users with existing user, changing the username");
+        String newUsername = fk.name().username();
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" , newUsername, testUsers[testUsers.length-1].email);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .assertThat()
+                .body("username", equalTo(newUsername))
+                .and()
+                .assertThat()
+                .body("email", equalTo(testUsers[testUsers.length-1].email));
+
+        // update in testUsers table
+        testUsers[testUsers.length-1].username = newUsername;
+    }
+
+    //Test endpoint PUT /users with existing user, changing the email
+    @Test
+    @Order(13)
+    void putUserEmail(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint PUT /users with existing user, changing the email");
+        String newEmail = fk.internet().emailAddress();
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" , testUsers[testUsers.length-1].username, newEmail);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .assertThat()
+                .body("username", equalTo(testUsers[testUsers.length-1].username))
+                .and()
+                .assertThat()
+                .body("email", equalTo(newEmail));
+
+        // update in testUsers table
+        testUsers[testUsers.length-1].email = newEmail;
+    }
+
+    // Test endpoint PUT /users with new user, with invalid username
+    @Test
+    @Order(14)
+    void putNewUserInvalidUsername(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint PUT /users with new user, with invalid username");
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" ,"kdé$éd£aàs_dàsa" , fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint PUT /users with new user, with invalid email
+    @Test
+    @Order(15)
+    void putNewUserInvalidEmail(){
+        Log.info("Test endpoint PUT /users with new user, with invalid email");
+        Faker fk = new Faker();
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" ,fk.name().username() , "dàpàkoèchU(&√@gmail.com");
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint PUT /users with new user, with invalid email
+    @Test
+    @Order(16)
+    void putNewUserInvalidUUID(){
+        Log.info("Test endpoint PUT /users with new user, with invalid email");
+        Faker fk = new Faker();
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" ,fk.name().username() , fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/12¬34$ªœ")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint PUT /users with new user, with invalid body
+    @Test
+    @Order(17)
+    void putNewUserInvalidBody(){
+        Log.info("Test endpoint PUT /users with new user, with invalid body");
+        Faker fk = new Faker();
+        String userJson = String.format("{\"username\": \"%s\", \"e-mail\": \"%s\"}" ,fk.name().username() , fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/12¬34$ªœ")
                 .then()
                 .assertThat()
                 .statusCode(is(400));
