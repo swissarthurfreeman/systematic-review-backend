@@ -164,6 +164,9 @@ public class UserRestService {
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserSearch(@PathParam("user_uuid") String user_uuid, @PathParam("search_uuid") String search_uuid) {
+        var userErr = userService.checkExistence(user_uuid);
+        if(userErr.isPresent())
+            return Response.status(Response.Status.BAD_REQUEST).entity(userErr.get()).build();
         
         var err = searchService.checkExistence(search_uuid);
         if(err.isPresent())
@@ -180,7 +183,7 @@ public class UserRestService {
         var err = userService.checkExistence(user_uuid);
         if(err.isPresent())
             return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
-            
+
         return Response.ok(jobService.getJobsOfUser(user_uuid)).build();
     }
 }
