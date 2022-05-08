@@ -396,7 +396,7 @@ class UserResourceTest{
                 .contentType(ContentType.JSON)
                 .body(userJson)
                 .when()
-                .put("/users/12¬34$ªœ")
+                .put("/users/"+UUID.randomUUID().toString())
                 .then()
                 .assertThat()
                 .statusCode(is(400));
