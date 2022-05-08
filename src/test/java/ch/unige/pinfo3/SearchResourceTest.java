@@ -14,13 +14,13 @@ import java.io.InputStream;
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SearchResourceTest{
+class SearchResourceTest{
 
     InputStream testSearch = getClass().getClassLoader().getResourceAsStream("testSearch.json");
 
     @Test
     @Order(1)
-    public void shouldGetAllSearches() {
+    void shouldGetAllSearches() {
         given()
                 .when()
                 .get("/searches")
@@ -33,7 +33,7 @@ public class SearchResourceTest{
 
     @Test
     @Order(2)
-    public void shouldGetAllSearchesForAUser() {
+    void shouldGetAllSearchesForAUser() {
         given()
                 .when()
                 .get("/users/c044a099-e489-43f8-9499-c04a371dbb62/searches")
@@ -46,7 +46,7 @@ public class SearchResourceTest{
 
     @Test
     @Order(3)
-    public void shouldPostSearch(){
+    void shouldPostSearch(){
         given()
                 .contentType(ContentType.JSON)
                 .body(testSearch)
@@ -68,7 +68,7 @@ public class SearchResourceTest{
 
     @Test
     @Order(4)
-    public void testMutualExclusionJobResult(){
+    void testMutualExclusionJobResult(){
         // this test is wrong
         /*
         String[] jobs;
@@ -99,7 +99,7 @@ public class SearchResourceTest{
     @Test
     @Order(2)
     //verifie le nb d'attributs pour un search, et les attributs pour un search test
-    public void shouldGetSearchById(){
+    void shouldGetSearchById(){
         given()
                 .when()
                 .get("/users/c044a099-e489-43f8-9499-c04a371dbb62/searches?uuid=c044a099-e489-43f8-9499-c04a371dbb65")

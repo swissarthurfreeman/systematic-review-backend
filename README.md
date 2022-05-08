@@ -1,17 +1,5 @@
 # PInfo Back-End Project
 
-# TODO : 
-
-- have test dependencies in gradle to avoid filling final jar with shit
-- use @Before / @BeforeAll to initialise
-
-Autre option : 
-
-Backend envoie requete rest à Robert, robert à un moment donné fait un appel python sur le système avec baobab via ssh fuck knows.
-Avoir un webSocket Backend <-> UI
-Avoir une comm entre Robert et Backend via Kafka
-
-
 # Domain Model
 [Domain Model Diagram on nomnoml](https://nomnoml.com/image.svg?source=%23zoom%3A%201.0%0A%23edgeMargin%3A%2014%0A%23padding%3A%2015%0A%23edges%3A%20rounded%0A%23fontSize%3A%2016%0A%23arrowSize%3A%201%0A%23title%3A%20Researchado%20Domain%20Model%0A%0A%5BUser%7C%0A%20%20%20%20uuid%3A%20UUID%0A%20%20%20%20email%3A%20String%0A%20%20%20%20username%3A%20String%0A%5D%0A%5BSearch%7C%0A%20%20%20%20uuid%3A%20String%0A%20%20%20%20query%3A%20String%0A%20%20%20%20CNF_query%3A%20String%0A%5D%0A%5BJob%7C%0A%09uuid%3A%20UUID%0A%20%20%20%20status%3A%20String%0A%20%20%20%20estimate%3A%20String%0A%5D%0A%5BResult%7C%0A%20%20%20%20uuid%3A%20UUID%0A%20%20%20%20CNF_query%3A%20String%0A%09Articles%3A%20PDFS%5C%5B%5C%5D%0A%5D%0A%0A%5B%3Cdatabase%3E%20UserDatabase%5D--%5BUser%5D%0A%0A%0A%2F%2F%20CONVENTION%20%3A%20A%200..m-%3E%20B%20means%20A%20has%20knownledge%20of%200%20to%20m%20Bs.%0A%2F%2F%20CONVENTION%20%3A%20A-%3E0..n%20B%20means%20B%20is%20REFERENCED%20by%200..n%20As.%20B%20has%20no%20knowledge%20of%20A.%0A%2F%2F%20user%20has%200..n%20searches%0A%2F%2F%20a%20search%20is%20referenced%20by%201%20user%2C%20the%20search%20history%20of%20a%20user%20is%20private%0A%2F%2F%20therefore%20uniquely%20referenced%20by%20one%20user.%0A%5BUser%5D0.*-%3E1%5BSearch%5D%0A%0A%2F%2F%20A%20search%20can%20reference%200%20or%201%20jobs.%20Indeed%20if%20job%20was%20already%20%0A%2F%2F%20done%20before%20hand%2C%20it%27ll%20refer%20to%20a%20Result.%0A%2F%2F%20A%20job%20is%20referenced%20by%201..n%20searches.%20Indeed%2C%20multiple%20logically%0A%2F%2F%20equivalent%20searches%20will%20refer%20the%20same%20Job.%20%0A%5BSearch%5D0.1-%3E1.n%5BJob%5D%0A%0A%2F%2F%20If%20a%20user%20does%20a%20search%20that%20already%20exists%20with%20a%20job%20currently%0A%2F%2F%20running%2C%20we%20have%20to%20point%20towards%20the%20same%20job.%0A%5BJob%5D1.m%3C-0.n%5BUser%5D%0A%0A%2F%2F%20A%20search%20yields%20only%20ONE%20result%20or%20one%20job%2C%20their%20is%20mutual%20exclusion%0A%2F%2F%20here.%20The%20result%20is%20continually%20updated.%0A%2F%2F%20a%20single%20result%20can%20be%20refered%20by%20multiple%20searches%20since%20multiple%0A%2F%2F%20searches%20can%20be%20logically%20equivalent.%20%0A%5BResult%5D1.m%3C-0.1%5BSearch%5D%0A%0A%2F%2F%20A%20job%20is%20unique%20and%20based%20on%20the%20CNF%20form%20of%20the%20querie(s)%20referencing%20it.%0A%2F%2F%20Two%20logically%20equivalent%20searches%20yield%20a%20reference%20to%20the%20same%20Job%20object%20if%0A%2F%2F%20CNF%20search%20wasn%27t%20previously%20done.%0A%2F%2F%20A%20job%20is%20transient%20but%20a%20result%20is%20non-transient.%20%0A%2F%2F%20if%20the%20job%20is%20destroyed%20the%20result%20is%20not.%0A%5BJob%5Do-%3E0.1%5BResult%5D%0A%0A%2F%2F%20a%20result%20can%20be%20referenced%20by%20an%20infinite%20amount%20of%20users%2C%20since%20any%0A%2F%2F%20search%20created%20by%20a%20user%20which%20has%20a%20logical%20equivalent%20which%20was%20previously%0A%2F%2F%20done%20will%20yield%20a%20reference%20to%20the%20Result%20object.%0A%2F%2F%20a%20user%20has%20references%20to%200..n%20Results%2C%20each%20of%20which%20was%20yielded%20via%0A%2F%2F%20a%20search%20object.%20(There%20is%20no%20public%20catalog%20of%20searches%20in%20the%20requirements.)%20%0A%5BUser%5D0.*-%3E0.*%5BResult%5D%0A%0A%5BResult%5D--%5B%3Cdatabase%3E%20ResultDatabase%5D%0A%0A%5B%3Cdatabase%3E%20SearchDatabase%5D--%5BSearch%5D%0A%0A%0A%0A%0A%0A)
 
@@ -25,33 +13,33 @@ Avoir une comm entre Robert et Backend via Kafka
 All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
 All endpoints will only be accessible if the Oauth2 token is valid, otherwise 403 Forbidden error will be sent back.
 
-| Endpoints             | Allowed Verbs                  | 
-|-----------------------|--------------------------------|  
-| /users                | GET, POST                      |
-| /users/:id            | GET, PUT                       |
-| /users/:id/jobs       | GET                            |   
-| /users/:id/searches   | GET                            |    
-| /searches             | GET                            |    
-| /results              | GET                            |
-| /results/:id          | GET                            |
-| /results/:id/articles | GET                            |
-| /estimate/            | GET                            |
+| Endpoints             | Allowed Verbs                  | Implemented |
+|-----------------------|--------------------------------|-------------|
+| /users                | GET, POST                      | yes         |
+| /users/:id            | GET, PUT                       | yes         |
+| /users/:id/jobs       | GET                            | yes         |
+| /jobs/:id             | GET                            | yes         |
+| /users/:id/searches   | GET, POST                      | yes         |
+| /results              | GET                            | yes         |
+| /results/:id          | GET                            | yes         |
+| /results/:id/articles | GET                            | yes         |
+
+### Semantics
 
 | Verb | URL                     | Body                                              | Return code | Description                                                                                                                  
 |------|-------------------------|---------------------------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | GET  | /users                  | N/A                                               | 200         | Returns a list of [User object](#user-object) supports filtering. e.g. GET /users?email=john@doe.com&username=john.doe                     |
-| POST | /users                  | {"username": "John.Doe", "email": "john@doe.com"} | 201         | Creates a [User object](#user-object) and returns it.                                                                                      |
-| GET  | /users/:id              | N/A                                               | 200         | Returns a [User object](#user-object) with specified id.                                                                                   |
-| PUT  | /users/:id              | {"username": "John.Doe", "email": "john@doe.com"} | 201         | Updates [User Object](#user-object) with specified id.                                                                                     | 
-| GET  | /users/:id/jobs         | N/A                                               | 200         | Returns a list of [Job object](#job-object) that user is observing.                                                                        | 
-| GET  | /jobs/:id               | N/A                                               | 200         | Returns a [Job object](#job-object) specified by id.                                                                                       |
-| GET  | /users/:id/searches     | N/A                                               | 200         | Returns a list of [Search Object](#search-object). If job produced by search is done, will contain a [Result Object](result-object) id.    |
-| POST | /users/:id/searches     | {"query": "hiv OR malaria"}                       | 201         | Creates a [Search Object](#search-object) belonging to user.                                                                               |
-| GET  | /users/:id/searches/:id | N/A                                               | 200         | Returns a the list of [Search Object](#search-object) belonging to the user.                                                               |
-| GET  | /results                | N/A                                               | 200         | Returns a list of [Result Object](#result-object)                                                                                          |
-| GET  | /results/:id            | N/A                                               | 200         | Returns a [Result Object](#result-object)                                                                                                  |
-| GET  | /results/:id/articles   | N/A                                               | 200         | Returns a list of [Article Object](#article-object)                                                                                        |
-| GET  | /estimate               | N/A                                               | 200         | Returns an uint with a rough estimate of amount of articles yielded by search. Requires a querystring. /estimate?query=HIV%20AND%20MALARIA |
+| POST | /users                  | {"username": "John.Doe", "email": "john@doe.com"} or {"uuid": VALID_128_BIT_STRING_UUID, "username":...} | 201         | Creates a [User object](#user-object) and returns it. If a valid uuid is provided it becomes the UUID of the created user. Returns an [Error Object](error-object) if username or email already exist.|
+| GET  | /users/:id              | N/A                                               | 200         | Returns a [User object](#user-object) with specified id. Returns an [Error Object](error-object) if user uuid is invalid. |
+| PUT  | /users/:id              | {"username": "John.Doe", "email": "john@doe.com"} | 201         | Updates [User Object](#user-object) with specified id. Creates the User if he does not exist. Returns an [Error Object](error-object) if username or email already exist. | 
+| GET  | /users/:id/jobs         | N/A                                               | 200         | Returns a list of [Job object](#job-object) that user is observing. Returns an [Error Object](error-object) if user does not exist.| 
+| GET  | /jobs/:id               | N/A                                               | 200         | Returns a [Job object](#job-object) specified by id. Returns an [Error Object](error-object) if uuid is invalid. |
+| GET  | /users/:id/searches     | N/A                                               | 200         | Returns a list of [Search Object](#search-object). Returns an [Error Object](error-object) if user does not exist.|
+| POST | /users/:id/searches     | {"query": "hiv OR malaria"}                       | 201         | Creates a [Search Object](#search-object) belonging to user. Returns an [Error Object](error-object) if user does not exist. |
+| GET  | /users/:id/searches/:id | N/A                                               | 200         | Returns a the list of [Search Object](#search-object) belonging to the user. Returns an [Error Object](error-object) if user or search uuid are invalid. |
+| GET  | /results                | N/A                                               | 200         | Returns a list of [Result Object](#result-object). List will be empty if no results exist. |
+| GET  | /results/:id            | N/A                                               | 200         | Returns a [Result Object](#result-object). Returns an [Error Object](error-object) if result does not exist. |
+| GET  | /results/:id/articles   | N/A                                               | 200         | Returns a list of [Article Object](#article-object) Returns an [Error Object](error-object) if result does not exist.|
 
 # Resources types
 

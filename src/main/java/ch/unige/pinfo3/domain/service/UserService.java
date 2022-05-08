@@ -16,9 +16,8 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.jboss.logging.Logger;
 
 import ch.unige.pinfo3.domain.model.User;
+import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.utils.QueryUtils;
-import ch.unige.pinfo3.api.rest.Error;
-import ch.unige.pinfo3.api.rest.ErrorReport;
 
 /**
  * This class provides the interfaces for all actions involving users.
@@ -34,7 +33,7 @@ public class UserService {
     QueryUtils qu;
 
     @Inject
-    Logger LOG;
+    Logger logger;
 
     public static final EmailValidator ev = EmailValidator.getInstance();
 
@@ -78,19 +77,19 @@ public class UserService {
     }
 
     @Transactional
-    public User find(String uuid) {
-        return em.find(User.class, uuid);
+    public Optional<User> find(String uuid) {
+        return Optional.ofNullable(em.find(User.class, uuid));
     }
 
     @Transactional
     public Optional<ErrorReport> checkExistence(String user_uuid) {
-        if(find(user_uuid) == null) {
+        if(find(user_uuid).isEmpty()) {
             var err = new ErrorReport();
             err.errors.add(
-                new Error(
+                new ErrorReport.Error(
                     "invalid user_uuid",
                     "The uuid provided does not refer to an existing user", 
-                    Response.Status.BAD_REQUEST
+                    Response.Status.NOT_FOUND
                 )
             );
             return Optional.of(err);

@@ -15,10 +15,13 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import ch.unige.pinfo3.utils.UUIDOrNull;
+
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
     @Id
+    @UUIDOrNull(message = "Please provide a valid uuid or none at all.")
     public String uuid;
 
     @NotNull

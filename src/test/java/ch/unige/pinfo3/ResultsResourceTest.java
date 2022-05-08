@@ -10,13 +10,13 @@ import static org.hamcrest.CoreMatchers.*;
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ResultsResourceTest{
+class ResultsResourceTest {
 
     //InputStream testSearch = getClass().getClassLoader().getResourceAsStream("testSearch.json");
 
     @Test
     @Order(1)
-    public void shouldGetAllResults() {
+    void shouldGetAllResults() {
         given()
                 .when()
                 .get("/results")
@@ -33,7 +33,7 @@ public class ResultsResourceTest{
 
     @Test
     @Order(2)
-    public void shouldGetResultById(){
+    void shouldGetResultById(){
         // find a way to avoid hard coding test data.
         given()
                 .when()

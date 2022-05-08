@@ -7,7 +7,7 @@
  * /users/:id/searches POST, GET
  * /users/:id/searches/:id GET
  * /users/:id/jobs GET
- * 
+ * TODO comment interface thoroughly
  */
 
 package ch.unige.pinfo3.api.rest;
@@ -32,8 +32,11 @@ import org.jboss.logging.Logger;
 
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.model.User;
+import ch.unige.pinfo3.domain.service.JobService;
 import ch.unige.pinfo3.domain.service.SearchService;
 import ch.unige.pinfo3.domain.service.UserService;
+import ch.unige.pinfo3.utils.ErrorReport;
+import ch.unige.pinfo3.utils.VALID_UUID;
 
 
 /**
@@ -51,7 +54,10 @@ public class UserRestService {
     SearchService searchService;
 
     @Inject
-    Logger LOG;
+    JobService jobService;
+
+    @Inject
+    Logger logger;
 
     @GET // /users
     @Transactional
@@ -61,15 +67,15 @@ public class UserRestService {
     }
     
     @GET // /users/:id
-    @Path("{uuid}")
+    @Path("{user_uuid}")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("user_uuid") @VALID_UUID String user_uuid) {
-        User usr = userService.find(user_uuid);
-        if(usr == null) {
+        var usr = userService.find(user_uuid);
+        if(usr.isEmpty()) {
             var err = new ErrorReport();
             err.errors.add(
-                new Error(
+                new ErrorReport.Error(
                     "User with that uuid does not exist",
                 "Try a different uuid", 
                     Response.Status.NOT_FOUND
@@ -77,7 +83,7 @@ public class UserRestService {
             );
             return Response.status(Response.Status.NOT_FOUND).entity(err).build();
         }
-        return Response.ok(usr).build();
+        return Response.ok(usr.get()).build();
     }
 
     @PUT // /users/:id
@@ -90,7 +96,7 @@ public class UserRestService {
         try {
             updated_user = userService.update(user);
         } catch(Exception e) {
-            var err = new Error(
+            var err = new ErrorReport.Error(
                 "Username or email being updated to already exists",
                 "Try a different username or email", 
                 Response.Status.CONFLICT
@@ -108,10 +114,10 @@ public class UserRestService {
         try {
             created_user = userService.create(user);
         } catch(Exception e) {
-            LOG.error(e.getMessage());
+            logger.error(e.getMessage());
             var err = new ErrorReport();
             err.errors.add(
-                new Error(
+                new ErrorReport.Error(
                     "Username or email already exists",
                   "Try a different username or email", 
                     Response.Status.CONFLICT
@@ -123,23 +129,23 @@ public class UserRestService {
     }
 
     @GET
-    @Path("{uuid}/searches")
+    @Path("{user_uuid}/searches")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserSearches(@PathParam("uuid") @VALID_UUID String user_uuid) {
+    public Response getUserSearches(@PathParam("user_uuid") @VALID_UUID String user_uuid) {
         var err = userService.checkExistence(user_uuid);
         if(err.isPresent())
-            return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(err.get()).build();
         
         List<Search> searches = searchService.getSearchesOf(user_uuid);
         return Response.ok(searches).build();
     }
 
     @POST
-    @Path("{uuid}/searches")
+    @Path("{user_uuid}/searches")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postUserSearch(@PathParam("uuid") @VALID_UUID String user_uuid, @Valid Search search) {
+    public Response postUserSearch(@PathParam("user_uuid") @VALID_UUID String user_uuid, @Valid Search search) {
         
         var err = userService.checkExistence(user_uuid);
         if(err.isPresent())
@@ -158,11 +164,26 @@ public class UserRestService {
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserSearch(@PathParam("user_uuid") String user_uuid, @PathParam("search_uuid") String search_uuid) {
+        var userErr = userService.checkExistence(user_uuid);
+        if(userErr.isPresent())
+            return Response.status(Response.Status.BAD_REQUEST).entity(userErr.get()).build();
         
         var err = searchService.checkExistence(search_uuid);
         if(err.isPresent())
             return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
         
         return Response.ok(searchService.getSearchOfUser(user_uuid, search_uuid)).build();
+    }
+
+    @GET
+    @Path("{user_uuid}/jobs")
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserJobs(@PathParam("user_uuid") String user_uuid) {
+        var err = userService.checkExistence(user_uuid);
+        if(err.isPresent())
+            return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
+
+        return Response.ok(jobService.getJobsOfUser(user_uuid)).build();
     }
 }
