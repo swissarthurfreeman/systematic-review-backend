@@ -422,8 +422,25 @@ class UserResourceTest{
         //Search search = SearchService.getRandomSearch(testUsers[testUsers.length-1].uuid, null, UUID.randomUUID().toString());
         //SearchService.create(search);
         String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
-        Log.info(searchJson);
 
+        Log.info("Testing GET /user/:id");
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+        Log.info("Testing GET /user/:id/searches");
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+        Log.info("Testing POST /user/:id/searches");
+        Log.info(searchJson);
         given()
                 .when()
                 .contentType(ContentType.JSON)
@@ -433,6 +450,8 @@ class UserResourceTest{
                 .then()
                 .assertThat()
                 .statusCode(is(200));
+
+
 
     }
 
