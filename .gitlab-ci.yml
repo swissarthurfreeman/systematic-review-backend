@@ -20,21 +20,6 @@ test:
   script:
     - gradle clean test
 
-push-image-staging:
-  stage: deploy
-  script:
-    - gradle build
-      -Dquarkus.container-image.push=true
-      -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
-      -Dquarkus.container-image.name=${CI_PROJECT_NAME}
-      -Dquarkus.container-image.tag=${CI_COMMIT_SHORT_SHA}
-      -Dquarkus.container-image.additional-tags=staging
-      -Dquarkus.container-image.registry=${CI_REGISTRY}
-      -Dquarkus.container-image.username=${CI_REGISTRY_USER}
-      -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 push-image:
   stage: deploy
   script:
@@ -42,13 +27,35 @@ push-image:
       -Dquarkus.container-image.push=true
       -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
       -Dquarkus.container-image.name=${CI_PROJECT_NAME}
-      -Dquarkus.container-image.tag=${CI_COMMIT_TAG}
-      -Dquarkus.container-image.additional-tags=latest
+      -Dquarkus.container-image.tag=${IMAGE_TAG}
+      -Dquarkus.container-image.additional-tags=${IMAGE_VERSION_TAG}
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
   rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        IMAGE_TAG: staging
+        IMAGE_VERSION_TAG: $CI_COMMIT_SHORT_SHA
     - if: $CI_COMMIT_TAG
+      variables:
+        IMAGE_TAG: latest
+        IMAGE_VERSION_TAG: $CI_COMMIT_TAG
+
+downstream-bridge:
+  variables:
+    BACKEND_IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+  stage: deploy
+  trigger:
+    project: pinfo-2022/pinfo-3/microservices
+    strategy: depend
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        ENVIRONEMNT: staging
+    - if: $CI_COMMIT_TAG
+      variables:
+        ENVIRONEMNT: production
 
 sonarqube:
   stage: verify
