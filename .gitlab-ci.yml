@@ -2,6 +2,7 @@ stages:
   - test
   - verify
   - deploy
+  - downstream
 
 image: gradle:7.3.3-jdk17
 
@@ -14,6 +15,14 @@ cache:
   paths:
     - .cache
     - build
+
+define-profile:
+  stage: .pre
+  script:
+    - echo "ENVIRONMENT=$ENVIRONMENT" >> .env
+  artifacts:
+    reports:
+      dotenv: .env
 
 test:
   stage: test
@@ -35,27 +44,26 @@ push-image:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
+        ENVIRONMENT: "staging"
         IMAGE_TAG: staging
         IMAGE_VERSION_TAG: $CI_COMMIT_SHORT_SHA
     - if: $CI_COMMIT_TAG
       variables:
+        ENVIRONMENT: "production"
         IMAGE_TAG: latest
         IMAGE_VERSION_TAG: $CI_COMMIT_TAG
 
 downstream-bridge:
   variables:
     BACKEND_IMAGE_TAG: $CI_COMMIT_SHORT_SHA
-  stage: deploy
+    ENVIRONMENT: ${ENVIRONMENT}
+  stage: downstream
   trigger:
     project: pinfo-2022/pinfo-3/microservices
     strategy: depend
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      variables:
-        ENVIRONEMNT: staging
-    - if: $CI_COMMIT_TAG
-      variables:
-        ENVIRONEMNT: production
+  needs:
+    - job: define-profile
+      artifacts: true
 
 sonarqube:
   stage: verify
