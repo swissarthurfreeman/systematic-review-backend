@@ -1,39 +1,44 @@
 package ch.unige.pinfo3;
 
 import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.model.User;
-import ch.unige.pinfo3.domain.service.JobService;
-import ch.unige.pinfo3.domain.service.SearchService;
+import ch.unige.pinfo3.domain.service.Task;
 import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
+import io.quarkus.scheduler.Scheduled;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
+import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 import org.apache.commons.validator.routines.EmailValidator;
 //import org.gradle.internal.impldep.javax.inject.Inject;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Assertions;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.UUID;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
-import static ch.unige.pinfo3.domain.service.JobService.getRandomJob;
+import static com.cronutils.builder.CronBuilder.cron;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
 
-import io.quarkus.test.TestTransaction;
+import org.mockito.Mockito;
+import org.quartz.*;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserResourceTest{
+
+    @InjectMock
+    MockJobService mockJobService;
 
     InputStream testUser = getClass().getClassLoader().getResourceAsStream("testUser.json");
 
@@ -417,19 +422,12 @@ class UserResourceTest{
     // Test endpoint POST /user/:id/searches
     @Test
     @Order(18)
+    @Transactional
     void postSearch(){
         Log.info("Test endpoint POST /user/:id/searches");
         //Search search = SearchService.getRandomSearch(testUsers[testUsers.length-1].uuid, null, UUID.randomUUID().toString());
         //SearchService.create(search);
         String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
-
-        Log.info("Testing GET /user/:id");
-        given()
-                .when()
-                .get("/users/"+testUsers[testUsers.length-1].uuid)
-                .then()
-                .assertThat()
-                .statusCode(is(200));
 
         Log.info("Testing GET /user/:id/searches");
         given()
@@ -437,7 +435,12 @@ class UserResourceTest{
                 .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
                 .then()
                 .assertThat()
-                .statusCode(is(200));
+                .statusCode(is(200))
+                .and()
+                .assertThat()
+                .body("size()", equalTo(0));
+
+
 
         Log.info("Testing POST /user/:id/searches");
         Log.info(searchJson);
@@ -451,7 +454,15 @@ class UserResourceTest{
                 .assertThat()
                 .statusCode(is(200));
 
-
+        Log.info("Testing GET /user/:id/searches");
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(1));
 
     }
 
