@@ -18,11 +18,19 @@ cache:
 
 define-profile:
   stage: .pre
+  image: alpine:latest
   script:
-    - echo "ENVIRONMENT=$ENVIRONMENT" >> .env
+    - echo "ENVIRONMENT=$ENVIRONMENT" >> profile.env
   artifacts:
     reports:
-      dotenv: .env
+      dotenv: profile.env
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        ENVIRONMENT: "staging"
+    - if: $CI_COMMIT_TAG
+      variables:
+        ENVIRONMENT: "production"
 
 test:
   stage: test
