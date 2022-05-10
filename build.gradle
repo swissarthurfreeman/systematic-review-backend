@@ -5,6 +5,10 @@ plugins {
     id 'jacoco'
 }
 
+test {
+    useJUnitPlatform()
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true

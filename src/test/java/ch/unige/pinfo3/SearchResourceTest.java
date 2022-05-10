@@ -1,15 +1,10 @@
 package ch.unige.pinfo3;
 
-import ch.unige.pinfo3.domain.model.Search;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.*;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.*;
-
-import java.io.InputStream;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest

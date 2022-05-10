@@ -1,45 +1,28 @@
 package ch.unige.pinfo3;
 
-import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.User;
-import ch.unige.pinfo3.domain.service.Task;
 import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
-import io.quarkus.scheduler.Scheduled;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
-import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
-import okhttp3.ResponseBody;
 import org.apache.commons.validator.routines.EmailValidator;
-//import org.gradle.internal.impldep.javax.inject.Inject;
+import org.json.JSONObject;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Assertions;
 
+import javax.transaction.Transactional;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
-import javax.inject.Inject;
-import javax.transaction.TransactionScoped;
-import javax.transaction.Transactional;
 
 import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
-import static com.cronutils.builder.CronBuilder.cron;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.*;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import org.mockito.Mockito;
-import org.quartz.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
