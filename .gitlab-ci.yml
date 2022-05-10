@@ -20,7 +20,7 @@ define-profile:
   stage: .pre
   image: alpine:latest
   script:
-    - echo "ENVIRONMENT=$ENVIRONMENT" >> profile.env
+    - echo "ENVIRONMENT=$ENVIRONMENT" | tee profile.env
   artifacts:
     reports:
       dotenv: profile.env
@@ -50,11 +50,11 @@ push-image:
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $ENVIRONMENT == 'staging'
       variables:
         IMAGE_TAG: staging
         IMAGE_VERSION_TAG: $CI_COMMIT_SHORT_SHA
-    - if: $CI_COMMIT_TAG
+    - if: $ENVIRONMENT == 'production'
       variables:
         IMAGE_TAG: latest
         IMAGE_VERSION_TAG: $CI_COMMIT_TAG
@@ -71,6 +71,8 @@ downstream-bridge:
     - job: define-profile
       artifacts: true
     - job: push-image
+  rules:
+    - if: $ENVIRONMENT
 
 sonarqube:
   stage: verify
