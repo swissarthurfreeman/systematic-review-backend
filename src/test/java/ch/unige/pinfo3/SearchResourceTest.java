@@ -1,27 +1,23 @@
 package ch.unige.pinfo3;
 
-import ch.unige.pinfo3.domain.model.Search;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.*;
-import static io.restassured.RestAssured.get;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.*;
-
-import java.io.InputStream;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SearchResourceTest{
+class SearchResourceTest{
+
+    /*
 
     InputStream testSearch = getClass().getClassLoader().getResourceAsStream("testSearch.json");
 
     @Test
     @Order(1)
-    public void shouldGetAllSearches() {
+    void shouldGetAllSearches() {
         given()
                 .when()
                 .get("/searches")
@@ -34,7 +30,7 @@ public class SearchResourceTest{
 
     @Test
     @Order(2)
-    public void shouldGetAllSearchesForAUser() {
+    void shouldGetAllSearchesForAUser() {
         given()
                 .when()
                 .get("/users/c044a099-e489-43f8-9499-c04a371dbb62/searches")
@@ -47,7 +43,7 @@ public class SearchResourceTest{
 
     @Test
     @Order(3)
-    public void shouldPostSearch(){
+    void shouldPostSearch(){
         given()
                 .contentType(ContentType.JSON)
                 .body(testSearch)
@@ -69,7 +65,7 @@ public class SearchResourceTest{
 
     @Test
     @Order(4)
-    public void testMutualExclusionJobResult(){
+    void testMutualExclusionJobResult(){
         // this test is wrong
         /*
         String[] jobs;
@@ -87,6 +83,7 @@ public class SearchResourceTest{
             }
         }
         */
+        /*
         // TODO these are unit tests, They should go elsewhere
         Search search = new Search();
         search.setJobUUID("f464a099-e489-939f-9499-c04a371dvd93");
@@ -95,12 +92,16 @@ public class SearchResourceTest{
         search.setResultUUID("jd9e4jf8-e489-939f-9499-meif932j4ns9");
         Assertions.assertNotNull(search.getResultUUID());
         Assertions.assertNull(search.getJobUUID());
+
+
     }
+         */
+
 /*
     @Test
     @Order(2)
     //verifie le nb d'attributs pour un search, et les attributs pour un search test
-    public void shouldGetSearchById(){
+    void shouldGetSearchById(){
         given()
                 .when()
                 .get("/users/c044a099-e489-43f8-9499-c04a371dbb62/searches?uuid=c044a099-e489-43f8-9499-c04a371dbb65")
@@ -116,6 +117,10 @@ public class SearchResourceTest{
                 .and()
                 .body("ucnf", equalTo("HIV and SAHARA"));
     }
+
+
  */
 
 }
+
+

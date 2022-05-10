@@ -6,7 +6,7 @@ import ch.unige.pinfo3.domain.model.Result;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -37,18 +37,20 @@ import org.quartz.JobExecutionException;
 @ApplicationScoped
 public class Task implements org.quartz.Job {
     @Inject
-    Logger LOG;
+    Logger logger;
 
     @Inject
     EntityManager em;
 
     @Inject
-    SearchService search_service;
+    SearchService searchService;
 
     @Inject
     ArticleService articleService;
 
     private Process proc;
+
+    private final SecureRandom random = new SecureRandom();
 
     // job execution Context provides the job instance with info
     // about it's runtime environment, it'll contain the ucnf query we run the clustering with
@@ -60,14 +62,13 @@ public class Task implements org.quartz.Job {
         executeProcess();
             
         // get/stream process standard output if needed, we can write updates to db if required. 
-        // String output = getProcessOutput();
-        
+        // call getProcessOutput here if needed.
         // get job data provided from submit method, if contains job_uuid (in em) and ucnf.
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         
 
         // remove job from entity manager job by uuid since process is done
-        em.remove(em.find(Job.class, dataMap.getString("job_uuid")));;
+        em.remove(em.find(Job.class, dataMap.getString("job_uuid")));
 
         // create corresponding result in database
         // will be replaced by result_service.getResultsFromFile(job_uuid.csv)...
@@ -78,34 +79,32 @@ public class Task implements org.quartz.Job {
         
         // create bogus mock articles yielded by result these will have to be read from disk.        
         // persist articles in db
-        Random random = new Random();
-        
-        for(int i=0; i < random.nextInt(5) + 5; i++)
+        for(int i=0; i < this.random.nextInt(5) + 5; i++)
             em.persist(articleService.getRandomArticle(res.uuid));
         
         // persist result
         em.persist(res);
 
-        search_service.updateSearchesOf(dataMap.getString("ucnf"), res.uuid);
+        searchService.updateSearchesOf(dataMap.getString("ucnf"), res.uuid);
     }
 
     public void executeProcess() {
         // we can get the .sh script location like this, python could be a property of resource...
         // beware URL.toString() contains path prefixed by protocol. 
-        String script_location = this.getClass().getResource("/test.sh").getPath();
+        String scriptLocation = this.getClass().getResource("/test.sh").getPath();
 
-        LOG.info("Launching Background sh Script at " + script_location);
+        logger.info("Launching Background sh Script at " + scriptLocation);
         
-        LOG.info("script_location=" + script_location);
-        ProcessBuilder pb = new ProcessBuilder("/bin/sh", script_location);
+        logger.info("scriptLocation=" + scriptLocation);
+        ProcessBuilder pb = new ProcessBuilder("/bin/sh", scriptLocation);
         
         // start and wait for process to finish
         try {
             this.proc = pb.start();
             this.proc.waitFor();
-            LOG.info("Background Script done ");
+            logger.info("Background Script done ");
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            logger.error(e.getMessage());
         } 
     }
 
@@ -118,10 +117,10 @@ public class Task implements org.quartz.Job {
             while ((line = reader.readLine())!= null)
                 output.append(line + "\n");
         } catch (IOException e) {
-            LOG.error(e.getMessage());
+            logger.error(e.getMessage());
         }
 
-        LOG.info("Ouput of sh script=\n" + output.toString());
+        logger.info("Ouput of sh script=\n" + output.toString());
         return output.toString();
     }
 }

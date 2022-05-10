@@ -8,11 +8,16 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.domain.model.Result;
+import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
 
+import com.github.javafaker.Faker;
+import io.smallrye.common.constraint.NotNull;
 import org.jboss.logging.Logger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -24,14 +29,17 @@ import org.quartz.TriggerBuilder;
 // there can only be one jobber.
 @ApplicationScoped
 public class JobService {
-    @Inject 
+    @Inject
     EntityManager em;
 
     @Inject
     Scheduler scheduler;
 
     @Inject
-    Logger LOG;
+    Logger logger;
+
+    @Inject
+    SearchService searchService;
 
     @Inject
     QueryUtils qu;
@@ -39,16 +47,20 @@ public class JobService {
     static final ArrayList<Job> queue = new ArrayList<Job>();
 
     @Transactional
-    public String submit(String ucnf) {        
+    public String submit(String ucnf) {
         // check database if job with the provided ucnf exists
-        List<Job> result = qu.select(Job.class, "ucnf", ucnf, em);
-
-        if(result.size() == 1) { 
-            LOG.info("Job with that UCNF already exists, returning job_uuid...");
-            return result.get(0).uuid;
+        List<Result> results = qu.select(Result.class, "ucnf", ucnf, em);
+        
+        if(!results.isEmpty()) { 
+            logger.info("Result with that UCNF already exists, returning result_uuid...");
+            return results.get(0).uuid;
         }
         
-        // TODO check database if a result with that ucnf already exists
+        List<Job> jobs = qu.select(Job.class, "ucnf", ucnf, em);
+        if(!jobs.isEmpty()) { 
+            logger.info("Job with that UCNF already exists, returning job_uuid...");
+            return jobs.get(0).uuid;
+        }
 
         // persist job in database
         Job commit_job = new Job();
@@ -71,18 +83,36 @@ public class JobService {
         try {
             scheduler.scheduleJob(job_info, trigger);
         } catch(SchedulerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return commit_job.getUUID();
     }
 
     @Transactional
-    public List<Job> getAll() {
-        return qu.getAll(Job.class, em);
+    public List<Job> getJobsOfUser(String user_uuid) {
+        List<Search> searches = searchService.getSearchesOf(user_uuid);
+        List<Job> jobs = new ArrayList<>();
+        for(Search s: searches) {
+            if(s.job_uuid != null)
+                jobs.add(em.find(Job.class, s.job_uuid));
+        }
+        return jobs;   
     }
 
-    public String getStatus(String uuid) {
-        return "All good captain !";
+    @Transactional
+    public Optional<Job> getJob(String job_uuid) {
+        return Optional.ofNullable(em.find(Job.class, job_uuid));
+    }
+
+    public static Job getRandomJob(){
+        String[] status = {"queued"};
+        Job job = new Job();
+        Faker fk = new Faker();
+        job.uuid = UUID.randomUUID().toString();
+        job.ucnf = fk.expression("#{lorem.word} AND #{lorem.word}");
+        job.timestamp = new Date();
+        job.status = status[(int) (Math.random() * status.length)];
+        return job;
     }
 }

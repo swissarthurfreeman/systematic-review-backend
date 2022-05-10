@@ -50,7 +50,7 @@ public class Article implements Serializable {
                    String university,
                    double x, double y) {
         this.uuid = uuid;
-        this.result_uuid = result_uuid;
+        this.result_uuid= result_uuid;
         this.Title = Title;
         this.Authors = Authors;
         this.Abstract = Abstract;
