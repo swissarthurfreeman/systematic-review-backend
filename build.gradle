@@ -65,6 +65,8 @@ dependencies {
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.17'
     implementation 'commons-validator:commons-validator:1.7'    // manual validation interface
     implementation("io.quarkus:quarkus-hibernate-validator")
+
+    implementation group: 'org.json', name: 'json', version: '20220320'
 }
 
 group 'ch.unige.pinfo3'
