@@ -110,7 +110,7 @@ public class JobService {
         Job job = new Job();
         Faker fk = new Faker();
         job.uuid = UUID.randomUUID().toString();
-        job.ucnf = fk.expression("#{lorem.word} AND #{lorem.word}");
+        job.ucnf = fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word}");
         job.timestamp = new Date();
         job.status = status[(int) (Math.random() * status.length)];
         return job;
