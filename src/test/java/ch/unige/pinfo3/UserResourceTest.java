@@ -15,7 +15,6 @@ import org.junit.jupiter.api.*;
 
 import javax.transaction.Transactional;
 import java.io.InputStream;
-import java.util.Objects;
 import java.util.UUID;
 
 import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
@@ -454,7 +453,7 @@ class UserResourceTest{
                 .when()
                 .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches").getBody().asString();
 
-        Assertions.assertTrue(Objects.equals(getElementFromJson(testSearchJson, "query"), "hiv AND covid AND ebola"));
+        Assertions.assertEquals("hiv AND covid AND ebola", getElementFromJson(testSearchJson, "query"));
     }
 
 
@@ -586,7 +585,7 @@ class UserResourceTest{
     void getSpcificSearchInexistantUser(){
         given()
                 .when()
-                .get("/users/1234/searches/"+UUID.randomUUID().toString())
+                .get("/users/1234/searches/" + UUID.randomUUID())
                 .then()
                 .assertThat()
                 .statusCode(is(400));
@@ -597,7 +596,7 @@ class UserResourceTest{
     @Test
     void testEmails(){
         Log.info("User email verification");
-        String[] emails = new String[]{};
+        String[] emails;
         emails = get("/users").body().jsonPath().getObject("email",String[].class );
         for(String e: emails){
             Assertions.assertTrue(EmailValidator.getInstance().isValid(e));
