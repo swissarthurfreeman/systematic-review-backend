@@ -49,6 +49,9 @@ push-image:
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
+  needs:
+    - job: define-profile
+      artifacts: true
   rules:
     - if: $ENVIRONMENT == 'staging'
       variables:
