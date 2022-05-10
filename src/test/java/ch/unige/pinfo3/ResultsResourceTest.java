@@ -12,6 +12,8 @@ import static org.hamcrest.CoreMatchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ResultsResourceTest {
 
+/*
+
     //InputStream testSearch = getClass().getClassLoader().getResourceAsStream("testSearch.json");
 
     @Test
@@ -45,5 +47,7 @@ class ResultsResourceTest {
                 //.and()
                 //.body("data", equalTo("Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl."));
     }
+
+ */
 
 }

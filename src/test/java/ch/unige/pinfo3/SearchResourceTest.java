@@ -16,6 +16,8 @@ import java.io.InputStream;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SearchResourceTest{
 
+    /*
+
     InputStream testSearch = getClass().getClassLoader().getResourceAsStream("testSearch.json");
 
     @Test
@@ -86,6 +88,7 @@ class SearchResourceTest{
             }
         }
         */
+        /*
         // TODO these are unit tests, They should go elsewhere
         Search search = new Search();
         search.setJobUUID("f464a099-e489-939f-9499-c04a371dvd93");
@@ -94,7 +97,11 @@ class SearchResourceTest{
         search.setResultUUID("jd9e4jf8-e489-939f-9499-meif932j4ns9");
         Assertions.assertNotNull(search.getResultUUID());
         Assertions.assertNull(search.getJobUUID());
+
+
     }
+         */
+
 /*
     @Test
     @Order(2)
@@ -115,6 +122,10 @@ class SearchResourceTest{
                 .and()
                 .body("ucnf", equalTo("HIV and SAHARA"));
     }
+
+
  */
 
 }
+
+

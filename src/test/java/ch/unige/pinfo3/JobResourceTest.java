@@ -9,6 +9,8 @@ import io.quarkus.scheduler.Scheduled;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.junit.mockito.InjectSpy;
 import io.restassured.http.ContentType;
 import org.apache.commons.validator.routines.EmailValidator;
 //import org.gradle.internal.impldep.javax.inject.Inject;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Assertions;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -34,30 +37,36 @@ import io.quarkus.test.TestTransaction;
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JobResourceTest {
+    /*
     /// en attente pour le développement de l'API
     //tests sur les jobs
 
-    @Inject
-    EntityManager em;
+    @InjectMock
+    MockJobService mockJobService;
 
     @Test
     @Order(1)
     @TestTransaction
-    void getJob(){
-        Job job = getRandomJob();
-        em.persist(job);
+    void getJob() throws FileNotFoundException {
+
+        String jobUUID =  mockJobService.submit("hiv AND covid AND ebola");
+
+        Log.info(jobUUID);
 
         //String jobId = JobService.submit("hiv AND malaria");
 
-        given()
+        String body = given()
                 .when()
-                .get("/jobs/"+job.uuid)
-                .then()
-                .assertThat()
-                .statusCode(is(200))
-                .and()
-                .assertThat()
-                .body("size()", equalTo(1));
+                .get("/jobs/"+jobUUID).getBody().asPrettyString();
+                //.then()
+                //.assertThat()
+                //.statusCode(is(200))
+                //.and()
+                //.assertThat()
+                //.body("size()", equalTo(1));
+        Log.info(body);
 
     }
+
+     */
 }
