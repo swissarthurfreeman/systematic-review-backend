@@ -16,11 +16,11 @@ public class MockJobService extends JobService {
     EntityManager em;
 
     @Override
-    public String submit(String ucnf){
+    public String submit(String ucnf) {
         Job job = getRandomJob();
         job.ucnf = ucnf;
         em.persist(job);
 
-        return job.uuid;
+        return job.uuid; /// Todo RETOURNE null, faire à ce que ça retourne le uuid
     }
 }
