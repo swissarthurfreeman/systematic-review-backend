@@ -107,7 +107,7 @@ public class SearchService {
     }
 
     public Search getSearchOfUser(String user_uuid, String search_uuid) {
-        return qu.select(Search.class, "user_uuid", user_uuid, "search_uuid", search_uuid, em).get(0);
+        return qu.select(Search.class, "uuid", search_uuid,"user_uuid", user_uuid,  em).get(0); /// todo ICI IL Y AVAIT UNE ERREUR, LES COLONNES ETAIENT ECHANGES ET AU LIEU DE uuid IL Y AVAIT recherche_uuid, DONC NE TROUVAIT PAS LES RECHERCHES
     }
 
     public Optional<ErrorReport> checkExistence(String search_uuid) {
