@@ -1,10 +1,17 @@
 package ch.unige.pinfo3;
 
+import io.quarkus.logging.Log;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static io.restassured.RestAssured.given;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
@@ -19,9 +26,9 @@ class JobResourceTest {
     @Test
     @Order(1)
     @TestTransaction
-    void getJob() throws FileNotFoundException {
+    void getJob() {
 
-        String jobUUID =  mockJobService.submit("hiv AND covid AND ebola");
+        String jobUUID = mockJobService.submit("hiv AND covid AND ebola");
 
         Log.info(jobUUID);
 
@@ -29,7 +36,7 @@ class JobResourceTest {
 
         String body = given()
                 .when()
-                .get("/jobs/"+jobUUID).getBody().asPrettyString();
+                .get("/jobs/" + jobUUID).getBody().asPrettyString();
                 //.then()
                 //.assertThat()
                 //.statusCode(is(200))
