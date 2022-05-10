@@ -6,12 +6,14 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import javax.ws.rs.core.Response;
 
 import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.utils.QueryUtils;
 
+import com.github.javafaker.Faker;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -49,5 +51,13 @@ public class ResultService {
                 Response.Status.NOT_FOUND
         ));
         return Optional.of(err);
+    }
+
+    public static Result getRandomResult(){
+        Faker fk = new Faker();
+        Result result = new Result();
+        result.uuid = UUID.randomUUID().toString();
+        result.ucnf =  fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word}");
+        return result;
     }
 }
