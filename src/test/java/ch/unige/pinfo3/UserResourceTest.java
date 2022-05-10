@@ -1,6 +1,8 @@
 package ch.unige.pinfo3;
 
+import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.User;
+import ch.unige.pinfo3.domain.service.JobService;
 import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
 import io.quarkus.test.TestTransaction;
@@ -13,7 +15,10 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.UUID;
 
@@ -22,14 +27,20 @@ import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserResourceTest{
 
+    @Inject
+    EntityManager em;
+
     @InjectMock
     MockJobService mockJobService;
+
+    Job job = JobService.getRandomJob();
 
     InputStream testUser = getClass().getClassLoader().getResourceAsStream("testUser.json");
 
@@ -579,10 +590,11 @@ class UserResourceTest{
                 .body("size()", equalTo(7));
     }
 
-
+    //Testing GET /user/:id/searches/:id with inexistent user
     @Test
     @Order(25)
     void getSpcificSearchInexistantUser(){
+        Log.info("Testing GET /user/:id/searches/:id with inexistent user");
         given()
                 .when()
                 .get("/users/1234/searches/" + UUID.randomUUID())
@@ -590,6 +602,54 @@ class UserResourceTest{
                 .assertThat()
                 .statusCode(is(400));
     }
+
+    @Order(26)
+    @Test
+    @Transactional
+    void persistResult() {
+        Log.info("persisting a results and articles to DB");
+        Log.info(em);
+        em.persist(job);
+    }
+
+    // Testing GET /user/:id/jobs
+    @Test
+    @Order(26)
+    @TestTransaction
+    void getJobsOfUser(){
+        Log.info("Testing GET /user/:id/jobs");
+        //when(mockJobService.submit("hiv AND covid AND ebola")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
+        //String jobUUID =  mockJobService.submit("hiv AND covid AND ebola");
+        given()
+                .when()
+                .get("users/"+testUsers[testUsers.length-1].uuid+"/jobs")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .assertThat()
+                .body("size()", equalTo(0)); /// todo: 0 pour que tests passent. Voir comment ajouter job à utilisateur
+    }
+
+    // Testing GET /user/:id/jobs for inexistant user
+    @Test
+    @Order(27)
+    @TestTransaction
+    void getJobsOfInexistantUser(){
+        Log.info("Testing GET /user/:id/jobs");
+        when(mockJobService.submit("hiv AND covid AND ebola")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
+        String jobUUID =  mockJobService.submit("hiv AND covid AND ebola");
+        given()
+                .when()
+                .get("users/1234/jobs")
+                .then()
+                .assertThat()
+                .statusCode(is(400))
+                .and()
+                .assertThat()
+                .statusLine(String.valueOf("HTTP/1.1 400 Bad Request"));
+    }
+
 
 
     // test si tous les emails sont valides

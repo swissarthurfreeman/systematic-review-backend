@@ -1,52 +1,122 @@
 package ch.unige.pinfo3;
 
+import ch.unige.pinfo3.domain.model.Article;
+import ch.unige.pinfo3.domain.model.Result;
+import ch.unige.pinfo3.domain.service.ArticleService;
+import ch.unige.pinfo3.domain.service.ResultService;
+import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.*;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+
+import static io.restassured.RestAssured.given;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ResultsResourceTest {
+public class ResultsResourceTest {
 
-/*
+    @Inject
+    EntityManager em;
 
-    //InputStream testSearch = getClass().getClassLoader().getResourceAsStream("testSearch.json");
+    Result result = ResultService.getRandomResult();
+    Article article1 = ArticleService.getRandomArticle(result.uuid);
+    Article article2 = ArticleService.getRandomArticle(result.uuid);
 
-    @Test
+    // persisting a result to DB
     @Order(1)
-    void shouldGetAllResults() {
+    @Test
+    @Transactional
+    void persistResult(){
+        Log.info("persisting a results and articles to DB");
+        Log.info(em);
+        em.persist(result);
+        em.persist(ResultService.getRandomResult());
+        em.persist(article1);
+        em.persist(article2);
+    }
+
+    // Testing endpoint GET /results
+    @Order(2)
+    @Test
+    void getResults() {
+        Log.info("Testing endpoint GET /results");
+        /*
+        String body = given()
+                .when()
+                .get("/results/"+result.uuid+"/articles").getBody().asPrettyString();
+        Log.info(body);
+         */
+
+
         given()
                 .when()
                 .get("/results")
                 .then()
                 .assertThat()
-                .statusCode(is(200)); // this endpoint exists now :) 
-                // TODO model of results has changed .sql file must be updated to reflect this.
-                // honestly I'd just use faker and directly persist from Java before running the tests,
-                // will be easier to maintain rather than a .sql file. See examples of usage of faker
-                // in source code. 
-                //.and()
-                //.body("size()", equalTo(10)); 
+                .statusCode(CoreMatchers.is(200))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
     }
 
+    // Testing endpoint GET /results/:id
+    @Order(3)
     @Test
-    @Order(2)
-    void shouldGetResultById(){
-        // find a way to avoid hard coding test data.
+    void TestSpecificResult() {
+
+        Log.info("Testing endpoint GET /results/:id");
         given()
                 .when()
-                .get("/results/50a69566-3d73-4163-9405-8c314d71970f")
+                .get("results/" + result.uuid)
                 .then()
                 .assertThat()
-                .statusCode(is(204)); // no content, doesn't exist for now.
-                // TODO the Result model has changed and will have to be updated accordingly in the tests. 
-                //.and()
-                //.body("data", equalTo("Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl."));
+                .statusCode(CoreMatchers.is(200))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2))
+                .and()
+                .body("uuid", CoreMatchers.equalTo(result.uuid))
+                .and()
+                .body("ucnf", CoreMatchers.equalTo(result.ucnf));
     }
 
- */
+    // Testing endpoint GET /results/:id with invalid ID
+    @Order(4)
+    @Test
+    void TestSpecificResultInvalidId() {
+
+        Log.info("Testing endpoint GET /results/:id with invalid ID");
+        given()
+                .when()
+                .get("results/1234")
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(400));
+    }
+
+    // Testing endpoint GET /results/:id/articles
+    @Order(5)
+    @Test
+    void TestSpecificResultArticles() {
+
+        Log.info("Testing endpoint GET /results/:id/articles");
+        given()
+                .when()
+                .get("results/"+result.uuid+"/articles")
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(200))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2)); /// Todo voir comment vérifier les éléments du premier (trouver le bon JSON path)
+
+
+    }
+
 
 }
