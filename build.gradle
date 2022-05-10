@@ -5,13 +5,22 @@ plugins {
     id 'jacoco'
 }
 
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true
+        csv.enabled false
+        html.enabled false
     }
 }
-test.finalizedBy jacocoTestReport
-
 
 sonarqube {
     properties {
@@ -32,6 +41,7 @@ repositories {
 
 dependencies {
     implementation 'io.quarkus:quarkus-kubernetes-config'
+    implementation 'io.quarkus:quarkus-oidc'
     implementation 'io.quarkus:quarkus-smallrye-health'
     implementation 'io.quarkus:quarkus-container-image-jib'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
@@ -45,7 +55,9 @@ dependencies {
     implementation 'io.quarkus:quarkus-hibernate-orm'
     implementation 'io.quarkus:quarkus-narayana-jta'
     implementation 'io.quarkus:quarkus-jdbc-postgresql'
+    // https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api
     implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.0.0'
+    // https://mvnrepository.com/artifact/io.quarkus/quarkus-jdbc-h2
     implementation group: 'io.quarkus', name: 'quarkus-jdbc-h2', version: '2.8.0.Final'
     implementation 'com.github.cliftonlabs:json-simple:3.1.0' //pour le json
     implementation 'commons-validator:commons-validator:1.7' // pour le validateur de email

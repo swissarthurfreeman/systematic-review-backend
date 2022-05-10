@@ -1,45 +1,27 @@
 package ch.unige.pinfo3;
 
-import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.User;
-import ch.unige.pinfo3.domain.service.Task;
 import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
-import io.quarkus.scheduler.Scheduled;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
-import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
-import okhttp3.ResponseBody;
 import org.apache.commons.validator.routines.EmailValidator;
-//import org.gradle.internal.impldep.javax.inject.Inject;
+import org.json.JSONObject;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Assertions;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.transaction.TransactionScoped;
 import javax.transaction.Transactional;
+import java.io.InputStream;
+import java.util.UUID;
 
 import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
-import static com.cronutils.builder.CronBuilder.cron;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.*;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import org.mockito.Mockito;
-import org.quartz.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
@@ -471,7 +453,7 @@ class UserResourceTest{
                 .when()
                 .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches").getBody().asString();
 
-        Assertions.assertTrue(Objects.equals(getElementFromJson(testSearchJson, "query"), "hiv AND covid AND ebola"));
+        Assertions.assertEquals("hiv AND covid AND ebola", getElementFromJson(testSearchJson, "query"));
     }
 
 
@@ -603,7 +585,7 @@ class UserResourceTest{
     void getSpcificSearchInexistantUser(){
         given()
                 .when()
-                .get("/users/1234/searches/"+UUID.randomUUID().toString())
+                .get("/users/1234/searches/" + UUID.randomUUID())
                 .then()
                 .assertThat()
                 .statusCode(is(400));
@@ -614,7 +596,7 @@ class UserResourceTest{
     @Test
     void testEmails(){
         Log.info("User email verification");
-        String[] emails = new String[]{};
+        String[] emails;
         emails = get("/users").body().jsonPath().getObject("email",String[].class );
         for(String e: emails){
             Assertions.assertTrue(EmailValidator.getInstance().isValid(e));

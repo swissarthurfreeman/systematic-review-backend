@@ -3,9 +3,8 @@ package ch.unige.pinfo3;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.*;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
