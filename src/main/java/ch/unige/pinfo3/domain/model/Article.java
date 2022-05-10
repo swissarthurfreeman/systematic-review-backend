@@ -7,7 +7,6 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-
 @Entity
 @Table(name="articles")
 public class Article implements Serializable {
@@ -51,7 +50,7 @@ public class Article implements Serializable {
                    String university,
                    double x, double y) {
         this.uuid = uuid;
-        this.result_uuid = result_uuid;
+        this.result_uuid= result_uuid;
         this.Title = Title;
         this.Authors = Authors;
         this.Abstract = Abstract;

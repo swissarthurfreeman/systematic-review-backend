@@ -2,6 +2,7 @@ stages:
   - test
   - verify
   - deploy
+  - downstream
 
 image: gradle:7.3.3-jdk17
 
@@ -13,22 +14,28 @@ variables:
 cache:
   paths:
     - .cache
+    - build
+
+define-profile:
+  stage: .pre
+  image: alpine:latest
+  script:
+    - echo "ENVIRONMENT=$ENVIRONMENT" >> profile.env
+  artifacts:
+    reports:
+      dotenv: profile.env
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        ENVIRONMENT: "staging"
+    - if: $CI_COMMIT_TAG
+      variables:
+        ENVIRONMENT: "production"
 
 test:
   stage: test
   script:
-    - gradle test
-
-push-image-staging:
-  stage: deploy
-  script:
-    - gradle build
-      -Dquarkus.container-image.push=true
-      -Dquarkus.container-image.image=${CI_REGISTRY_IMAGE}:staging
-      -Dquarkus.container-image.username=${CI_REGISTRY_USER}
-      -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - gradle clean test
 
 push-image:
   stage: deploy
@@ -37,17 +44,35 @@ push-image:
       -Dquarkus.container-image.push=true
       -Dquarkus.container-image.group=${CI_PROJECT_NAMESPACE}
       -Dquarkus.container-image.name=${CI_PROJECT_NAME}
-      -Dquarkus.container-image.tag=${CI_COMMIT_TAG}
-      -Dquarkus.container-image.additional-tags=latest
+      -Dquarkus.container-image.tag=${IMAGE_TAG}
+      -Dquarkus.container-image.additional-tags=${IMAGE_VERSION_TAG}
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
   rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        IMAGE_TAG: staging
+        IMAGE_VERSION_TAG: $CI_COMMIT_SHORT_SHA
     - if: $CI_COMMIT_TAG
+      variables:
+        IMAGE_TAG: latest
+        IMAGE_VERSION_TAG: $CI_COMMIT_TAG
+
+downstream-bridge:
+  variables:
+    BACKEND_IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+    ENVIRONMENT: ${ENVIRONMENT}
+  stage: downstream
+  trigger:
+    project: pinfo-2022/pinfo-3/microservices
+    strategy: depend
+  needs:
+    - job: define-profile
+      artifacts: true
+    - job: push-image
 
 sonarqube:
   stage: verify
   script: gradle sonarqube -Dsonar.qualitygate.wait=true
   allow_failure: true
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' 

@@ -29,7 +29,7 @@ public class ArticleService {
         Faker fk = new Faker();
         Article ar = new Article();
         ar.uuid = UUID.randomUUID().toString();
-        ar.result_uuid = result_uuid;
+        ar.result_uuid= result_uuid;
         ar.Full_text = fk.lorem().fixedString(1000);
         ar.Authors = fk.name().fullName() + ", " + fk.name().fullName();
         ar.Abstract = fk.lorem().fixedString(200);

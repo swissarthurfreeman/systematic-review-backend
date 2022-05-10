@@ -3,6 +3,7 @@ package ch.unige.pinfo3.domain.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
@@ -16,6 +17,7 @@ public class Result implements Serializable {
     @Id
     public String uuid;
     
+    @Column(unique=true)
     @NotNull
     public String ucnf;
 

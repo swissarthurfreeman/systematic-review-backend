@@ -1,30 +1,99 @@
 package ch.unige.pinfo3;
 
+import ch.unige.pinfo3.domain.model.User;
+import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.json.JSONObject;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Assertions;
 
+import javax.transaction.Transactional;
 import java.io.InputStream;
+import java.util.UUID;
 
+import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserResourceTest{
+class UserResourceTest{
+
+    @InjectMock
+    MockJobService mockJobService;
 
     InputStream testUser = getClass().getClassLoader().getResourceAsStream("testUser.json");
 
+    // verifier les type de UUID
+    // verifier ce qui se pase si je donne, si je donne pas, sie je donne la merde, etc...
+    // verifier si je donne un UUID existant
+
+    /// TODO une fois tests passent, faire des tests qui ne passent pas pour voir les codes d'erreur
+
+    static User[] testUsers = new User[10];
+
+    String getElementFromJson(String json, String element){
+        JSONObject obj = new JSONObject(json);
+        return (obj.getString(element));
+    }
+
+    @BeforeAll
+    static void logStatus(){
+        Log.info("Testing /users endpoint");
+    }
+
+    @BeforeAll
+    static void createTestUsers(){
+        for(int i = 0; i < testUsers.length; i++){
+            testUsers[i] = getRandomUser();
+        }
+    }
+
+    // Test endpoint POST /users
     @Test
     @Order(1)
-    public void shouldGetAllUsers() {
+    void postUsers(){
+        Log.info("Test endpoint POST /users");
+        Log.info("Populating DB with users");
+        for(int i = 0; i < testUsers.length-1; i++){
+            User user = testUsers[i];
+            String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}", user.username, user.email);
+            given()
+                    .when()
+                    .contentType(ContentType.JSON)
+                    .body(userJson)
+                    .when()
+                    .post("/users")
+                    .then()
+                    .assertThat()
+                    .statusCode(is(200)); // verifie si le post est fait avec succes
+        }
+        String userJson = String.format("{\"uuid\": \"%s\", \"username\": \"%s\", \"email\": \"%s\"}", testUsers[testUsers.length-1].uuid, testUsers[testUsers.length-1].username, testUsers[testUsers.length-1].email);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(is(200)); // verifie si le post est fait avec succes
+    }
+
+    // Test endpoint GET /users
+    @Test
+    @Order(2)
+    void getAllUsers() {
+        Log.info("Test endpoint GET /users");
         given()
             .when()
             .get("/users")
@@ -32,78 +101,165 @@ public class UserResourceTest{
             .assertThat()
             .statusCode(is(200))
             .and()
-            .body("size()", equalTo(30)); // 30 user in the DB on startup
+            .body("size()", equalTo(testUsers.length)); // verifie si les 10 users ont bien été persisté dans la bd
+        Log.info((get("/users").body()).toString());
     }
 
+    // Test endpoint GET /users/id with existing user
     @Test
-    @Order(2)
-    //verifie le nb d'attributs pour un utilisateur, et les attributs pour un utilisateur test
-    public void shouldGetUserById(){
+    @Order(3)
+    void verifyUser(){
+        Log.info("Test endpoint GET /users/id with existing user");
         given()
                 .when()
-                .get("/users/c044a099-e489-43f8-9499-c04a371dbb62")
+                .get("/users/"+testUsers[testUsers.length-1].uuid)
                 .then()
                 .assertThat()
                 .statusCode(is(200))
-                .and()
                 .body("size()", equalTo(3)) // il y a 3 attributs pour un utilisateur
                 .and()
-                .body("username", equalTo("LazarTest"))
+                .body("username", equalTo(testUsers[testUsers.length-1].username))
                 .and()
-                .body("email", equalTo("test@lazar.com"));
+                .body("email", equalTo(testUsers[testUsers.length-1].email));
     }
 
-    @Test
-    @Order(3)
-    public void shouldDeleteUserById(){
-        given()
-                .when()
-                .delete("/users/c044a099-e489-43f8-9499-c04a371dbb62")
-                .then()
-                .assertThat()
-                .statusCode(is(405)); // un utilisateur ne peut pas être effacé
-        /*
-        given()
-                .when()
-                .delete("/users/c044a099-e489-43f8-9499-c04a371dbb62")
-                .then()
-                .assertThat()
-                .statusCode(is(200));
-        given()
-                .when()
-                .get("/users/c044a099-e489-43f8-9499-c04a371dbb62")
-                .then()
-                .assertThat()
-                .statusCode(is(201));
-
-         */
-    }
-
-
+    //Test endpoint GET /users/id with not existing user
     @Test
     @Order(4)
-    public void shouldPostUser(){
+    void getNotExistingUser(){
+        Log.info("Test endpoint GET /users/id with not existing user");
         given()
+                .when()
+                .get("/users/0")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    //Test endpoint POST /users with already existing username
+    @Test
+    @Order(5)
+    void postExistingUserName(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint POST /users with already existing username");
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}",testUsers[1].username, fk.internet().emailAddress());
+        given()
+                .when()
                 .contentType(ContentType.JSON)
-                .body(testUser)
+                .body(userJson)
                 .when()
                 .post("/users")
                 .then()
                 .assertThat()
-                .statusCode(is(200)); // verifie si le post est fait avec succes
-        System.out.println((get("/users").body()).getClass());
-        System.out.println("-----------------------------------");
-        Log.info("Log test!");
+                .statusCode(is(409));
+    }
 
-        /*
-        Pas très utile pour le moment
+    //Test endpoint POST /users with already existing email
+    @Test
+    @Order(6)
+    void postExistingUserEmail(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint POST /users with already existing email");
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}",fk.name().username(), testUsers[1].email);
         given()
                 .when()
-                .get("/users/1ebf2120-40fb-462c-ad90-b6786b28c305")
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .post("/users")
                 .then()
                 .assertThat()
-                .statusCode(is(204)); // pourquoi il ne trouve pas????
-         */
+                .statusCode(is(409));
+    }
+
+    //Test endpoint POST /users with already existing uuid
+    @Test
+    @Order(7)
+    void postExistingUserUUID(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint POST /users with already existing uuid");
+        String userJson = String.format("{\"uuid\": \"%s\", \"username\": \"%s\", \"email\": \"%s\"}", testUsers[testUsers.length-1].uuid ,fk.name().username(), fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(is(409));
+    }
+
+    // Test endpoint POST /users with invalid username
+    @Test
+    @Order(8)
+    void postInvalidUserName(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint POST /users with invalid username");
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}","feédàep?fe!|wckowcm", fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint POST /users with invalid email
+    @Test
+    @Order(9)
+    void postInvalidUserEmail(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint POST /users with invalid email");
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}",fk.name().username(), "test[at]test.com");
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint POST /users with invalid uuid
+    @Test
+    @Order(10)
+    void postInvalidUserUUID(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint POST /users with invalid uuid");
+        String userJson = String.format("{\"uuid\": \"%s\", \"username\": \"%s\", \"email\": \"%s\"}", "0123" ,fk.name().username(), fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint PUT /users with new user
+    @Test
+    @Order(11)
+    void putNewUser(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint PUT /users with new user");
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" ,fk.name().username(), fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+ UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(is(200));
 
         given()
                 .when()
@@ -112,20 +268,336 @@ public class UserResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(31)); // verifie qu'il y a bien 101 users dans la bd
+                .assertThat()
+                .body("size()", equalTo(testUsers.length+1));
     }
 
+    //Test endpoint PUT /users with existing user, changing the username
     @Test
-    @Order(5)
+    @Order(12)
+    void putUserName(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint PUT /users with existing user, changing the username");
+        String newUsername = fk.name().username();
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" , newUsername, testUsers[testUsers.length-1].email);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .assertThat()
+                .body("username", equalTo(newUsername))
+                .and()
+                .assertThat()
+                .body("email", equalTo(testUsers[testUsers.length-1].email));
+
+        // update in testUsers table
+        testUsers[testUsers.length-1].username = newUsername;
+    }
+
+    //Test endpoint PUT /users with existing user, changing the email
+    @Test
+    @Order(13)
+    void putUserEmail(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint PUT /users with existing user, changing the email");
+        String newEmail = fk.internet().emailAddress();
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" , testUsers[testUsers.length-1].username, newEmail);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid)
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .assertThat()
+                .body("username", equalTo(testUsers[testUsers.length-1].username))
+                .and()
+                .assertThat()
+                .body("email", equalTo(newEmail));
+
+        // update in testUsers table
+        testUsers[testUsers.length-1].email = newEmail;
+    }
+
+    // Test endpoint PUT /users with new user, with invalid username
+    @Test
+    @Order(14)
+    void putNewUserInvalidUsername(){
+        Faker fk = new Faker();
+        Log.info("Test endpoint PUT /users with new user, with invalid username");
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" ,"kdé$éd£aàs_dàsa" , fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint PUT /users with new user, with invalid email
+    @Test
+    @Order(15)
+    void putNewUserInvalidEmail(){
+        Log.info("Test endpoint PUT /users with new user, with invalid email");
+        Faker fk = new Faker();
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" ,fk.name().username() , "dàpàkoèchU(&√@gmail.com");
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint PUT /users with new user, with invalid email
+    @Test
+    @Order(16)
+    void putNewUserInvalidUUID(){
+        Log.info("Test endpoint PUT /users with new user, with invalid email");
+        Faker fk = new Faker();
+        String userJson = String.format("{\"username\": \"%s\", \"email\": \"%s\"}" ,fk.name().username() , fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/12¬34$ªœ")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Test endpoint PUT /users with new user, with invalid body
+    @Test
+    @Order(17)
+    void putNewUserInvalidBody(){
+        Log.info("Test endpoint PUT /users with new user, with invalid body");
+        Faker fk = new Faker();
+        String userJson = String.format("{\"username\": \"%s\", \"e-mail\": \"%s\"}" ,fk.name().username() , fk.internet().emailAddress());
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .when()
+                .put("/users/"+UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+
+    // Test endpoint POST /user/:id/searches
+    @Test
+    @Order(18)
+    @TestTransaction
+    void postSearch(){
+        Log.info("Test endpoint POST /user/:id/searches");
+        //Search search = SearchService.getRandomSearch(testUsers[testUsers.length-1].uuid, null, UUID.randomUUID().toString());
+        //SearchService.create(search);
+        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+
+        Log.info("Testing POST /user/:id/searches");
+        Log.info(searchJson);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+    }
+
+
+    // Post a search, that is stored in a variable, test getElementFromJson
+    @Order(19)
+    @Test
+    void AddSearch(){
+        Log.info("Post a search, that is stored in a variable, test getElementFromJson");
+        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+        String testSearchJson = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches").getBody().asString();
+
+        Assertions.assertEquals("hiv AND covid AND ebola", getElementFromJson(testSearchJson, "query"));
+    }
+
+
+    @Test
+    @Order(20)
+    @Transactional
+    void PostInvalidShortSearch(){
+        Log.info("Testing POST /user/:id/searches with too short query");
+        String searchJson = ("{\"query\": \"hiv\"}");
+        Log.info(searchJson);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+
+        Log.info("Testing GET /user/:id/searches");
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(2));
+
+    }
+
+    // Testing POST /user/:id/searches with invalid characters
+    /// todo ATTENTION: Pour le moment il est possible de poster des recherches qui sont syntaxiquement incorrectes
+    @Test
+    @Order(21)
+    @Transactional
+    void PostInvalidSearch(){
+        Log.info("Testing POST /user/:id/searches with invalid characters");
+        String searchJson = ("{\"query\": \"ifféie%oiem_$~¡§π«\"}");
+        Log.info(searchJson);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+
+        Log.info("Testing GET /user/:id/searches");
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(3));
+    }
+
+    // Testing POST /user/:id/search with inexiatant id
+    @Test
+    @Order(22)
+    @TestTransaction
+    void postInexistantUserSearch(){
+        Log.info("Testing POST /user/:id/search with inexiatant id");
+        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+
+        Log.info("Testing POST /user/:id/searches");
+        Log.info(searchJson);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/1234/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Testing GET /users/:id/searches
+    @Test
+    @Order(23)
+    void getSearches(){
+        Log.info("Testing GET /user/:id/searches");
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(3));
+    }
+
+    // Testing GET /users/:id/searches/:id
+    @Test
+    @Order(24)
+    void getSpecificSearch(){
+        Log.info("Testing GET /user/:id/searches/:id");
+
+        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+        String testSearchJson = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches").getBody().asString();
+        Log.info(testSearchJson);
+
+
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches/"+getElementFromJson(testSearchJson, "uuid"))
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(7));
+    }
+
+
+    @Test
+    @Order(25)
+    void getSpcificSearchInexistantUser(){
+        given()
+                .when()
+                .get("/users/1234/searches/" + UUID.randomUUID())
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+
     // test si tous les emails sont valides
-    public void testEmails(){
-
-        String[] emails = new String[]{};
-
+    @Test
+    void testEmails(){
+        Log.info("User email verification");
+        String[] emails;
         emails = get("/users").body().jsonPath().getObject("email",String[].class );
-
-        //System.out.println(emails[1]);
-
         for(String e: emails){
             Assertions.assertTrue(EmailValidator.getInstance().isValid(e));
         }
