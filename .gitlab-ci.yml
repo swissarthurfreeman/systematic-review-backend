@@ -49,33 +49,30 @@ push-image:
       -Dquarkus.container-image.registry=${CI_REGISTRY}
       -Dquarkus.container-image.username=${CI_REGISTRY_USER}
       -Dquarkus.container-image.password=${CI_REGISTRY_PASSWORD}
-  needs:
-    - job: define-profile
-      artifacts: true
   rules:
-    - if: $ENVIRONMENT == 'staging'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
         IMAGE_TAG: staging
         IMAGE_VERSION_TAG: $CI_COMMIT_SHORT_SHA
-    - if: $ENVIRONMENT == 'production'
+    - if: $CI_COMMIT_TAG
       variables:
         IMAGE_TAG: latest
         IMAGE_VERSION_TAG: $CI_COMMIT_TAG
 
-#downstream-bridge:
-#  variables:
-#    BACKEND_IMAGE_TAG: $CI_COMMIT_SHORT_SHA
-#    ENVIRONMENT: ${ENVIRONMENT}
-#  stage: downstream
-#  trigger:
-#    project: pinfo-2022/pinfo-3/microservices
-#    strategy: depend
-#  needs:
-#    - job: define-profile
-#      artifacts: true
-#    - job: push-image
-#  rules:
-#    - if: $ENVIRONMENT
+downstream-bridge:
+  variables:
+    BACKEND_IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+    ENVIRONMENT: ${ENVIRONMENT}
+  stage: downstream
+  trigger:
+    project: pinfo-2022/pinfo-3/microservices
+    strategy: depend
+  needs:
+    - job: define-profile
+      artifacts: true
+    - job: push-image
+  rules:
+    - if: $ENVIRONMENT
 
 sonarqube:
   stage: verify
