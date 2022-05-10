@@ -15,6 +15,7 @@ import io.restassured.http.ContentType;
 import org.apache.commons.validator.routines.EmailValidator;
 //import org.gradle.internal.impldep.javax.inject.Inject;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -37,7 +38,6 @@ import io.quarkus.test.TestTransaction;
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JobResourceTest {
-    /*
     /// en attente pour le développement de l'API
     //tests sur les jobs
 
@@ -68,5 +68,5 @@ class JobResourceTest {
 
     }
 
-     */
+
 }
