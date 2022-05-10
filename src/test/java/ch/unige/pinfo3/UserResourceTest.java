@@ -6,12 +6,15 @@ import ch.unige.pinfo3.domain.service.Task;
 import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
 import io.quarkus.scheduler.Scheduled;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import okhttp3.ResponseBody;
 import org.apache.commons.validator.routines.EmailValidator;
 //import org.gradle.internal.impldep.javax.inject.Inject;
 import org.junit.jupiter.api.*;
@@ -19,8 +22,10 @@ import org.junit.jupiter.api.Assertions;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 import javax.inject.Inject;
+import javax.transaction.TransactionScoped;
 import javax.transaction.Transactional;
 
 import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
@@ -28,6 +33,10 @@ import static com.cronutils.builder.CronBuilder.cron;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import org.mockito.Mockito;
 import org.quartz.*;
@@ -49,6 +58,11 @@ class UserResourceTest{
     /// TODO une fois tests passent, faire des tests qui ne passent pas pour voir les codes d'erreur
 
     static User[] testUsers = new User[10];
+
+    String getElementFromJson(String json, String element){
+        JSONObject obj = new JSONObject(json);
+        return (obj.getString(element));
+    }
 
     @BeforeAll
     static void logStatus(){
@@ -422,25 +436,12 @@ class UserResourceTest{
     // Test endpoint POST /user/:id/searches
     @Test
     @Order(18)
-    @Transactional
+    @TestTransaction
     void postSearch(){
         Log.info("Test endpoint POST /user/:id/searches");
         //Search search = SearchService.getRandomSearch(testUsers[testUsers.length-1].uuid, null, UUID.randomUUID().toString());
         //SearchService.create(search);
         String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
-
-        Log.info("Testing GET /user/:id/searches");
-        given()
-                .when()
-                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
-                .then()
-                .assertThat()
-                .statusCode(is(200))
-                .and()
-                .assertThat()
-                .body("size()", equalTo(0));
-
-
 
         Log.info("Testing POST /user/:id/searches");
         Log.info(searchJson);
@@ -454,6 +455,43 @@ class UserResourceTest{
                 .assertThat()
                 .statusCode(is(200));
 
+    }
+
+
+    // Post a search, that is stored in a variable, test getElementFromJson
+    @Order(19)
+    @Test
+    void AddSearch(){
+        Log.info("Post a search, that is stored in a variable, test getElementFromJson");
+        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+        String testSearchJson = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches").getBody().asString();
+
+        Assertions.assertTrue(Objects.equals(getElementFromJson(testSearchJson, "query"), "hiv AND covid AND ebola"));
+    }
+
+
+    @Test
+    @Order(20)
+    @Transactional
+    void PostInvalidShortSearch(){
+        Log.info("Testing POST /user/:id/searches with too short query");
+        String searchJson = ("{\"query\": \"hiv\"}");
+        Log.info(searchJson);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+
         Log.info("Testing GET /user/:id/searches");
         given()
                 .when()
@@ -462,14 +500,118 @@ class UserResourceTest{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", equalTo(1));
+                .body("size()", equalTo(2));
 
     }
 
+    // Testing POST /user/:id/searches with invalid characters
+    /// todo ATTENTION: Pour le moment il est possible de poster des recherches qui sont syntaxiquement incorrectes
+    @Test
+    @Order(21)
+    @Transactional
+    void PostInvalidSearch(){
+        Log.info("Testing POST /user/:id/searches with invalid characters");
+        String searchJson = ("{\"query\": \"ifféie%oiem_$~¡§π«\"}");
+        Log.info(searchJson);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200));
+
+
+        Log.info("Testing GET /user/:id/searches");
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(3));
+    }
+
+    // Testing POST /user/:id/search with inexiatant id
+    @Test
+    @Order(22)
+    @TestTransaction
+    void postInexistantUserSearch(){
+        Log.info("Testing POST /user/:id/search with inexiatant id");
+        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+
+        Log.info("Testing POST /user/:id/searches");
+        Log.info(searchJson);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/1234/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+    // Testing GET /users/:id/searches
+    @Test
+    @Order(23)
+    void getSearches(){
+        Log.info("Testing GET /user/:id/searches");
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(3));
+    }
+
+    // Testing GET /users/:id/searches/:id
+    @Test
+    @Order(24)
+    void getSpecificSearch(){
+        Log.info("Testing GET /user/:id/searches/:id");
+
+        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+        String testSearchJson = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(searchJson)
+                .when()
+                .post("/users/"+testUsers[testUsers.length-1].uuid+"/searches").getBody().asString();
+        Log.info(testSearchJson);
+
+
+        given()
+                .when()
+                .get("/users/"+testUsers[testUsers.length-1].uuid+"/searches/"+getElementFromJson(testSearchJson, "uuid"))
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(7));
+    }
 
 
     @Test
+    @Order(25)
+    void getSpcificSearchInexistantUser(){
+        given()
+                .when()
+                .get("/users/1234/searches/"+UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(is(400));
+    }
+
+
     // test si tous les emails sont valides
+    @Test
     void testEmails(){
         Log.info("User email verification");
         String[] emails = new String[]{};
@@ -478,94 +620,5 @@ class UserResourceTest{
             Assertions.assertTrue(EmailValidator.getInstance().isValid(e));
         }
     }
-
-    /*
-    @Test
-    @Order(2)
-    //verifie le nb d'attributs pour un utilisateur, et les attributs pour un utilisateur test
-    public void shouldGetUserById(){
-        given()
-                .when()
-                .get("/users/c044a099-e489-43f8-9499-c04a371dbb62")
-                .then()
-                .assertThat()
-                .statusCode(is(200))
-                .and()
-                .body("size()", equalTo(3)) // il y a 3 attributs pour un utilisateur
-                .and()
-                .body("username", equalTo("LazarTest"))
-                .and()
-                .body("email", equalTo("test@lazar.com"));
-    }
-
-     */
-
-    /*
-    @Test
-    @Order(3)
-    public void shouldDeleteUserById(){
-        given()
-                .when()
-                .delete("/users/c044a099-e489-43f8-9499-c04a371dbb62")
-                .then()
-                .assertThat()
-                .statusCode(is(405)); // un utilisateur ne peut pas être effacé
-
-        given()
-                .when()
-                .delete("/users/c044a099-e489-43f8-9499-c04a371dbb62")
-                .then()
-                .assertThat()
-                .statusCode(is(200));
-        given()
-                .when()
-                .get("/users/c044a099-e489-43f8-9499-c04a371dbb62")
-                .then()
-                .assertThat()
-                .statusCode(is(201));
-
-
-    }
-    */
-
-    /*
-    @Test
-    @Order(4)
-    public void shouldPostUser(){
-        given()
-                .contentType(ContentType.JSON)
-                .body(testUser)
-                .when()
-                .post("/users")
-                .then()
-                .assertThat()
-                .statusCode(is(200)); // verifie si le post est fait avec succes
-        System.out.println((get("/users").body()).getClass());
-        System.out.println("-----------------------------------");
-        Log.info("Log test!");
-
-
-        //Pas très utile pour le moment
-        given()
-                .when()
-                .get("/users/1ebf2120-40fb-462c-ad90-b6786b28c305")
-                .then()
-                .assertThat()
-                .statusCode(is(204)); // pourquoi il ne trouve pas????
-
-
-        given()
-                .when()
-                .get("/users")
-                .then()
-                .assertThat()
-                .statusCode(is(200))
-                .and()
-                .body("size()", equalTo(31)); // verifie qu'il y a bien 31 users dans la bd
-    }
-
-
-     */
-
 
 }
