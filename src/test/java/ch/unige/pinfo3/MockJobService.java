@@ -18,6 +18,7 @@ public class MockJobService extends JobService {
     @Override
     public String submit(String ucnf){
         Job job = getRandomJob();
+        job.ucnf = ucnf;
         em.persist(job);
 
         return job.uuid;
