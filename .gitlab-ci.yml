@@ -38,7 +38,7 @@ test:
   artifacts:
     name: coverage
     paths:
-      - build/
+      - build/jacoco-report
 
 push-image:
   stage: deploy
