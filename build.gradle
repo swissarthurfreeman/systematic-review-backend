@@ -6,7 +6,12 @@
 plugins {
     id 'java'
     id 'io.quarkus'
+    id 'jacoco'
     id "org.sonarqube" version "3.3"
+}
+
+jacoco {
+    toolVersion = "0.8.8"
 }
 
 group 'ch.unige.pinfo3'
@@ -23,6 +28,13 @@ compileTestJava.options.encoding = "UTF-8"
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
 }
 
 sonarqube {
@@ -43,11 +55,11 @@ repositories {
 }
 
 dependencies {
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation('io.quarkus:quarkus-kubernetes-config')
     implementation('io.quarkus:quarkus-oidc')
     implementation('io.quarkus:quarkus-smallrye-health')
     implementation('io.quarkus:quarkus-container-image-jib')
-    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation('io.quarkus:quarkus-resteasy-jackson')
     implementation('io.quarkus:quarkus-arc')
     implementation('org.projectlombok:lombok:1.18.22')
@@ -68,9 +80,9 @@ dependencies {
     implementation("io.quarkus:quarkus-quartz")
     implementation("io.quarkus:quarkus-scheduler")
 
-    implementation 'io.quarkus:quarkus-test-h2' // in memory database
+    implementation('io.quarkus:quarkus-test-h2') // in memory database
     
-    implementation ('com.github.javafaker:javafaker:0.14') { exclude module: 'snakeyaml' }
+    implementation('com.github.javafaker:javafaker:0.14') { exclude module: 'snakeyaml' }
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.17'
 
     testImplementation("io.quarkus:quarkus-junit5")
