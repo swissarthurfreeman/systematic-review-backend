@@ -25,7 +25,7 @@ public class ArticleService {
         return qu.select(Article.class, "result_uuid", result_uuid, em);
     }
     
-    public Article getRandomArticle(String result_uuid) {
+    public static Article getRandomArticle(String result_uuid) {
         Faker fk = new Faker();
         Article ar = new Article();
         ar.uuid = UUID.randomUUID().toString();

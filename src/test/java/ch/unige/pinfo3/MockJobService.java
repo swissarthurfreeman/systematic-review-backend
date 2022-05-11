@@ -4,7 +4,10 @@ import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.service.JobService;
 import io.quarkus.logging.Log;
 import io.quarkus.test.Mock;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeAll;
+import org.mockito.Answers;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,12 +26,12 @@ public class MockJobService extends JobService {
     @Override
     public String submit(String ucnf) {
         Job job = getRandomJob();
+        job.uuid = "908e5224-c74c-4ffd-bc45-9ef0b95462aa";
         job.ucnf = ucnf;
         em.persist(job);
 
-        Log.info("----------------------------------------------------------");
-        Log.info(job.uuid);
+        Log.error(job.uuid);
 
-        return job.uuid; /// Todo RETOURNE null, faire à ce que ça retourne le uuid
+        return job.uuid;
     }
 }
