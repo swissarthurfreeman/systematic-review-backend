@@ -1,8 +1,3 @@
-/* 
- * I'm suspecting this build file may be cursed. 
- * Getting this to work requires the purging of demons out of your local environment.
- * Run ./gradlew cleanTest, ./gradlew clean and ./gradlew build --rerun-tasks
-*/
 plugins {
     id 'java'
     id 'io.quarkus'
@@ -33,7 +28,9 @@ test {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.required true
+        csv.required false
+        html.required false
     }
 }
 
