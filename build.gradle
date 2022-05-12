@@ -62,7 +62,6 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-client-jackson")
 
     implementation("io.quarkus:quarkus-quartz")
-    implementation("io.quarkus:quarkus-scheduler")
 
     implementation('io.quarkus:quarkus-test-h2') // in memory database
 
