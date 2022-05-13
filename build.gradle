@@ -51,8 +51,7 @@ dependencies {
     implementation('io.quarkus:quarkus-hibernate-orm')
     implementation('io.quarkus:quarkus-narayana-jta')        // transaction manager
     implementation('io.quarkus:quarkus-jdbc-postgresql')     // database connector
-    implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.0.0'
-    implementation group: 'io.quarkus', name: 'quarkus-jdbc-h2', version: '2.8.0.Final'
+    implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
 
     implementation('commons-validator:commons-validator:1.7') // validator interface
     implementation("io.quarkus:quarkus-hibernate-validator")  // request validator interface
@@ -62,14 +61,14 @@ dependencies {
 
     implementation("io.quarkus:quarkus-quartz")
 
-    implementation('io.quarkus:quarkus-test-h2') // in memory database
+    implementation('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
+    implementation('org.yaml:snakeyaml:1.30')
 
-    implementation('com.github.javafaker:javafaker:0.14') { exclude module: 'snakeyaml' }
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-
+    implementation("io.quarkus:quarkus-jdbc-h2:2.9.0.Final")
+    testImplementation('io.quarkus:quarkus-test-h2') // in memory database
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.quarkus:quarkus-junit5-mockito")
     testImplementation("io.rest-assured:rest-assured")
-    testImplementation group: 'org.json', name: 'json', version: '20220320'
+    testImplementation("org.json:json:20220320")
     testImplementation("io.quarkus:quarkus-jacoco")
 }
