@@ -1,0 +1,21 @@
+{
+    "rest-client.environmentVariables": {
+        "$shared": {
+            // test_uuid of john doe user. First post will create
+            // this user, latter ones will create random uuids. 
+            "test_uuid": "4eb0018f-6b14-4d4d-bbb0-8f5622a914fd"
+        },
+        "local": {
+            "hostname": "127.0.0.1",
+            "port": "8080",
+            "proto": "http",
+            "path": ""
+        },
+        "dev.researchado.ml": {
+            "hostname": "dev.researchado.ml",
+            "port": "443",
+            "proto": "https",
+            "path": "/url"
+        }
+    }
+}

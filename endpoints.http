@@ -1,14 +1,4 @@
-// variables accessibles via {{var}}.
-@hostname = 127.0.0.1
-@port = 8080
-@proto = http
-
-@host = {{proto}}://{{hostname}}:{{port}}
-
-// test_uuid of john doe user. First post will create
-// this user, latter ones will create random uuids. 
-//@test_uuid = c044a099-e489-43f8-9499-c04a371dbb61
-@test_uuid = 4eb0018f-6b14-4d4d-bbb0-8f5622a914fd
+@host = {{proto}}://{{hostname}}:{{port}}/{{path}}
 
 ###
 GET {{host}}/users
@@ -48,7 +38,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "query": "new search brah"
+    "query": "Another new search brah"
 }
 
 ###
