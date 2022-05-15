@@ -10,13 +10,36 @@
 //@test_uuid = c044a099-e489-43f8-9499-c04a371dbb61
 @test_uuid = 4eb0018f-6b14-4d4d-bbb0-8f5622a914fd
 
+// using request variables we can get an access_token and store it.
+// https://github.com/Huachao/vscode-restclient#request-variables
+// get access token for alice user. (available by default in keycloak)
+# @name auth_headers
+curl -X POST http://localhost:8180/realms/quarkus/protocol/openid-connect/token     
+--user backend:secret     
+-H 'content-type: application/x-www-form-urlencoded'     
+-d 'username=alice&password=alice&grant_type=password'
+
+###
+@access_token = {{auth_headers.response.body.$.access_token}}
+
+###
+POST postman-echo.com/post
+Content-Type: application/json
+Accept: application/json
+
+{
+    "token": "{{access_token}}"
+}
+
 ###
 GET {{host}}/users
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 POST {{host}}/users
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 

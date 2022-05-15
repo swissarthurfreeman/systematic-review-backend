@@ -37,6 +37,7 @@ import ch.unige.pinfo3.domain.service.SearchService;
 import ch.unige.pinfo3.domain.service.UserService;
 import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.utils.VALID_UUID;
+import io.quarkus.security.Authenticated;
 
 
 /**
@@ -44,6 +45,7 @@ import ch.unige.pinfo3.utils.VALID_UUID;
  * to /users and /users/*.
  */
 @ApplicationScoped
+@Authenticated
 @Path("/users")
 public class UserRestService {
 

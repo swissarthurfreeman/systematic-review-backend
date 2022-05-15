@@ -41,7 +41,7 @@ repositories {
 dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation('io.quarkus:quarkus-kubernetes-config')
-    implementation('io.quarkus:quarkus-oidc')
+    
     implementation('io.quarkus:quarkus-smallrye-health')
     implementation('io.quarkus:quarkus-container-image-jib')
     implementation('io.quarkus:quarkus-resteasy-jackson')
@@ -62,16 +62,23 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-client-jackson")
 
     implementation("io.quarkus:quarkus-quartz")
-    implementation("io.quarkus:quarkus-scheduler")
 
-    implementation('io.quarkus:quarkus-test-h2') // in memory database
+    implementation('io.quarkus:quarkus-test-h2')
 
     implementation('com.github.javafaker:javafaker:0.14') { exclude module: 'snakeyaml' }
     implementation group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-
+    implementation("io.quarkus:quarkus-security")
+    
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.quarkus:quarkus-junit5-mockito")
     testImplementation("io.rest-assured:rest-assured")
+
+    
     testImplementation group: 'org.json', name: 'json', version: '20220320'
+
+    // authentification dependencies
+    implementation('io.quarkus:quarkus-oidc')
     testImplementation("io.quarkus:quarkus-jacoco")
+    testImplementation("io.quarkus:quarkus-test-oidc-server")
+    testImplementation("io.quarkus:quarkus-test-keycloak-server")
 }
