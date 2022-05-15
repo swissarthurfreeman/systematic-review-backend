@@ -27,7 +27,7 @@ Accept: application/json
 }
 
 ###
-GET {{host}}/users/{{test_uuid}}
+GET {{host}}/users/liugzjgkzj
 Content-Type: application/json
 Accept: application/json
 
