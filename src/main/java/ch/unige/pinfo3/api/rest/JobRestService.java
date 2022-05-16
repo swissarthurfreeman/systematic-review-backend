@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -20,6 +21,9 @@ import org.jboss.logging.Logger;
 public class JobRestService {
     @Inject
     JobService jobService;
+
+    @Inject
+    JsonWebToken jwt;
 
     @Inject
     Logger logger;
@@ -48,5 +52,12 @@ public class JobRestService {
         } else {
             return Response.ok(job.get()).build();
         }
+    }
+
+    @GET
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserJobs() {
+        return Response.ok(jobService.getJobsOfUser(jwt.getSubject())).build();
     }
 }

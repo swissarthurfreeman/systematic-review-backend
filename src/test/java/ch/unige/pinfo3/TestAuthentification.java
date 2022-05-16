@@ -1,7 +1,6 @@
 package ch.unige.pinfo3;
 
 import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.model.User;
 import ch.unige.pinfo3.domain.service.JobService;
 import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
@@ -23,7 +22,6 @@ import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.UUID;
 
-import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;

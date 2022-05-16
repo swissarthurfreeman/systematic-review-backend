@@ -1,7 +1,6 @@
 package ch.unige.pinfo3;
 
 import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.model.User;
 import ch.unige.pinfo3.domain.service.JobService;
 import com.github.javafaker.Faker;
 import io.quarkus.logging.Log;
@@ -22,7 +21,6 @@ import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.UUID;
 
-import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -49,7 +47,8 @@ class UserResourceTest{
     // verifier si je donne un UUID existant
 
     /// TODO une fois tests passent, faire des tests qui ne passent pas pour voir les codes d'erreur
-
+    // TODO: Refactor and split tests into multiple files with Search and Job, from previously user prefixed paths.
+    /*
     static User[] testUsers = new User[10];
 
     String getElementFromJson(String json, String element){
@@ -662,5 +661,5 @@ class UserResourceTest{
             Assertions.assertTrue(EmailValidator.getInstance().isValid(e));
         }
     }
-
+    */
 }

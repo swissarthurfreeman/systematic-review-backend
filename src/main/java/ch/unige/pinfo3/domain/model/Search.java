@@ -24,6 +24,7 @@ public class Search implements Serializable {
     @Id
     public String uuid;
     
+    // this is the subject claim from jwt
     public String user_uuid;
     
     @NotNull
