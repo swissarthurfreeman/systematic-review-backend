@@ -14,9 +14,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jboss.logging.Logger;
+import io.quarkus.logging.Log;
+import io.quarkus.security.Authenticated;
 
 @ApplicationScoped
+@Authenticated
 @Path("/jobs")
 public class JobRestService {
     @Inject
@@ -25,20 +27,17 @@ public class JobRestService {
     @Inject
     JsonWebToken jwt;
 
-    @Inject
-    Logger logger;
-
     @GET // /jobs/:id
     @Path("{job_uuid}")
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getJob(@PathParam("job_uuid") @VALID_UUID String job_uuid) {
-        logger.info("getting job");
+        Log.info("getting job");
         
         var job = jobService.getJob(job_uuid);
-        logger.info(job.isPresent());
+        Log.info(job.isPresent());
         if(!job.isPresent()) {
-            logger.info("job is not present");
+            Log.info("job is not present");
             var err = new ErrorReport();
             err.errors
                     .add(

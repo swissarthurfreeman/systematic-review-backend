@@ -5,6 +5,7 @@ import ch.unige.pinfo3.domain.service.ArticleService;
 import ch.unige.pinfo3.domain.service.ResultService;
 import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.utils.VALID_UUID;
+import io.quarkus.security.Authenticated;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @ApplicationScoped
+@Authenticated
 @Path("/results")
 public class ResultRestService {
     @Inject

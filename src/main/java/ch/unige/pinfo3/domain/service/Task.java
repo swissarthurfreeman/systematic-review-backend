@@ -13,11 +13,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-
-import org.jboss.logging.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import io.quarkus.logging.Log;
 
 /**
  * This class is what gets fed to the quartz scheduler. 
@@ -36,8 +35,6 @@ import org.quartz.JobExecutionException;
  */
 @ApplicationScoped
 public class Task implements org.quartz.Job {
-    @Inject
-    Logger logger;
 
     @Inject
     EntityManager em;
@@ -80,7 +77,7 @@ public class Task implements org.quartz.Job {
         // create bogus mock articles yielded by result these will have to be read from disk.        
         // persist articles in db
         for(int i=0; i < this.random.nextInt(5) + 5; i++)
-            em.persist(articleService.getRandomArticle(res.uuid));
+            em.persist(ArticleService.getRandomArticle(res.uuid));
         
         // persist result
         em.persist(res);
@@ -93,18 +90,18 @@ public class Task implements org.quartz.Job {
         // beware URL.toString() contains path prefixed by protocol. 
         String scriptLocation = this.getClass().getResource("/test.sh").getPath();
 
-        logger.info("Launching Background sh Script at " + scriptLocation);
+        Log.info("Launching Background sh Script at " + scriptLocation);
         
-        logger.info("scriptLocation=" + scriptLocation);
+        Log.info("scriptLocation=" + scriptLocation);
         ProcessBuilder pb = new ProcessBuilder("/bin/sh", scriptLocation);
         
         // start and wait for process to finish
         try {
             this.proc = pb.start();
             this.proc.waitFor();
-            logger.info("Background Script done ");
+            Log.info("Background Script done ");
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            Log.error(e.getMessage());
         } 
     }
 
@@ -117,10 +114,10 @@ public class Task implements org.quartz.Job {
             while ((line = reader.readLine())!= null)
                 output.append(line + "\n");
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            Log.error(e.getMessage());
         }
 
-        logger.info("Ouput of sh script=\n" + output.toString());
+        Log.info("Ouput of sh script=\n" + output.toString());
         return output.toString();
     }
 }

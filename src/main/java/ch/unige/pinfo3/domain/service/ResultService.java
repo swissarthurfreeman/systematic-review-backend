@@ -14,22 +14,15 @@ import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.utils.QueryUtils;
 
 import com.github.javafaker.Faker;
-import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class ResultService {
     @Inject 
     EntityManager em;
 
-    @Inject
-    Logger logger;
-
-    @Inject
-    QueryUtils qu;
-
     @Transactional
     public List<Result> getAll() {
-        return qu.getAll(Result.class, em);
+        return QueryUtils.getAll(Result.class, em);
     }
 
     @Transactional

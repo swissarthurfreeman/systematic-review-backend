@@ -2,22 +2,14 @@ package ch.unige.pinfo3;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.service.JobService;
-import ch.unige.pinfo3.domain.service.ResultService;
 import io.quarkus.logging.Log;
-import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.quartz.Scheduler;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import static io.restassured.RestAssured.given;

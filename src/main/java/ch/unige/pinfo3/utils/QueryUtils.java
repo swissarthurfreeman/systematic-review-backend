@@ -15,9 +15,9 @@ import javax.transaction.Transactional;
  * done here in order to avoid repeating code. 
  */
 @ApplicationScoped
-public class QueryUtils {
+public final class QueryUtils {
     @Transactional
-    public <T> List<T> select(Class<T> entity, String whereColumn, String is, EntityManager em) {
+    static public <T> List<T> select(Class<T> entity, String whereColumn, String is, EntityManager em) {
         // building queries uses the builder design pattern.
         // the builder allows us to build a complex query (SQL under the hood)
         // we build the query once we've applied all the predicates. 
@@ -33,7 +33,7 @@ public class QueryUtils {
     }
 
     @Transactional
-    public <T> List<T> select(Class<T> entity, String col1, String is1, String col2, String is2, EntityManager em) {
+    static public <T> List<T> select(Class<T> entity, String col1, String is1, String col2, String is2, EntityManager em) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(entity);
         Root<T> root = criteria.from(entity);
@@ -47,10 +47,12 @@ public class QueryUtils {
     }
 
     @Transactional
-    public <T> List<T> getAll(Class<T> entity, EntityManager em) {
+    static public <T> List<T> getAll(Class<T> entity, EntityManager em) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = builder.createQuery(entity);
 		criteria.from(entity);
 		return em.createQuery(criteria).getResultList();
     }
+
+    private QueryUtils() {}
 }

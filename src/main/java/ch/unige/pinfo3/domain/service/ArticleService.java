@@ -10,19 +10,16 @@ import javax.transaction.Transactional;
 import com.github.javafaker.*;
 
 import ch.unige.pinfo3.domain.model.Article;
-import ch.unige.pinfo3.utils.QueryUtils;
+import ch.unige.pinfo3.utils.QueryUtils; 
 
 @ApplicationScoped
 public class ArticleService {
     @Inject 
     EntityManager em;
 
-    @Inject
-    QueryUtils qu;
-
     @Transactional
     public List<Article> getArticlesOf(String result_uuid) {
-        return qu.select(Article.class, "result_uuid", result_uuid, em);
+        return QueryUtils.select(Article.class, "result_uuid", result_uuid, em);
     }
     
     public static Article getRandomArticle(String result_uuid) {

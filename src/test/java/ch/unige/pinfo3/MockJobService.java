@@ -4,17 +4,10 @@ import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.service.JobService;
 import io.quarkus.logging.Log;
 import io.quarkus.test.Mock;
-import net.bytebuddy.asm.Advice;
-import org.junit.jupiter.api.BeforeAll;
-import org.mockito.Answers;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 @Mock
 @ApplicationScoped

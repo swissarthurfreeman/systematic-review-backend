@@ -17,14 +17,13 @@ import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
 
 import com.github.javafaker.Faker;
-import io.smallrye.common.constraint.NotNull;
-import org.jboss.logging.Logger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import io.quarkus.logging.Log;
 
 // there can only be one jobber.
 @ApplicationScoped
@@ -36,29 +35,23 @@ public class JobService {
     Scheduler scheduler;
 
     @Inject
-    Logger logger;
-
-    @Inject
     SearchService searchService;
-
-    @Inject
-    QueryUtils qu;
 
     static final ArrayList<Job> queue = new ArrayList<Job>();
 
     @Transactional
     public String submit(String ucnf) {
         // check database if job with the provided ucnf exists
-        List<Result> results = qu.select(Result.class, "ucnf", ucnf, em);
+        List<Result> results = QueryUtils.select(Result.class, "ucnf", ucnf, em);
         
         if(!results.isEmpty()) { 
-            logger.info("Result with that UCNF already exists, returning result_uuid...");
+            Log.info("Result with that UCNF already exists, returning result_uuid...");
             return results.get(0).uuid;
         }
         
-        List<Job> jobs = qu.select(Job.class, "ucnf", ucnf, em);
+        List<Job> jobs = QueryUtils.select(Job.class, "ucnf", ucnf, em);
         if(!jobs.isEmpty()) { 
-            logger.info("Job with that UCNF already exists, returning job_uuid...");
+            Log.info("Job with that UCNF already exists, returning job_uuid...");
             return jobs.get(0).uuid;
         }
 
@@ -83,7 +76,7 @@ public class JobService {
         try {
             scheduler.scheduleJob(job_info, trigger);
         } catch(SchedulerException e) {
-            logger.error(e.getMessage());
+            Log.error(e.getMessage());
         }
 
         return commit_job.getUUID();
