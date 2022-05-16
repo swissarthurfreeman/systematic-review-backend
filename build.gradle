@@ -78,8 +78,7 @@ dependencies {
     testImplementation group: 'org.json', name: 'json', version: '20220320'
 
     // authentification dependencies
-    implementation('io.quarkus:quarkus-oidc')
-    //testImplementation("io.quarkus:quarkus-test-oidc-server")       // for dev testing with keycloak container
+    implementation('io.quarkus:quarkus-oidc')                       // for dev testing with keycloak container
     testImplementation("io.quarkus:quarkus-test-security-oidc")     // for testing without keycloak container
-    //testImplementation("io.quarkus:quarkus-test-keycloak-server")
+    testImplementation("io.quarkus:quarkus-test-keycloak-server")
 }

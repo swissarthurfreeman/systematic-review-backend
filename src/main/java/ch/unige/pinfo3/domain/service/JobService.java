@@ -19,8 +19,6 @@ import ch.unige.pinfo3.utils.QueryUtils;
 import com.github.javafaker.Faker;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import io.quarkus.logging.Log;
@@ -30,9 +28,6 @@ import io.quarkus.logging.Log;
 public class JobService {
     @Inject
     EntityManager em;
-
-    @Inject
-    Scheduler scheduler;
 
     @Inject
     SearchService searchService;
