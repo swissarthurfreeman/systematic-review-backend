@@ -16,7 +16,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import static io.restassured.RestAssured.given;
-
+/*
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -48,12 +48,7 @@ public class ResultsResourceTest {
     @Test
     void getResults() {
         Log.info("Testing endpoint GET /results");
-        /*
-        String body = given()
-                .when()
-                .get("/results/"+result.uuid+"/articles").getBody().asPrettyString();
-        Log.info(body);
-         */
+
 
 
         given()
@@ -120,3 +115,4 @@ public class ResultsResourceTest {
 
 
 }
+*/

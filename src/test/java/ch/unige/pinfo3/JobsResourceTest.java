@@ -13,7 +13,7 @@ import org.mockito.Mockito;
 import javax.transaction.Transactional;
 
 import static io.restassured.RestAssured.given;
-
+/*
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -51,3 +51,4 @@ public class JobsResourceTest {
 
 
 }
+*/

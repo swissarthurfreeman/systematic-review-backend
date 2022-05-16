@@ -6,12 +6,13 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 
+/*
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SearchResourceTest{
 
-    /*
+    
 
     InputStream testSearch = getClass().getClassLoader().getResourceAsStream("testSearch.json");
 
@@ -67,7 +68,7 @@ class SearchResourceTest{
     @Order(4)
     void testMutualExclusionJobResult(){
         // this test is wrong
-        /*
+    
         String[] jobs;
         String[] results;
 
@@ -82,8 +83,7 @@ class SearchResourceTest{
                 Assertions.assertNotNull(results[i]);
             }
         }
-        */
-        /*
+
         // TODO these are unit tests, They should go elsewhere
         Search search = new Search();
         search.setJobUUID("f464a099-e489-939f-9499-c04a371dvd93");
@@ -95,9 +95,9 @@ class SearchResourceTest{
 
 
     }
-         */
 
-/*
+
+
     @Test
     @Order(2)
     //verifie le nb d'attributs pour un search, et les attributs pour un search test
@@ -119,8 +119,9 @@ class SearchResourceTest{
     }
 
 
- */
+
 
 }
 
 
+*/
