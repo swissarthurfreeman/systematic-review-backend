@@ -50,7 +50,6 @@ public class JobsResourceTest {
     /// TODO: voir si je peux m'en débarasser
 
 
-
     @Order(2)
     @Test
     void GetSpecificJob(){
@@ -66,6 +65,7 @@ public class JobsResourceTest {
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
     }
+
 
     @Order(3)
     @Test
