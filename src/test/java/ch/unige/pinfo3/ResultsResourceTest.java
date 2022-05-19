@@ -8,6 +8,7 @@ import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.keycloak.client.KeycloakTestClient;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 
@@ -15,13 +16,16 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import static io.quarkus.test.keycloak.server.KeycloakTestResourceLifecycleManager.getAccessToken;
 import static io.restassured.RestAssured.given;
-/*
+
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ResultsResourceTest {
+
+    KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
     @Inject
     EntityManager em;
@@ -49,9 +53,9 @@ public class ResultsResourceTest {
     void getResults() {
         Log.info("Testing endpoint GET /results");
 
-
-
         given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
                 .when()
                 .get("/results")
                 .then()
@@ -68,6 +72,8 @@ public class ResultsResourceTest {
 
         Log.info("Testing endpoint GET /results/:id");
         given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
                 .when()
                 .get("results/" + result.uuid)
                 .then()
@@ -88,6 +94,8 @@ public class ResultsResourceTest {
 
         Log.info("Testing endpoint GET /results/:id with invalid ID");
         given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
                 .when()
                 .get("results/1234")
                 .then()
@@ -102,6 +110,8 @@ public class ResultsResourceTest {
 
         Log.info("Testing endpoint GET /results/:id/articles");
         given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
                 .when()
                 .get("results/"+result.uuid+"/articles")
                 .then()
@@ -113,6 +123,9 @@ public class ResultsResourceTest {
 
     }
 
+    protected String getAccessToken(String userName) {
+        return keycloakClient.getAccessToken(userName);
+    }
+
 
 }
-*/
