@@ -8,28 +8,21 @@ import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.keycloak.client.KeycloakTestClient;
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
+import io.smallrye.jwt.build.Jwt;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import static io.quarkus.test.keycloak.server.KeycloakTestResourceLifecycleManager.getAccessToken;
 import static io.restassured.RestAssured.given;
-
-import io.quarkus.test.oidc.server.OidcWiremockTestResource;
-import io.smallrye.jwt.build.Jwt;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusTestResource(OidcWiremockTestResource.class)
-public class ResultsResourceTest {
-    @Inject
-    EntityManager em;
+public class ResultsResourceTest extends ResourceTestParent{
 
     Result result = ResultService.getRandomResult();
     Article article1 = ArticleService.getRandomArticle(result.uuid);

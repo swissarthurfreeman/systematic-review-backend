@@ -8,7 +8,6 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
-import io.quarkus.test.keycloak.client.KeycloakTestClient;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
@@ -27,13 +26,7 @@ import io.smallrye.jwt.build.Jwt;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(OidcWiremockTestResource.class)
-public class JobsResourceTest {
-
-    @InjectMock
-    JobService mockJobService;
-
-    @Inject
-    EntityManager em;
+public class JobsResourceTest extends ResourceTestParent{
 
     Job job = JobService.getRandomJob();
 
@@ -63,8 +56,8 @@ public class JobsResourceTest {
     @Transactional
     void setup(){
         /// Todo JE NE VEUX PAS HARDCODER, VOIR COMMENT NE PAS RENVOYER NULL
-        Mockito.when(mockJobService.submit("aids AND hiv AND monkey")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
-        jobUUID = mockJobService.submit("aids AND hiv AND monkey");
+        Mockito.when(js.submit("aids AND hiv AND monkey")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
+        jobUUID = js.submit("aids AND hiv AND monkey");
     }
     /// TODO: voir si je peux m'en débarasser
 

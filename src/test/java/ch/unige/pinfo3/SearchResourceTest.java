@@ -7,42 +7,23 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
-import io.quarkus.test.keycloak.client.KeycloakTestClient;
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 import io.restassured.http.ContentType;
 import io.smallrye.jwt.build.Jwt;
-
 import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.mockito.Mockito;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.*;
 
-import static io.quarkus.test.keycloak.server.KeycloakTestResourceLifecycleManager.getAccessToken;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
-import io.quarkus.test.oidc.server.OidcWiremockTestResource;
+import javax.transaction.Transactional;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusTestResource(OidcWiremockTestResource.class)
-class SearchResourceTest{
-
-    @Inject
-    EntityManager em;
-
-    @InjectMock
-    JobService js;
+class SearchResourceTest extends ResourceTestParent{
     
     Job job = JobService.getRandomJob();
 
