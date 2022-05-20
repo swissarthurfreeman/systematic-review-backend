@@ -30,7 +30,7 @@ import io.smallrye.jwt.build.Jwt;
 public class JobsResourceTest {
 
     @InjectMock
-    MockJobService mockJobService;
+    JobService mockJobService;
 
     @Inject
     EntityManager em;
@@ -43,6 +43,18 @@ public class JobsResourceTest {
 		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
 				.audience("https://service.example.com").sign();
 	}
+
+    /*
+    // TODO : Use mockito to mock JobService behaviour.
+    // One test when the Job is stored in database. 
+    @Test
+    @Order(4)
+    void testMutualExclusionJobResult() {
+        // this test is wrong
+        //Mockito.when(js.submit(Mockito.anyString()).)
+    
+    }
+    */
 
     @Order(1)
     @Test

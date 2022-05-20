@@ -16,6 +16,7 @@ import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -41,7 +42,7 @@ class SearchResourceTest{
     EntityManager em;
 
     @InjectMock
-    MockJobService mockJobService;
+    JobService js;
     
     Job job = JobService.getRandomJob();
 
@@ -54,60 +55,6 @@ class SearchResourceTest{
 		return Jwt.preferredUserName(userName).claim("sub", "j'en ai marre de keycloak c'est cassé").issuer("https://server.example.com")
 				.audience("https://service.example.com").sign();
 	}
-    /*
-
-    @Test
-    @Order(4)
-    void testMutualExclusionJobResult(){
-        // this test is wrong
-    
-        String[] jobs;
-        String[] results;
-
-        jobs = get("/searches").body().jsonPath().getObject("job_uuid",String[].class );
-        results = get("/searches").body().jsonPath().getObject("result_uuid",String[].class );
-
-        for(int i = 0; i < jobs.length; i++){
-            if(jobs[i] != null) {
-                Assertions.assertNull(results[i]);
-            }
-            else{
-                Assertions.assertNotNull(results[i]);
-            }
-        }
-
-        // TODO these are unit tests, They should go elsewhere
-        Search search = new Search();
-        search.setJobUUID("f464a099-e489-939f-9499-c04a371dvd93");
-        Assertions.assertNotNull(search.getJobUUID());
-        Assertions.assertNull(search.getResultUUID());
-        search.setResultUUID("jd9e4jf8-e489-939f-9499-meif932j4ns9");
-        Assertions.assertNotNull(search.getResultUUID());
-        Assertions.assertNull(search.getJobUUID());
-
-
-    }
-
-    @Test
-    @Order(2)
-    //verifie le nb d'attributs pour un search, et les attributs pour un search test
-    void shouldGetSearchById(){
-        given()
-                .when()
-                .get("/users/c044a099-e489-43f8-9499-c04a371dbb62/searches?uuid=c044a099-e489-43f8-9499-c04a371dbb65")
-                .then()
-                .assertThat()
-                .statusCode(is(200))
-                .and()
-                .body("size()", equalTo(4)) // il y a 4 attributs pour une recherche
-                .and()
-                .body("user_uuid", equalTo("c044a099-e489-43f8-9499-c04a371dbb62"))
-                .and()
-                .body("query", equalTo("HIV and SAHARA"))
-                .and()
-                .body("ucnf", equalTo("HIV and SAHARA"));
-    }
-    */
 
     // Test endpoint POST /searches
     @Test
@@ -133,7 +80,30 @@ class SearchResourceTest{
                 .assertThat()
                 .statusCode(is(200));
     }
-    
+    /*
+
+    @Test
+    @Order(2)
+    //verifie le nb d'attributs pour un search, et les attributs pour un search test
+    void shouldGetSearchById() {
+        // TODO : Get sur /searches tu prends le premier search de la liste et tu récupère
+        // son id et ENSUITE tu get /searches?uuid=id_recupere
+        given()
+                .when()
+                .get("/searches?uuid=c044a099-e489-43f8-9499-c04a371dbb65")
+                .then()
+                .assertThat()
+                .statusCode(is(200))
+                .and()
+                .body("size()", equalTo(4)) // il y a 4 attributs pour une recherche
+                .and()
+                .body("user_uuid", equalTo("c044a099-e489-43f8-9499-c04a371dbb62"))
+                .and()
+                .body("query", equalTo("HIV and SAHARA"))
+                .and()
+                .body("ucnf", equalTo("HIV and SAHARA"));
+    }
+    */
     // Post a search, that is stored in a variable, test getElementFromJson
     @Order(2)
     @Test
@@ -193,7 +163,7 @@ class SearchResourceTest{
     @Order(4)
     @Transactional
     void PostInvalidSearch(){
-        Log.info("Testing POST /user/:id/searches with invalid characters");
+        Log.info("Testing POST /searches with invalid characters");
         String searchJson = ("{\"query\": \"ifféie%oiem_$~¡§π«\"}");
         Log.info(searchJson);
         given()
@@ -209,7 +179,7 @@ class SearchResourceTest{
                 .statusCode(is(200));
 
 
-        Log.info("Testing GET /user/:id/searches");
+        Log.info("Testing GET /searches");
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
