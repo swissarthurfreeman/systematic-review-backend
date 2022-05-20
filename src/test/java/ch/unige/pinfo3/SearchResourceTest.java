@@ -51,7 +51,7 @@ class SearchResourceTest{
     }
 
     private String getAccessToken(String userName) {
-		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
+		return Jwt.preferredUserName(userName).claim("sub", "j'en ai marre de keycloak c'est cassé").issuer("https://server.example.com")
 				.audience("https://service.example.com").sign();
 	}
     /*
@@ -88,8 +88,6 @@ class SearchResourceTest{
 
     }
 
-
-
     @Test
     @Order(2)
     //verifie le nb d'attributs pour un search, et les attributs pour un search test
@@ -117,15 +115,15 @@ class SearchResourceTest{
     @TestTransaction
     void postSearch(){
         Log.info("Test endpoint POST /searches");
-        //Search search = SearchService.getRandomSearch(testUsers[testUsers.length-1].uuid, null, UUID.randomUUID().toString());
-        //SearchService.create(search);
         String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
 
         Log.info("Testing POST /user/:id/searches");
         Log.info(searchJson);
+        String access_token = getAccessToken("alice");
+        Log.info(access_token);
         given()
                 .auth()
-                .oauth2(getAccessToken("alice"))
+                .oauth2(access_token)
                 .when()
                 .contentType(ContentType.JSON)
                 .body(searchJson)
@@ -134,10 +132,8 @@ class SearchResourceTest{
                 .then()
                 .assertThat()
                 .statusCode(is(200));
-
     }
-
-
+    
     // Post a search, that is stored in a variable, test getElementFromJson
     @Order(2)
     @Test
@@ -151,7 +147,9 @@ class SearchResourceTest{
                 .contentType(ContentType.JSON)
                 .body(searchJson)
                 .when()
-                .post("/searches").getBody().asString();
+                .post("/searches")
+                .getBody()
+                .asString();
 
         Assertions.assertEquals("hiv AND covid AND ebola", getElementFromJson(testSearchJson, "query"));
     }
@@ -175,6 +173,7 @@ class SearchResourceTest{
                 .assertThat()
                 .statusCode(is(400));
 
+        
         Log.info("Testing GET /searches");
         given()
                 .auth()
@@ -186,7 +185,6 @@ class SearchResourceTest{
                 .statusCode(is(200))
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
-
     }
 
     // Testing POST /user/:id/searches with invalid characters
