@@ -10,6 +10,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.quarkus.test.keycloak.client.KeycloakTestClient;
 import io.restassured.http.ContentType;
+import io.smallrye.jwt.build.Jwt;
+
 import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
@@ -26,11 +28,13 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@QuarkusTestResource(OidcWiremockTestResource.class)
 class SearchResourceTest{
 
     @Inject
@@ -38,9 +42,7 @@ class SearchResourceTest{
 
     @InjectMock
     MockJobService mockJobService;
-
-    KeycloakTestClient keycloakClient = new KeycloakTestClient();
-
+    
     Job job = JobService.getRandomJob();
 
     String getElementFromJson(String json, String element){
@@ -48,6 +50,10 @@ class SearchResourceTest{
         return (obj.getString(element));
     }
 
+    private String getAccessToken(String userName) {
+		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
+				.audience("https://service.example.com").sign();
+	}
     /*
 
     @Test
@@ -150,7 +156,6 @@ class SearchResourceTest{
         Assertions.assertEquals("hiv AND covid AND ebola", getElementFromJson(testSearchJson, "query"));
     }
 
-
     @Test
     @Order(3)
     @Transactional
@@ -172,8 +177,6 @@ class SearchResourceTest{
 
         Log.info("Testing GET /searches");
         given()
-                .auth()
-                .oauth2(getAccessToken("alice"))
                 .auth()
                 .oauth2(getAccessToken("alice"))
                 .when()
@@ -267,15 +270,6 @@ class SearchResourceTest{
                 .and()
                 .body("size()", CoreMatchers.equalTo(7));
     }
-
-    protected String getAccessToken(String userName) {
-        return keycloakClient.getAccessToken(userName);
-    }
-
-
-
-
-
 }
 
 

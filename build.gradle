@@ -79,6 +79,6 @@ dependencies {
 
     // authentification dependencies
     implementation('io.quarkus:quarkus-oidc')                       // for dev testing with keycloak container
-    testImplementation("io.quarkus:quarkus-test-security-oidc")     // for testing without keycloak container
+    testImplementation("io.quarkus:quarkus-test-oidc-server")        // for testing without keycloak container
     testImplementation("io.quarkus:quarkus-test-keycloak-server")
 }

@@ -19,13 +19,15 @@ import javax.transaction.Transactional;
 
 import static io.restassured.RestAssured.given;
 
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
+import io.smallrye.jwt.build.Jwt;
+
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@QuarkusTestResource(OidcWiremockTestResource.class)
 public class JobsResourceTest {
-
-    KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
     @InjectMock
     MockJobService mockJobService;
@@ -37,7 +39,10 @@ public class JobsResourceTest {
 
     String jobUUID;
 
-
+    private String getAccessToken(String userName) {
+		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
+				.audience("https://service.example.com").sign();
+	}
 
     @Order(1)
     @Test
@@ -96,11 +101,4 @@ public class JobsResourceTest {
                 .assertThat()
                 .body("size()", CoreMatchers.equalTo(0)); /// todo: 0 pour que tests passent. Voir comment ajouter job à utilisateur
     }
-
-
-
-    protected String getAccessToken(String userName) {
-        return keycloakClient.getAccessToken(userName);
-    }
-
 }

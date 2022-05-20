@@ -11,10 +11,16 @@ import org.junit.jupiter.api.*;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.io.InputStream;
+import java.util.Set;
+
+import io.smallrye.jwt.build.Jwt;
+
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@QuarkusTestResource(OidcWiremockTestResource.class)
 class UserResourceTest{
 
     @Inject
@@ -30,6 +36,10 @@ class UserResourceTest{
     // verifier les type de UUID
     // verifier ce qui se pase si je donne, si je donne pas, sie je donne la merde, etc...
     // verifier si je donne un UUID existant
+    private String getAccessToken(String userName) {
+		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
+				.audience("https://service.example.com").sign();
+	}
 
     /// TODO une fois tests passent, faire des tests qui ne passent pas pour voir les codes d'erreur
     // TODO: Refactor and split tests into multiple files with Search and Job, from previously user prefixed paths.

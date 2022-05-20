@@ -19,21 +19,26 @@ import javax.transaction.Transactional;
 import static io.quarkus.test.keycloak.server.KeycloakTestResourceLifecycleManager.getAccessToken;
 import static io.restassured.RestAssured.given;
 
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
+import io.smallrye.jwt.build.Jwt;
+
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@QuarkusTestResource(OidcWiremockTestResource.class)
 public class ResultsResourceTest {
-
-    KeycloakTestClient keycloakClient = new KeycloakTestClient();
-
     @Inject
     EntityManager em;
 
     Result result = ResultService.getRandomResult();
     Article article1 = ArticleService.getRandomArticle(result.uuid);
     Article article2 = ArticleService.getRandomArticle(result.uuid);
-
+    
+    private String getAccessToken(String userName) {
+		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
+				.audience("https://service.example.com").sign();
+	}
     // persisting a result to DB
     @Order(1)
     @Test
@@ -122,10 +127,4 @@ public class ResultsResourceTest {
 
 
     }
-
-    protected String getAccessToken(String userName) {
-        return keycloakClient.getAccessToken(userName);
-    }
-
-
 }
