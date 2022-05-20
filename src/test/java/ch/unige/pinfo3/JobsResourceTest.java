@@ -39,6 +39,8 @@ public class JobsResourceTest {
 
     String jobUUID;
 
+    // persister job avec em
+
     private String getAccessToken(String userName) {
 		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
 				.audience("https://service.example.com").sign();
