@@ -26,8 +26,8 @@ class UserResourceTest{
     @Inject
     EntityManager em;
 
-    @InjectMock
-    MockJobService mockJobService;
+    //@InjectMock
+    //MockJobService mockJobService;
 
     Job job = JobService.getRandomJob();
 
