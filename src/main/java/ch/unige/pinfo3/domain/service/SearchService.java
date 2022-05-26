@@ -126,7 +126,8 @@ public class SearchService {
         Faker fk = new Faker();
         search.uuid = UUID.randomUUID().toString();
         search.user_uuid = user_uuid;
-        search.query = fk.expression("#{lorem.word} AND #{lorem.word}");
+        //search.query = fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word} AND #{lorem.word} AND #{lorem.word}");
+        search.query = fk.lorem().word() + " AND " + fk.lorem().word() + " AND " + fk.lorem().word();
         search.ucnf = search.query; /// TODO tranformer les query en ucnf
         search.timestamp = new Date();
         search.job_uuid = job_uuid;
