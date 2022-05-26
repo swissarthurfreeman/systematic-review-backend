@@ -1,4 +1,4 @@
-package ch.unige.pinfo3;
+package ch.unige.pinfo3.EndpointTesting;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.service.JobService;
@@ -27,6 +27,10 @@ import io.smallrye.jwt.build.Jwt;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(OidcWiremockTestResource.class)
 public class JobsResourceTest extends ResourceTestParent{
+
+    ///////////////////////
+    /// TODO JE N'ARRIVE PAS A PERSISTER OU EN TROUT CAS RETIRER UN JOB, CAR JE N'ARRIVE PAS à LIER LE JOB à L'UTILISATEUR
+    ///////////////////////
 
     Job job = JobService.getRandomJob();
 
@@ -59,7 +63,6 @@ public class JobsResourceTest extends ResourceTestParent{
         em.persist(job);
         Log.info(job.uuid);
     }
-    /// TODO: voir si je peux m'en débarasser
 
 
     @Order(2)

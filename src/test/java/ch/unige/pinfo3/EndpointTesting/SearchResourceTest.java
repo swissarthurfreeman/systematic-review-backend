@@ -1,4 +1,4 @@
-package ch.unige.pinfo3;
+package ch.unige.pinfo3.EndpointTesting;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Search;
