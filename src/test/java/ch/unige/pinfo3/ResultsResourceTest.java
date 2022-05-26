@@ -9,7 +9,6 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
-import io.smallrye.jwt.build.Jwt;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 
@@ -104,6 +103,17 @@ public class ResultsResourceTest extends ResourceTestParent{
     void TestSpecificResultArticles() {
 
         Log.info("Testing endpoint GET /results/:id/articles");
+
+        String body = given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .when()
+                .get("results/"+result.uuid+"/articles")
+                .getBody()
+                .asPrettyString();
+        Log.info(body);
+
+
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
@@ -113,8 +123,29 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(CoreMatchers.is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(2)); /// Todo voir comment vérifier les éléments du premier (trouver le bon JSON path)
-
+                .body("size()", CoreMatchers.equalTo(2))
+                .and()
+                .body("[0].size()", CoreMatchers.equalTo(10))
+                .and()
+                .body("[0][\"uuid\"]", CoreMatchers.equalTo(article1.uuid))
+                .and()
+                .body("[0][\"result_uuid\"]", CoreMatchers.equalTo(article1.result_uuid))
+                .and()
+                .body("[0][\"university\"]", CoreMatchers.equalTo(article1.university))
+                .and()
+                .body("[0][\"x\"]", CoreMatchers.equalTo(article1.x))
+                .and()
+                .body("[0][\"y\"]", CoreMatchers.equalTo(article1.y))
+                .and()
+                .body("[0][\"url\"]", CoreMatchers.equalTo(article1.URL))
+                .and()
+                .body("[0][\"abstract\"]", CoreMatchers.equalTo(article1.Abstract))
+                .and()
+                .body("[0][\"authors\"]", CoreMatchers.equalTo(article1.Authors))
+                .and()
+                .body("[0][\"full_text\"]", CoreMatchers.equalTo(article1.Full_text))
+                .and()
+                .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title));
 
     }
 }
