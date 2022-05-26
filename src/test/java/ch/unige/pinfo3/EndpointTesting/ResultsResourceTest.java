@@ -103,6 +103,7 @@ public class ResultsResourceTest extends ResourceTestParent{
     void TestSpecificResultArticles() {
 
         Log.info("Testing endpoint GET /results/:id/articles");
+        Log.info((article1.x));
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
@@ -122,9 +123,9 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .and()
                 .body("[0][\"university\"]", CoreMatchers.equalTo(article1.university))
                 .and()
-                .body("[0][\"x\"]", CoreMatchers.equalTo(article1.x))
+                .body("[0][\"x\"]", CoreMatchers.equalTo(((float) article1.x)))
                 .and()
-                .body("[0][\"y\"]", CoreMatchers.equalTo(article1.y))
+                .body("[0][\"y\"]", CoreMatchers.equalTo((float) article1.y))
                 .and()
                 .body("[0][\"url\"]", CoreMatchers.equalTo(article1.URL))
                 .and()
