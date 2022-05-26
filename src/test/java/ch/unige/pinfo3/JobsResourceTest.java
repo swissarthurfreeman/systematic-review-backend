@@ -34,35 +34,36 @@ public class JobsResourceTest extends ResourceTestParent{
 
     // persister job avec em
 
-    private String getAccessToken(String userName) {
-		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
-				.audience("https://service.example.com").sign();
-	}
 
-    /*
     // TODO : Use mockito to mock JobService behaviour.
     // One test when the Job is stored in database. 
     @Test
     @Order(4)
     void testMutualExclusionJobResult() {
         // this test is wrong
-        //Mockito.when(js.submit(Mockito.anyString()).)
+        //Mockito.when(js.submit(Mockito.anyString())).thenReturn(job.uuid);
     
     }
-    */
+
 
     @Order(1)
     @Test
     @Transactional
     void setup(){
         /// Todo JE NE VEUX PAS HARDCODER, VOIR COMMENT NE PAS RENVOYER NULL
-        Mockito.when(js.submit("aids AND hiv AND monkey")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
-        jobUUID = js.submit("aids AND hiv AND monkey");
+        //Mockito.when(js.submit("aids AND hiv AND monkey")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
+        //jobUUID = js.submit("aids AND hiv AND monkey");
+        //Mockito.when(js.submit(Mockito.anyString())).thenReturn(job.uuid);
+        //jobUUID = js.submit(job.ucnf);
+        //Log.info(jobUUID);
+        em.persist(job);
+        Log.info(job.uuid);
     }
     /// TODO: voir si je peux m'en débarasser
 
 
     @Order(2)
+    @Transactional
     @Test
     void GetSpecificJob(){
         Log.info(jobUUID);
@@ -70,10 +71,10 @@ public class JobsResourceTest extends ResourceTestParent{
                 .auth()
                 .oauth2(getAccessToken("alice"))
                 .when()
-                .get("/jobs/c4d97a9e-ae62-4f3e-a525-f7433fc77994")
+                .get("/jobs/"+ job.uuid)
                 .then()
                 .assertThat()
-                .statusCode(CoreMatchers.is(404)) /// Todo, voir pourquoi c'est 404 et pas 200......
+                .statusCode(CoreMatchers.is(200)) /// Todo, voir pourquoi c'est 404 et pas 200......
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
     }
@@ -83,9 +84,9 @@ public class JobsResourceTest extends ResourceTestParent{
     @Test
     @Transactional
     void persistResult() {
-        Log.info("persisting a results and articles to DB");
-        Log.info(em);
-        em.persist(job);
+        //Log.info("persisting a results and articles to DB");
+        //Log.info(em);
+        //em.persist(job);
     }
 
     // Testing GET /jobs
