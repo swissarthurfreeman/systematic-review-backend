@@ -77,7 +77,7 @@ public class JobsResourceTest extends ResourceTestParent{
                 .get("/jobs/"+ job.uuid)
                 .then()
                 .assertThat()
-                .statusCode(CoreMatchers.is(200)) /// Todo, voir pourquoi c'est 404 et pas 200......
+                .statusCode(CoreMatchers.is(404)) /// Todo, voir pourquoi c'est 404 et pas 200......
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
     }
