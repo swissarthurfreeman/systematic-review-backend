@@ -1,7 +1,9 @@
 package ch.unige.pinfo3;
 
 import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.service.JobService;
+import ch.unige.pinfo3.domain.model.Result;
+import ch.unige.pinfo3.domain.model.Search;
+import ch.unige.pinfo3.utils.QueryUtils;
 import io.quarkus.logging.Log;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -9,13 +11,16 @@ import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 import io.restassured.http.ContentType;
-import io.smallrye.jwt.build.Jwt;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
+import java.util.List;
 
+import static ch.unige.pinfo3.domain.service.JobService.getRandomJob;
+import static ch.unige.pinfo3.domain.service.SearchService.getRandomSearch;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -23,19 +28,43 @@ import static org.hamcrest.CoreMatchers.is;
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusTestResource(OidcWiremockTestResource.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ApplicationScoped
 class SearchResourceTest extends ResourceTestParent{
-    
-    Job job = JobService.getRandomJob();
+
+    Job job = getRandomJob();
 
     String getElementFromJson(String json, String element){
         JSONObject obj = new JSONObject(json);
         return (obj.getString(element));
     }
 
-    private String getAccessToken(String userName) {
-		return Jwt.preferredUserName(userName).claim("sub", "j'en ai marre de keycloak c'est cassé").issuer("https://server.example.com")
-				.audience("https://service.example.com").sign();
-	}
+    static Search[] testSearches = new Search[9];
+
+    @BeforeAll
+    void setup(){
+        for(int i = 0; i < 9; i++){
+            testSearches[i] = getRandomSearch(userUUID, null, null);
+            Search search = testSearches[i];
+            // search for job or result with said ucnf
+            List<Job> jobs = QueryUtils.select(Job.class, "ucnf", search.ucnf, em);
+            List<Result> results = QueryUtils.select(Result.class, "ucnf", search.ucnf, em);
+
+            if(!jobs.isEmpty()) {
+                search.setJobUUID(jobs.get(0).uuid);
+                search.setResultUUID(null);
+            } else if(!results.isEmpty()) {
+                search.setResultUUID(results.get(0).uuid);
+                search.setJobUUID(null);
+            } else {
+                // submits job
+                Job job = getRandomJob();
+                job.ucnf = search.ucnf;
+                em.persist(job);
+                search.setJobUUID(job.uuid);
+            }
+        }
+    }
 
     // Test endpoint POST /searches
     @Test
@@ -44,8 +73,7 @@ class SearchResourceTest extends ResourceTestParent{
     void postSearch(){
         Log.info("Test endpoint POST /searches");
         String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
-
-        Log.info("Testing POST /user/:id/searches");
+        Log.info("Testing POST searches");
         Log.info(searchJson);
         String access_token = getAccessToken("alice");
         Log.info(access_token);
@@ -135,7 +163,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(2));
+                .body("size()", CoreMatchers.equalTo(10));
     }
 
     // Testing POST /user/:id/searches with invalid characters
@@ -170,7 +198,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(3));
+                .body("size()", CoreMatchers.equalTo(11));
     }
 
     // Testing GET /searches
@@ -187,7 +215,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(3));
+                .body("size()", CoreMatchers.equalTo(11));
     }
 
     // Testing GET /searches/:id
