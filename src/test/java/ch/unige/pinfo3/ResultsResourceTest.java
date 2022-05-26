@@ -103,17 +103,6 @@ public class ResultsResourceTest extends ResourceTestParent{
     void TestSpecificResultArticles() {
 
         Log.info("Testing endpoint GET /results/:id/articles");
-
-        String body = given()
-                .auth()
-                .oauth2(getAccessToken("alice"))
-                .when()
-                .get("results/"+result.uuid+"/articles")
-                .getBody()
-                .asPrettyString();
-        Log.info(body);
-
-
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
