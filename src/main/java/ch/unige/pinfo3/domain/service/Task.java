@@ -76,7 +76,7 @@ public class Task implements org.quartz.Job {
         
         // create bogus mock articles yielded by result these will have to be read from disk.        
         // persist articles in db
-        for(int i=0; i < this.random.nextInt(5) + 5; i++)
+        for(int i=0; i < this.random.nextInt(200) + 20; i++)
             em.persist(ArticleService.getRandomArticle(res.uuid));
         
         // persist result

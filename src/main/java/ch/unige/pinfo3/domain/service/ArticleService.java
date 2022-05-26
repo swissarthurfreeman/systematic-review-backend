@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import com.github.javafaker.*;
+import java.util.Random;
 
 import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.utils.QueryUtils; 
@@ -16,6 +17,8 @@ import ch.unige.pinfo3.utils.QueryUtils;
 public class ArticleService {
     @Inject 
     EntityManager em;
+
+    static Random rand = new Random();
 
     @Transactional
     public List<Article> getArticlesOf(String result_uuid) {
@@ -33,6 +36,8 @@ public class ArticleService {
         ar.Title = fk.book().title();
         ar.URL = fk.internet().url();
         ar.university = fk.university().name();
+        ar.x = Math.abs(rand.nextGaussian(0.5, 0.3));
+        ar.y = Math.abs(rand.nextGaussian(0.5, 0.5));
         return ar;
     }
 }
