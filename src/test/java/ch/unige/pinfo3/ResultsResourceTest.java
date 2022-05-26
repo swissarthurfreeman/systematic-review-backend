@@ -28,10 +28,7 @@ public class ResultsResourceTest extends ResourceTestParent{
     Article article1 = ArticleService.getRandomArticle(result.uuid);
     Article article2 = ArticleService.getRandomArticle(result.uuid);
     
-    private String getAccessToken(String userName) {
-		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
-				.audience("https://service.example.com").sign();
-	}
+
     // persisting a result to DB
     @Order(1)
     @Test
