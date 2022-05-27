@@ -38,6 +38,8 @@ public class JobsResourceTest extends ResourceTestParent{
 
     // persister job avec em
 
+    // injecter OIDC d'un utilisateur job, et essayer faire comme
+
 
     // TODO : Use mockito to mock JobService behaviour.
     // One test when the Job is stored in database. 
