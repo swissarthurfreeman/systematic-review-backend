@@ -35,7 +35,6 @@ public class ArticleService {
         ar.Abstract = fk.lorem().fixedString(200);
         ar.Title = fk.book().title();
         ar.URL = fk.internet().url();
-        ar.university = fk.university().name();
         ar.x = Math.abs(rand.nextGaussian(0.5, 0.3));
         ar.y = Math.abs(rand.nextGaussian(0.5, 0.5));
         return ar;

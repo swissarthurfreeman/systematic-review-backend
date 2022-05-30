@@ -20,22 +20,15 @@ import com.github.javafaker.Faker;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
 import io.quarkus.logging.Log;
+
+import io.smallrye.reactive.messaging.kafka.Record;
 
 // there can only be one jobber.
 @ApplicationScoped
 public class JobService {
     @Inject
     EntityManager em;
-
-    @Inject
-    Scheduler scheduler;
 
     @Inject
     SearchService searchService;
@@ -45,37 +38,11 @@ public class JobService {
 
     @Inject
     @Channel("jobs")
-    Emitter<String> ucnfEmitter;
+    Emitter<Record<String, String>> ucnfEmitter;
     
     @Transactional
     public String submit(String ucnf) {
         
-        /*Job commit_job = new Job();
-        commit_job.uuid = UUID.randomUUID().toString();
-        commit_job.ucnf = ucnf;
-        commit_job.status = "queued";
-        commit_job.timestamp = new Date();
-        em.persist(commit_job);*/
-
-        ucnfEmitter.send(ucnf);
-        return "AAAA";
-        //return commit_job.getUUID();
-
-        // check database if job with the provided ucnf exists
-        /*List<Result> results = QueryUtils.select(Result.class, "ucnf", ucnf, em);
-        
-        if(!results.isEmpty()) { 
-            Log.info("Result with that UCNF already exists, returning result_uuid...");
-            return results.get(0).uuid;
-        }
-        
-        List<Job> jobs = QueryUtils.select(Job.class, "ucnf", ucnf, em);
-        if(!jobs.isEmpty()) { 
-            Log.info("Job with that UCNF already exists, returning job_uuid...");
-            return jobs.get(0).uuid;
-        }
-
-        // persist job in database
         Job commit_job = new Job();
         commit_job.uuid = UUID.randomUUID().toString();
         commit_job.ucnf = ucnf;
@@ -83,23 +50,8 @@ public class JobService {
         commit_job.timestamp = new Date();
         em.persist(commit_job);
 
-        JobDetail job_info = JobBuilder.newJob(Task.class)
-            .withIdentity(ucnf)
-            .usingJobData("job_uuid", commit_job.uuid)
-            .usingJobData("ucnf", commit_job.ucnf)
-            .build();
-        
-        Trigger trigger = TriggerBuilder.newTrigger()
-            .startNow()
-            .build();
-
-        try {
-            scheduler.scheduleJob(job_info, trigger);
-        } catch(SchedulerException e) {
-            Log.error(e.getMessage());
-        }
-
-        return commit_job.getUUID(); */
+        ucnfEmitter.send(Record.of(ucnf, ucnf));
+        return commit_job.uuid;
     }
      
     @Transactional

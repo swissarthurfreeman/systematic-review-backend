@@ -17,46 +17,59 @@ public class Article implements Serializable {
     public String result_uuid;
     
     @NotNull
+    @Lob
     public String Title;
-    
-    @NotNull
+
+    public String Date;
+
+    public String PMCID;
+
+    @Lob
     public String Authors;
     
-    @NotNull
     @Lob
     public String Abstract;
     
-    @NotNull
     @Lob    // large object
     public String Full_text;
     
-    @NotNull
+    @Lob
     public String URL;
 
-    @NotNull
-    public String university;
+    @Lob 
+    public String Journal;
+
+    public String year;
+
+    @Lob
+    public String labels;
+
+    public String text;
+
+    public int cluster;
 
     @NotNull
     public double x;
-    
+
     @NotNull
     public double y;
 
     public Article() {}
 
-    public Article(String uuid, String result_uuid, String Title, 
+    public Article(String uuid, String result_uuid, String Title, String pmcid, 
                    String Authors, String Abstract, 
                    String Full_text, String URL,
-                   String university,
+                   String Journal, String year, String labels, String text, String cluster,
                    double x, double y) {
         this.uuid = uuid;
-        this.result_uuid= result_uuid;
+        this.result_uuid = result_uuid;
         this.Title = Title;
+        this.PMCID = pmcid;
         this.Authors = Authors;
         this.Abstract = Abstract;
         this.Full_text = Full_text;
         this.URL = URL;
-        this.university = university;
+        this.Journal = Journal;
         this.x = x;
         this.y = y;
     }

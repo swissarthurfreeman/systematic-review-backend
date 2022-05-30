@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
@@ -20,6 +21,9 @@ public class Result implements Serializable {
     @Column(unique=true)
     @NotNull
     public String ucnf;
+
+    @ElementCollection(targetClass=Integer.class)
+    public List<Integer> clusters;
 
     // non efficient implementation : duplicate articles which appear
     // in multiple results are possible, for the sake of the MVP this is 
