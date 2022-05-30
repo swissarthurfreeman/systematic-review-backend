@@ -15,6 +15,8 @@ import ch.unige.pinfo3.utils.QueryUtils;
 
 import com.github.javafaker.Faker;
 
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+
 @ApplicationScoped
 public class ResultService {
     @Inject 
@@ -44,6 +46,11 @@ public class ResultService {
                 Response.Status.NOT_FOUND
         ));
         return Optional.of(err);
+    }
+
+    @Incoming("clustered_articles")
+    public void consume(String result) {
+        System.out.println(result);
     }
 
     public static Result getRandomResult(){

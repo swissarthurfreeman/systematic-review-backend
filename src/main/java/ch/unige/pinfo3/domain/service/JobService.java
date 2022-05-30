@@ -17,6 +17,9 @@ import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.QueryUtils;
 
 import com.github.javafaker.Faker;
+
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -39,10 +42,27 @@ public class JobService {
 
     static final ArrayList<Job> queue = new ArrayList<Job>();
 
+
+    @Inject
+    @Channel("jobs")
+    Emitter<String> ucnfEmitter;
+    
     @Transactional
     public String submit(String ucnf) {
+        
+        /*Job commit_job = new Job();
+        commit_job.uuid = UUID.randomUUID().toString();
+        commit_job.ucnf = ucnf;
+        commit_job.status = "queued";
+        commit_job.timestamp = new Date();
+        em.persist(commit_job);*/
+
+        ucnfEmitter.send(ucnf);
+        return "AAAA";
+        //return commit_job.getUUID();
+
         // check database if job with the provided ucnf exists
-        List<Result> results = QueryUtils.select(Result.class, "ucnf", ucnf, em);
+        /*List<Result> results = QueryUtils.select(Result.class, "ucnf", ucnf, em);
         
         if(!results.isEmpty()) { 
             Log.info("Result with that UCNF already exists, returning result_uuid...");
@@ -79,9 +99,9 @@ public class JobService {
             Log.error(e.getMessage());
         }
 
-        return commit_job.getUUID();
+        return commit_job.getUUID(); */
     }
-
+     
     @Transactional
     public List<Job> getJobsOfUser(String user_uuid) {
         List<Search> searches = searchService.getSearchesOf(user_uuid);
@@ -92,7 +112,7 @@ public class JobService {
         }
         return jobs;   
     }
-
+    
     @Transactional
     public Optional<Job> getJob(String job_uuid) {
         return Optional.ofNullable(em.find(Job.class, job_uuid));

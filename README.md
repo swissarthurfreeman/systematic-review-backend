@@ -93,6 +93,14 @@ ErrorReports are generated when validation fails or requests to inexistant resou
 | authors    | String                        | list of article authors                                            |
 | abstract   | String                        | article abstract                                                   |
 
+## Kafka Communication
+
+Jobert and backend interact through the jobs channel.
+We send a job with a single ucnf string to Jobert. 
+Python du clusterer/puller will return the result with
+a ucnf key and the clustered articles. 
+
+
 ## Quarkus Usage
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
