@@ -12,6 +12,10 @@ import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.UUID;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
@@ -19,7 +23,7 @@ import java.util.UUID;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(OidcWiremockTestResource.class)
-public class ComponentTest1 {
+public class ResultServiceTest {
 
     // testing ResultService.java checkExistence test
 
@@ -30,7 +34,7 @@ public class ComponentTest1 {
     ResultService rs;
 
     @Test
-    void testCa(){
+    void checkExistencePresentTest(){
         String result_uuid = UUID.randomUUID().toString();
         Mockito.when(em.find(Result.class, result_uuid)).thenReturn(null);
 
@@ -41,13 +45,12 @@ public class ComponentTest1 {
     }
 
     @Test
-    void testCi(){
+    void checkExistenceNotPresentTest(){
         String result_uuid = UUID.randomUUID().toString();
         Mockito.when(em.find(Result.class, result_uuid)).thenReturn(new Result());
 
         var error = rs.checkExistence(result_uuid);
 
         Assertions.assertTrue (error.isEmpty());
-
     }
 }
