@@ -77,11 +77,11 @@ public class ResultService {
     }
 
     /***
-     * This method listens for incoming results on the clustered_articles channel.
+     * This method listens for incoming results on the Jarticles channel.
      * @param result a json string to be parsed containing a ucnf key and a list 
      * of lists, see df_hover.json. 
      */
-    @Incoming("clustered_articles")
+    @Incoming("Jarticles")
     @Transactional
     public CompletableFuture<Void> consume(IncomingKafkaRecord<String, String> result) {
         String ucnf = result.getKey();

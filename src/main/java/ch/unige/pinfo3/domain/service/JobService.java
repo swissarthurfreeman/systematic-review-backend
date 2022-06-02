@@ -37,8 +37,8 @@ public class JobService {
 
 
     @Inject
-    @Channel("jobs")
-    Emitter<Record<String, String>> ucnfEmitter;
+    @Channel("ucnfs")
+    Emitter<String> ucnfEmitter;
     
     @Transactional
     public String submit(String ucnf) {
@@ -50,7 +50,7 @@ public class JobService {
         commit_job.timestamp = new Date();
         em.persist(commit_job);
 
-        ucnfEmitter.send(Record.of(ucnf, ucnf));
+        ucnfEmitter.send(ucnf);
         return commit_job.uuid;
     }
      
