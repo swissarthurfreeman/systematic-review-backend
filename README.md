@@ -88,10 +88,40 @@ ErrorReports are generated when validation fails or requests to inexistant resou
 |------------|-------------------------------|--------------------------------------------------------------------|
 | uuid       | String                        | Unique identifier of the article result.                           |
 | result_uuid| String                        | Unique identifier of the result to the which this article belongs. |
-| url        | string                        | Url of the article                                                 |
-| title      | String                        | article title                                                      |
-| authors    | String                        | list of article authors                                            |
-| abstract   | String                        | article abstract                                                   |
+| Title      | String                        | article title                                                      |
+| Authors    | String                        | list of article authors, may be null.                              |
+| Abstract   | String                        | article abstract                                                   |
+| Full_text  | String                        | article full text                                                  |
+| URL        | String                        | The article URL, may be null.                                      |
+| Journal    | String                        | The journal of publication, may be null.                           |
+| Year       | String                        | The year of publication, may be null.                              |
+| Date       | String                        | The Date of publication, may be null.                              |
+| labels     | String                        | A list of strings that uniquely identifiy the cluster.             |
+| cluster    | int                           | An integer that identifies the cluster, -1 means not atributed.    |
+| x,y        | double                        | the position of the article in the clustering                      |
+
+An article is represented in Java by, 
+
+```java
+public class Article {
+    public String uuid;
+    public String result_uuid;
+    public String Title;
+    public String PMCID;
+    public String Authors; 
+    public String Abstract;
+    public String Full_text; 
+    public String URL;
+    public String Journal; 
+    public String Year; 
+    public String Date; 
+    public String labels;
+    public String text;
+    public int cluster;
+    public double x;
+    public double y;
+}
+```
 
 ## Kafka Communication
 
@@ -99,7 +129,6 @@ Jobert and backend interact through the jobs channel.
 We send a job with a single ucnf string to Jobert. 
 Python du clusterer/puller will return the result with
 a ucnf key and the clustered articles. 
-
 
 ## Quarkus Usage
 
