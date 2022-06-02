@@ -56,7 +56,7 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(CoreMatchers.is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(2));
+                .body("size()", CoreMatchers.equalTo(3));
     }
 
     // Testing endpoint GET /results/:id
@@ -115,13 +115,11 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .and()
                 .body("size()", CoreMatchers.equalTo(2))
                 .and()
-                .body("[0].size()", CoreMatchers.equalTo(10))
+                .body("[0].size()", CoreMatchers.equalTo(16))
                 .and()
                 .body("[0][\"uuid\"]", CoreMatchers.equalTo(article1.uuid))
                 .and()
                 .body("[0][\"result_uuid\"]", CoreMatchers.equalTo(article1.result_uuid))
-                //.and()
-                //.body("[0][\"university\"]", CoreMatchers.equalTo(article1.))
                 .and()
                 .body("[0][\"x\"]", CoreMatchers.equalTo(((float) article1.x)))
                 .and()
@@ -136,6 +134,7 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .body("[0][\"full_text\"]", CoreMatchers.equalTo(article1.Full_text))
                 .and()
                 .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title));
+                /// Todo: A completer
 
     }
 }
