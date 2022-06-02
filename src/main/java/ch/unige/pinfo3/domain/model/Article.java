@@ -18,26 +18,26 @@ public class Article implements Serializable {
     
     @NotNull
     @Lob
-    public String Title;
+    public String title;
 
-    public String Date;
+    public String date;
 
-    public String PMCID;
+    public String pmcid;
 
     @Lob
-    public String Authors;
+    public String authors;
     
     @Lob
     public String Abstract;
     
     @Lob    // large object
-    public String Full_text;
+    public String full_text;
     
     @Lob
-    public String URL;
+    public String url;
 
     @Lob 
-    public String Journal;
+    public String journal;
 
     public String year;
 
@@ -64,15 +64,15 @@ public class Article implements Serializable {
                    double x, double y) {
         this.uuid = uuid;
         this.result_uuid = result_uuid;
-        this.Title = Title;
-        this.PMCID = pmcid;
-        this.Authors = Authors;
+        this.title = Title;
+        this.pmcid = pmcid;
+        this.authors = Authors;
         this.Abstract = Abstract;
-        this.Full_text = Full_text;
-        this.URL = URL;
-        this.Journal = Journal;
+        this.full_text = Full_text;
+        this.url = URL;
+        this.journal = Journal;
         this.year = year;
-        this.Date = date;
+        this.date = date;
         this.labels = labels;
         this.text = text;
         this.cluster = cluster;

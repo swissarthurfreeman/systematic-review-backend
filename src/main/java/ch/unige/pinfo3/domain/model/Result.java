@@ -22,8 +22,8 @@ public class Result implements Serializable {
     @NotNull
     public String ucnf;
 
-    @ElementCollection(targetClass=Integer.class)
-    public List<Integer> clusters;
+    //@ElementCollection(targetClass=Integer.class)
+    //public List<Integer> clusters;
 
     // non efficient implementation : duplicate articles which appear
     // in multiple results are possible, for the sake of the MVP this is 
