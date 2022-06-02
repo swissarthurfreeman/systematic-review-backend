@@ -44,6 +44,7 @@ public class Article implements Serializable {
     @Lob
     public String labels;
 
+    @Lob
     public String text;
 
     public int cluster;
@@ -59,7 +60,7 @@ public class Article implements Serializable {
     public Article(String uuid, String result_uuid, String Title, String pmcid, 
                    String Authors, String Abstract, 
                    String Full_text, String URL,
-                   String Journal, String year, String labels, String text, String cluster,
+                   String Journal, String year, String date, String labels, String text, int cluster,
                    double x, double y) {
         this.uuid = uuid;
         this.result_uuid = result_uuid;
@@ -70,6 +71,11 @@ public class Article implements Serializable {
         this.Full_text = Full_text;
         this.URL = URL;
         this.Journal = Journal;
+        this.year = year;
+        this.Date = date;
+        this.labels = labels;
+        this.text = text;
+        this.cluster = cluster;
         this.x = x;
         this.y = y;
     }

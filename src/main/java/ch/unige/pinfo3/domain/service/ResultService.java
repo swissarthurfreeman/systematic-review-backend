@@ -103,8 +103,9 @@ public class ResultService {
             JSONObject urls = (JSONObject) json.get("URL");
             JSONObject journals = (JSONObject) json.get("Journal");
             JSONObject years = (JSONObject) json.get("Year");
+            JSONObject dates = (JSONObject) json.get("Date");
             JSONObject labels = (JSONObject) json.get("labels");
-            JSONObject text = (JSONObject) json.get("text");
+            JSONObject texts = (JSONObject) json.get("text");
             JSONObject clusters = (JSONObject) json.get("cluster");
             JSONObject xs = (JSONObject) json.get("x");
             JSONObject ys = (JSONObject) json.get("y");
@@ -112,28 +113,44 @@ public class ResultService {
             int n = titles.size();
             for(int i=0; i < n; i++) {
                 String article_number = Integer.toString(i);
+                String title = String.valueOf(titles.get(article_number));                
+                String label = String.valueOf(labels.get(article_number));
+
+                String year = String.valueOf(years.get(article_number));
+                var sep = year.split("-");
+                Log.info(year);
+                
+                if(sep.length != 3)
+                    year = "NA";
+                
+                String date = String.valueOf(dates.get(article_number));
+                Log.info(year);
+                
+                int cluster = Integer.parseInt(String.valueOf(clusters.get(article_number)));
+                
+                String text =  String.valueOf(texts.get(article_number));
+                
                 String fullText = String.valueOf(fullTexts.get(article_number));
                 fullText = fullText.substring(0, Math.min(100, fullText.length()));
-                Log.info(fullText);
                 
                 String abstra = String.valueOf(abstracts.get(article_number));
                 abstra = abstra.substring(0, Math.min(100, abstra.length()));
-                Log.info(abstra);
                 
                 Article a = new Article(
                     UUID.randomUUID().toString(),
                     res.uuid,
-                    String.valueOf(titles.get(article_number)),
+                    title,
                     String.valueOf(pmcids.get(article_number)),
                     String.valueOf(authors.get(article_number)),
                     abstra,
                     fullText,
                     String.valueOf(urls.get(article_number)),
                     String.valueOf(journals.get(article_number)),
-                    String.valueOf(years.get(article_number)),
-                    String.valueOf(labels.get(article_number)),
-                    String.valueOf(text.get(article_number)),
-                    String.valueOf(clusters.get(article_number)),
+                    year,
+                    date,
+                    label,
+                    text,
+                    cluster,
                     Double.parseDouble(String.valueOf(xs.get(article_number))),
                     Double.parseDouble(String.valueOf(ys.get(article_number)))
                 );
