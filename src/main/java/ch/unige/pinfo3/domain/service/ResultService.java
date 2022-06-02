@@ -20,6 +20,7 @@ import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.utils.QueryUtils;
 import io.quarkus.logging.Log;
 import io.quarkus.narayana.jta.runtime.TransactionConfiguration;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 import io.vertx.core.json.JsonObject;
@@ -82,6 +83,7 @@ public class ResultService {
      * of lists, see df_hover.json. 
      */
     @Incoming("Jarticles")
+    @Blocking
     @Transactional
     public CompletableFuture<Void> consume(IncomingKafkaRecord<String, String> result) {
         String ucnf = result.getKey();
