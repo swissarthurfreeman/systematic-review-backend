@@ -53,7 +53,7 @@ public class SearchService {
         // search for job or result with said ucnf
         List<Job> jobs = QueryUtils.select(Job.class, "ucnf", search.ucnf, em);
         List<Result> results = QueryUtils.select(Result.class, "ucnf", search.ucnf, em);
-        
+
         if(!jobs.isEmpty()) {
             search.setJobUUID(jobs.get(0).uuid);
             search.setResultUUID(null);
@@ -120,13 +120,11 @@ public class SearchService {
         return Optional.empty();
     }
 
-    /// TODO effacer ?
     public static Search getRandomSearch(String user_uuid, String job_uuid, String result_uuid){
         Search search = new Search();
         Faker fk = new Faker();
         search.uuid = UUID.randomUUID().toString();
         search.user_uuid = user_uuid;
-        //search.query = fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word} AND #{lorem.word} AND #{lorem.word}");
         search.query = fk.lorem().word() + " AND " + fk.lorem().word() + " AND " + fk.lorem().word();
         search.ucnf = search.query; /// TODO tranformer les query en ucnf
         search.timestamp = new Date();
