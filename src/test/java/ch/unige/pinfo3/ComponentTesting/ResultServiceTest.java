@@ -1,4 +1,4 @@
-package ch.unige.pinfo3.EndpointTesting;
+package ch.unige.pinfo3.ComponentTesting;
 
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.service.ResultService;
