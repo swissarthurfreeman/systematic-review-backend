@@ -85,8 +85,8 @@ public class ResultService {
         
         // remove job for that ucnf (ucnf is unique col, so list has 1 element)
         List<Job> job = QueryUtils.select(Job.class, "ucnf", res.ucnf, em);
-        Log.info("JOB_UUID = " + job.get(0).uuid);
-        em.remove(job.get(0));
+        if(job.size() == 1)
+            em.remove(job.get(0));
 
         System.out.println(ucnf);
         JSONParser parser = new JSONParser();
@@ -112,14 +112,22 @@ public class ResultService {
             int n = titles.size();
             for(int i=0; i < n; i++) {
                 String article_number = Integer.toString(i);
+                String fullText = String.valueOf(fullTexts.get(article_number));
+                fullText = fullText.substring(0, Math.min(100, fullText.length()));
+                Log.info(fullText);
+                
+                String abstra = String.valueOf(abstracts.get(article_number));
+                abstra = abstra.substring(0, Math.min(100, abstra.length()));
+                Log.info(abstra);
+                
                 Article a = new Article(
                     UUID.randomUUID().toString(),
                     res.uuid,
                     String.valueOf(titles.get(article_number)),
                     String.valueOf(pmcids.get(article_number)),
                     String.valueOf(authors.get(article_number)),
-                    String.valueOf(abstracts.get(article_number)),
-                    String.valueOf(fullTexts.get(article_number)),
+                    abstra,
+                    fullText,
                     String.valueOf(urls.get(article_number)),
                     String.valueOf(journals.get(article_number)),
                     String.valueOf(years.get(article_number)),
