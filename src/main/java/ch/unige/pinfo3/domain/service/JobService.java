@@ -47,7 +47,7 @@ public class JobService {
         commit_job.uuid = UUID.randomUUID().toString();
         commit_job.ucnf = ucnf;
         commit_job.status = "queued";
-        commit_job.timestamp = new Date();
+        commit_job.timestamp = new Date().getTime();
         em.persist(commit_job);
 
         ucnfEmitter.send(ucnf);
@@ -76,7 +76,7 @@ public class JobService {
         Faker fk = new Faker();
         job.uuid = UUID.randomUUID().toString();
         job.ucnf = fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word}");
-        job.timestamp = new Date();
+        job.timestamp = new Date().getTime();
         job.status = status[(int) (Math.random() * status.length)];
         return job;
     }

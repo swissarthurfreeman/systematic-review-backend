@@ -35,7 +35,7 @@ public class Search implements Serializable {
     public String query;
     public String ucnf;
 
-    public Date timestamp;
+    public Long timestamp;
 
     @JsonIgnore
     public String job_uuid;

@@ -46,7 +46,7 @@ public class SearchService {
      */
     @Transactional
     public Search create(Search search) {
-        search.timestamp = new Date();
+        search.timestamp = new Date().getTime();
         search.uuid = UUID.randomUUID().toString();
         search.ucnf = search.query;
         Log.info(search.user_uuid);
@@ -127,7 +127,7 @@ public class SearchService {
         search.user_uuid = user_uuid;
         search.query = fk.lorem().word() + " AND " + fk.lorem().word() + " AND " + fk.lorem().word();
         search.ucnf = search.query; /// TODO tranformer les query en ucnf
-        search.timestamp = new Date();
+        search.timestamp = new Date().getTime();
         search.job_uuid = job_uuid;
         search.setResultUUID(null);
         if(result_uuid != null){
