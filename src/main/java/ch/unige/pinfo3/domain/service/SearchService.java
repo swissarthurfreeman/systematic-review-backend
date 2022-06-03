@@ -50,6 +50,7 @@ public class SearchService {
         search.uuid = UUID.randomUUID().toString();
         search.ucnf = search.query;
         Log.info(search.user_uuid);
+        // TODO : Check search hasn't already been performed. 
         // search for job or result with said ucnf
         List<Job> jobs = QueryUtils.select(Job.class, "ucnf", search.ucnf, em);
         List<Result> results = QueryUtils.select(Result.class, "ucnf", search.ucnf, em);
