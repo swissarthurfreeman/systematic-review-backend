@@ -17,7 +17,7 @@ cache:
 
 define-profile:
   stage: .pre
-  image: alpine:latest
+  image: busybox:stable
   script:
     - echo "ENVIRONMENT=$ENVIRONMENT" | tee profile.env
   artifacts:

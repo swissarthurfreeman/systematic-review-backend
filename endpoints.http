@@ -1,87 +1,81 @@
-// variables accessibles via {{var}}.
-@hostname = 127.0.0.1
-@port = 8080
-@proto = http
-
-@host = {{proto}}://{{hostname}}:{{port}}
-
-// test_uuid of john doe user. First post will create
-// this user, latter ones will create random uuids.
-//@test_uuid = c044a099-e489-43f8-9499-c04a371dbb61
-@test_uuid = 4eb0018f-6b14-4d4d-bbb0-8f5622a914fd
-
-// using request variables we can get an access_token and store it.
-// https://github.com/Huachao/vscode-restclient#request-variables
-// get access token for alice user. (available by default in keycloak)
-# @name auth_headers
-curl -X POST http://localhost:8180/realms/quarkus/protocol/openid-connect/token     
---user backend:secret     
--H 'content-type: application/x-www-form-urlencoded'     
--d 'username=alice&password=alice&grant_type=password'
+@host = {{proto}}://{{hostname}}:{{port}}/{{path}}
 
 ###
-@access_token = {{auth_headers.response.body.$.access_token}}
+GET {{host}}/users
+Content-Type: application/json
+Accept: application/json
 
 ###
-
-# @name search_post
-POST {{host}}/searches
-Authorization: Bearer {{access_token}}
+POST {{host}}/users
 Content-Type: application/json
 Accept: application/json
 
 {
-    "query": "asdkljflkdsjfcvdsfgrageaa and muscleeee"
+    "uuid": "{{test_uuid}}",
+    "username": "aaaaaaaaaa",
+    "email":"eminem@brody.co.uk"
 }
 
 ###
-@search_uuid = {{search_post.response.body.$.uuid}}
-###
-@job_uuid = {{search_post.response.body.$.job_uuid}}
-
-###
-GET {{host}}/searches
-Authorization: Bearer {{access_token}}
+GET {{host}}/users/{{test_uuid}}
 Content-Type: application/json
 Accept: application/json
 
 ###
-# @name search_get
-GET {{host}}/searches/{{search_uuid}}
-Authorization: Bearer {{access_token}}
+PUT {{host}}/users/{{test_uuid}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "uuid": "{{test_uuid}}",
+    "username": "aaaaaaaaaaa",
+    "email":"updated_eminem@brody.co.uk"
+}
+
+###
+POST {{host}}/users/{{test_uuid}}/searches
+Content-Type: application/json
+Accept: application/json
+
+{
+    "query": "Another new search brah"
+}
+
+###
+GET {{host}}/users/{{test_uuid}}/searches
 Content-Type: application/json
 Accept: application/json
 
 ###
-@result_uuid = {{search_get.response.body.$.result_uuid}}
+GET {{host}}/users/{{test_uuid}}/searches/{{test_uuid}}
+Content-Type: application/json
+Accept: application/json
 
+@job_uuid = 26d0d2e7-2104-4780-afb5-cb7d63e38819
 
 ###
 GET {{host}}/jobs/{{job_uuid}}
-Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
 ###
-GET {{host}}/jobs
-Authorization: Bearer {{access_token}}
+GET {{host}}/users/{{test_uuid}}/jobs
 Content-Type: application/json
 Accept: application/json
 
 ###
 GET {{host}}/results
-Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
+@result_uuid=b7b78ad4-7f9a-465c-b617-8563c2945b91
+
 ###
 GET {{host}}/results/{{result_uuid}}
-Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 GET {{host}}/results/{{result_uuid}}/articles
-Authorization: Bearer {{access_token}}
 Content-Type: application/json
 Accept: application/json
