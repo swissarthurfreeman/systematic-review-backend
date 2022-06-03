@@ -8,11 +8,11 @@ public class ArticleTest {
 
     @Test
     void constructorTest(){
-        Article article = new Article("uuid", "result_uuid", "title", "pmcid", "authors", "abstract", "full_text", "url", "journal", "year", "date", "labels", "text", 1, 2.0, 3.0);
+        Article article = new Article("uuid", "result_uuid", "Title", "pmcid", "authors", "abstract", "full_text", "url", "journal", "year", "date", "labels", "text", 1, 2.0, 3.0);
 
         Assertions.assertEquals(article.uuid, "uuid");
         Assertions.assertEquals(article.result_uuid, "result_uuid");
-        Assertions.assertEquals(article.Title, "title");
+        Assertions.assertEquals(article.Title, "Title");
         Assertions.assertEquals(article.PMCID, "pmcid");
         Assertions.assertEquals(article.Authors, "authors");
         Assertions.assertEquals(article.Abstract, "abstract");

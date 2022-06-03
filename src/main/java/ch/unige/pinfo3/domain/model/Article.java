@@ -27,7 +27,6 @@ public class Article implements Serializable {
     public double x;
     public double y;
 
-    public Article() {}
     public Article(String uuid, String result_uuid, String Title, String pmcid, 
                    String Authors, String Abstract, 
                    String Full_text, String URL,
@@ -50,4 +49,5 @@ public class Article implements Serializable {
         this.x = x;
         this.y = y;
     }
+    public Article() {}
 }

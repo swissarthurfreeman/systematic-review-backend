@@ -133,7 +133,7 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .and()
                 .body("[0][\"full_text\"]", CoreMatchers.equalTo(article1.Full_text))
                 .and()
-                .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title));
+                .body("[0][\"Title\"]", CoreMatchers.equalTo(article1.Title));
                 /// Todo: A completer
 
     }
