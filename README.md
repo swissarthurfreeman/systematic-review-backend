@@ -11,15 +11,15 @@
 # API Endpoints
 
 All the bodies will be stored as JSON, and the structure of the objects are described in the [Resources types section](#resources-types).
-All endpoints will only be accessible if the Oauth2 token is valid, otherwise 403 Forbidden error will be sent back.
+All endpoints will only be accessible if the jwt token is valid, otherwise 403 Forbidden error will be sent back.
+All endpoints authentify the user using the Subject claim of the jwt. Endpoints.http has an example in order to acquire this token
+when testing in development. Production will use the Oauth2 server deployed on the vm.
 
 | Endpoints             | Allowed Verbs                  | Implemented |
 |-----------------------|--------------------------------|-------------|
-| /users                | GET, POST                      | yes         |
-| /users/:id            | GET, PUT                       | yes         |
-| /users/:id/jobs       | GET                            | yes         |
+| /jobs                 | GET                            | yes         |
 | /jobs/:id             | GET                            | yes         |
-| /users/:id/searches   | GET, POST                      | yes         |
+| /searches             | GET, POST                      | yes         |
 | /results              | GET                            | yes         |
 | /results/:id          | GET                            | yes         |
 | /results/:id/articles | GET                            | yes         |
@@ -28,36 +28,23 @@ All endpoints will only be accessible if the Oauth2 token is valid, otherwise 40
 
 | Verb | URL                     | Body                                              | Return code | Description                                                                                                                  
 |------|-------------------------|---------------------------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| GET  | /users                  | N/A                                               | 200         | Returns a list of [User object](#user-object) supports filtering. e.g. GET /users?email=john@doe.com&username=john.doe                     |
-| POST | /users                  | {"username": "John.Doe", "email": "john@doe.com"} or {"uuid": VALID_128_BIT_STRING_UUID, "username":...} | 201         | Creates a [User object](#user-object) and returns it. If a valid uuid is provided it becomes the UUID of the created user. Returns an [Error Object](error-object) if username or email already exist.|
-| GET  | /users/:id              | N/A                                               | 200         | Returns a [User object](#user-object) with specified id. Returns an [Error Object](error-object) if user uuid is invalid. |
-| PUT  | /users/:id              | {"username": "John.Doe", "email": "john@doe.com"} | 201         | Updates [User Object](#user-object) with specified id. Creates the User if he does not exist. Returns an [Error Object](error-object) if username or email already exist. | 
-| GET  | /users/:id/jobs         | N/A                                               | 200         | Returns a list of [Job object](#job-object) that user is observing. Returns an [Error Object](error-object) if user does not exist.| 
-| GET  | /jobs/:id               | N/A                                               | 200         | Returns a [Job object](#job-object) specified by id. Returns an [Error Object](error-object) if uuid is invalid. |
-| GET  | /users/:id/searches     | N/A                                               | 200         | Returns a list of [Search Object](#search-object). Returns an [Error Object](error-object) if user does not exist.|
-| POST | /users/:id/searches     | {"query": "hiv OR malaria"}                       | 201         | Creates a [Search Object](#search-object) belonging to user. Returns an [Error Object](error-object) if user does not exist. |
-| GET  | /users/:id/searches/:id | N/A                                               | 200         | Returns a the list of [Search Object](#search-object) belonging to the user. Returns an [Error Object](error-object) if user or search uuid are invalid. |
-| GET  | /results                | N/A                                               | 200         | Returns a list of [Result Object](#result-object). List will be empty if no results exist. |
-| GET  | /results/:id            | N/A                                               | 200         | Returns a [Result Object](#result-object). Returns an [Error Object](error-object) if result does not exist. |
+| GET  | /jobs                   | N/A                                               | 200         | Returns a list of [Job object](#job-object) that user is observing.                                                                        | 
+| GET  | /jobs/:id               | N/A                                               | 200         | Returns a [Job object](#job-object) specified by id. Returns an [Error Object](error-object) if uuid is invalid (job doesn't exist, invalid format). Jobs are global. |
+| GET  | /searches               | N/A                                               | 200         | Returns a list of [Search Object](#search-object) of the user. |
+| POST | /searches               | {"query": "hiv OR malaria"}                       | 201         | Creates a [Search Object](#search-object) belonging to user. |
+| GET  | /searches/:id           | N/A                                               | 200         | Returns a list of [Search Object](#search-object) belonging to the user. Returns an [Error Object](error-object) if search uuid is invalid. |
+| GET  | /results                | N/A                                               | 200         | Returns a list of [Result Object](#result-object). List will be empty if no results exist. Results are global. |
+| GET  | /results/:id            | N/A                                               | 200         | Returns a [Result Object](#result-object). Returns an [Error Object](error-object) if result_uuid is invalid. |
 | GET  | /results/:id/articles   | N/A                                               | 200         | Returns a list of [Article Object](#article-object) Returns an [Error Object](error-object) if result does not exist.|
 
 # Resources types
-
-#### User Object
-
-| Field Name | Type      | Description                                       |
-|------------|-----------|---------------------------------------------------|
-| uuid       | string    | User unique identifier. (128 hexadecimal bit key) |
-| username   | string    | The username of the user (unique and public)      |
-| email      | string    | email of the user (unique and private)            |
-| searches   | Search[]  | Returns all searches performed by user            |
 
 #### Search Object
 
 | Field Name  | Type      | Description                                                                                                               |
 |-------------|-----------|---------------------------------------------------------------------------------------------------------------------------|
 | uuid        | String      | Search String.                                                                                                              |
-| user_uuid   | String      | UUID of user having created the search.                                                                                   |
+| user_uuid   | String      | UUID of user having created the search. This is the jwt subject claim.    |
 | query       | string    | Original user provided search query.                                                                                      |
 | ucnf        | String      | Unique conjunctive normal form query.                                                                                     |
 | timestamp   | Date      | Time of creation of the search.                                                                                           |
@@ -101,10 +88,47 @@ ErrorReports are generated when validation fails or requests to inexistant resou
 |------------|-------------------------------|--------------------------------------------------------------------|
 | uuid       | String                        | Unique identifier of the article result.                           |
 | result_uuid| String                        | Unique identifier of the result to the which this article belongs. |
-| url        | string                        | Url of the article                                                 |
-| title      | String                        | article title                                                      |
-| authors    | String                        | list of article authors                                            |
-| abstract   | String                        | article abstract                                                   |
+| Title      | String                        | article title                                                      |
+| Authors    | String                        | list of article authors, may be null.                              |
+| Abstract   | String                        | article abstract                                                   |
+| Full_text  | String                        | article full text                                                  |
+| URL        | String                        | The article URL, may be null.                                      |
+| Journal    | String                        | The journal of publication, may be null.                           |
+| Year       | String                        | The year of publication, may be null.                              |
+| Date       | String                        | The Date of publication, may be null.                              |
+| labels     | String                        | A list of strings that uniquely identifiy the cluster.             |
+| cluster    | int                           | An integer that identifies the cluster, -1 means not atributed.    |
+| x,y        | double                        | the position of the article in the clustering                      |
+
+An article is represented in Java by, 
+
+```java
+public class Article {
+    public String uuid;
+    public String result_uuid;
+    public String Title;
+    public String PMCID;
+    public String Authors; 
+    public String Abstract;
+    public String Full_text; 
+    public String URL;
+    public String Journal; 
+    public String Year; 
+    public String Date; 
+    public String labels;
+    public String text;
+    public int cluster;
+    public double x;
+    public double y;
+}
+```
+
+## Kafka Communication
+
+Jobert and backend interact through the jobs channel.
+We send a job with a single ucnf string to Jobert. 
+Python du clusterer/puller will return the result with
+a ucnf key and the clustered articles. 
 
 ## Quarkus Usage
 

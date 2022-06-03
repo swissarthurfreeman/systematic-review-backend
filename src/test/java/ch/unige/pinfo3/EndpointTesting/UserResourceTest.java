@@ -1,44 +1,33 @@
-package ch.unige.pinfo3;
+package ch.unige.pinfo3.EndpointTesting;
 
 import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.model.User;
 import ch.unige.pinfo3.domain.service.JobService;
-import com.github.javafaker.Faker;
-import io.quarkus.logging.Log;
-import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
-import io.restassured.http.ContentType;
-import org.apache.commons.validator.routines.EmailValidator;
-import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import javax.ws.rs.core.Response;
 import java.io.InputStream;
-import java.util.UUID;
+import java.util.Set;
 
-import static ch.unige.pinfo3.domain.service.UserService.getRandomUser;
-import static io.restassured.RestAssured.get;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.when;
+import io.smallrye.jwt.build.Jwt;
+
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@QuarkusTestResource(OidcWiremockTestResource.class)
 class UserResourceTest{
 
     @Inject
     EntityManager em;
 
-    @InjectMock
-    MockJobService mockJobService;
+    //@InjectMock
+    //MockJobService mockJobService;
 
     Job job = JobService.getRandomJob();
 
@@ -47,9 +36,14 @@ class UserResourceTest{
     // verifier les type de UUID
     // verifier ce qui se pase si je donne, si je donne pas, sie je donne la merde, etc...
     // verifier si je donne un UUID existant
+    private String getAccessToken(String userName) {
+		return Jwt.preferredUserName(userName).issuer("https://server.example.com")
+				.audience("https://service.example.com").sign();
+	}
 
     /// TODO une fois tests passent, faire des tests qui ne passent pas pour voir les codes d'erreur
-
+    // TODO: Refactor and split tests into multiple files with Search and Job, from previously user prefixed paths.
+    /*
     static User[] testUsers = new User[10];
 
     String getElementFromJson(String json, String element){
@@ -662,5 +656,5 @@ class UserResourceTest{
             Assertions.assertTrue(EmailValidator.getInstance().isValid(e));
         }
     }
-
+    */
 }

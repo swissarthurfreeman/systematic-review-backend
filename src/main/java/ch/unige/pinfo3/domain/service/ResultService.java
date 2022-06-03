@@ -2,19 +2,36 @@ package ch.unige.pinfo3.domain.service;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
 import javax.ws.rs.core.Response;
 
 import ch.unige.pinfo3.utils.ErrorReport;
+import ch.unige.pinfo3.domain.model.Article;
+import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.utils.QueryUtils;
+import io.quarkus.logging.Log;
+import io.quarkus.narayana.jta.runtime.TransactionConfiguration;
+import io.smallrye.common.annotation.Blocking;
+import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
+import io.smallrye.reactive.messaging.kafka.KafkaRecord;
+import io.vertx.core.json.JsonObject;
 
 import com.github.javafaker.Faker;
-import org.jboss.logging.Logger;
+import com.google.gson.Gson;
+
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.jose4j.json.internal.json_simple.JSONObject;
+import org.jose4j.json.internal.json_simple.parser.JSONParser;
+import org.jose4j.json.internal.json_simple.parser.ParseException;
 
 @ApplicationScoped
 public class ResultService {
@@ -22,14 +39,11 @@ public class ResultService {
     EntityManager em;
 
     @Inject
-    Logger logger;
-
-    @Inject
-    QueryUtils qu;
+    SearchService searchService;
 
     @Transactional
     public List<Result> getAll() {
-        return qu.getAll(Result.class, em);
+        return QueryUtils.getAll(Result.class, em);
     }
 
     @Transactional
@@ -51,6 +65,58 @@ public class ResultService {
                 Response.Status.NOT_FOUND
         ));
         return Optional.of(err);
+    }
+
+    @Transactional
+    public void persist(Article article) {
+        em.persist(article);
+    }
+
+    @Transactional
+    public void persist(Result res) {
+        em.persist(res);
+    }
+
+    /***
+     * This method listens for incoming results on the Jarticles channel.
+     * @param result a json string to be parsed containing a ucnf key and a list 
+     * of lists, see df_hover.json. 
+     */
+    @Incoming("Jarticles")
+    @Blocking
+    @Transactional
+    public CompletableFuture<Void> consume(IncomingKafkaRecord<String, String> result) {
+        String ucnf = result.getKey();
+        String data = result.getPayload();
+        
+        Gson g = new Gson();
+        Article received_article = g.fromJson(data, Article.class);
+        //Log.info("Received article with Title = " + received_article.Title);
+
+        // create Result if not previously created (articles reference it)
+        String res_uuid;
+        List<Result> potential_res = QueryUtils.select(Result.class, "ucnf", ucnf, em);
+        if(potential_res.size() == 0) { 
+            Result res = new Result();    
+            res.uuid = UUID.randomUUID().toString();
+            res_uuid = res.uuid;
+            res.ucnf = ucnf;
+            persist(res);
+            searchService.updateSearchesOf(res.ucnf, res.uuid);
+
+            // remove job for that ucnf (ucnf is unique col, so list has 1 or 0 element)
+            List<Job> job = QueryUtils.select(Job.class, "ucnf", ucnf, em);
+            if(job.size() == 1)
+                em.remove(job.get(0));
+        } else {
+            res_uuid = potential_res.get(0).uuid;
+        }
+        
+        received_article.uuid = UUID.randomUUID().toString();
+        received_article.result_uuid = res_uuid;
+        persist(received_article);
+        
+        return result.ack().toCompletableFuture();
     }
 
     public static Result getRandomResult(){

@@ -14,31 +14,25 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import javax.validation.constraints.Null;
 import javax.ws.rs.core.Response;
 
 import com.github.javafaker.Faker;
-import org.jboss.logging.Logger;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.ErrorReport;
-import ch.unige.pinfo3.utils.QueryUtils;
+import io.quarkus.logging.Log;
+
+import ch.unige.pinfo3.utils.QueryUtils; 
 
 @ApplicationScoped
 public class SearchService {
     @Inject
     EntityManager em;
-
-    @Inject
-    Logger logger;
     
     @Inject
     JobService jobService;
-
-    @Inject
-    QueryUtils qu;
 
     /**
      * Create a search object linked to user.
@@ -52,14 +46,15 @@ public class SearchService {
      */
     @Transactional
     public Search create(Search search) {
-        search.timestamp = new Date();
+        search.timestamp = new Date().getTime();
         search.uuid = UUID.randomUUID().toString();
         search.ucnf = search.query;
-        logger.info(search.user_uuid);
+        Log.info(search.user_uuid);
+        // TODO : Check search hasn't already been performed. 
         // search for job or result with said ucnf
-        List<Job> jobs = qu.select(Job.class, "ucnf", search.ucnf, em);
-        List<Result> results = qu.select(Result.class, "ucnf", search.ucnf, em);
-        
+        List<Job> jobs = QueryUtils.select(Job.class, "ucnf", search.ucnf, em);
+        List<Result> results = QueryUtils.select(Result.class, "ucnf", search.ucnf, em);
+
         if(!jobs.isEmpty()) {
             search.setJobUUID(jobs.get(0).uuid);
             search.setResultUUID(null);
@@ -76,12 +71,12 @@ public class SearchService {
 
     @Transactional
     public List<Search> getAll() {
-        return qu.getAll(Search.class, em);
+        return QueryUtils.getAll(Search.class, em);
     }
 
     @Transactional
     public List<Search> getSearchesOf(String user_uuid) {
-        return qu.select(Search.class, "user_uuid", user_uuid, em);
+        return QueryUtils.select(Search.class, "user_uuid", user_uuid, em);
     }
 
     /***
@@ -90,7 +85,7 @@ public class SearchService {
      */
     @Transactional
     public void updateSearchesOf(String ucnf, String result_uuid) {
-        List<Search> searches = qu.select(Search.class, "ucnf", ucnf, em);
+        List<Search> searches = QueryUtils.select(Search.class, "ucnf", ucnf, em);
         for(Search el: searches) {
             el.setJobUUID(null);
             el.setResultUUID(result_uuid);
@@ -107,7 +102,7 @@ public class SearchService {
     }
 
     public Search getSearchOfUser(String user_uuid, String search_uuid) {
-        return qu.select(Search.class, "uuid", search_uuid,"user_uuid", user_uuid,  em).get(0); /// todo ICI IL Y AVAIT UNE ERREUR, LES COLONNES ETAIENT ECHANGES ET AU LIEU DE uuid IL Y AVAIT recherche_uuid, DONC NE TROUVAIT PAS LES RECHERCHES
+        return QueryUtils.select(Search.class, "uuid", search_uuid,"user_uuid", user_uuid,  em).get(0); /// todo ICI IL Y AVAIT UNE ERREUR, LES COLONNES ETAIENT ECHANGES ET AU LIEU DE uuid IL Y AVAIT recherche_uuid, DONC NE TROUVAIT PAS LES RECHERCHES
     }
 
     public Optional<ErrorReport> checkExistence(String search_uuid) {
@@ -126,15 +121,14 @@ public class SearchService {
         return Optional.empty();
     }
 
-    /// todo effacer????
     public static Search getRandomSearch(String user_uuid, String job_uuid, String result_uuid){
         Search search = new Search();
         Faker fk = new Faker();
         search.uuid = UUID.randomUUID().toString();
         search.user_uuid = user_uuid;
-        search.query = fk.expression("#{lorem.word} AND #{lorem.word}");
-        search.ucnf = search.query; /// todo tranformer les query en ucnf
-        search.timestamp = new Date();
+        search.query = fk.lorem().word() + " AND " + fk.lorem().word() + " AND " + fk.lorem().word();
+        search.ucnf = search.query; /// TODO tranformer les query en ucnf
+        search.timestamp = new Date().getTime();
         search.job_uuid = job_uuid;
         search.setResultUUID(null);
         if(result_uuid != null){

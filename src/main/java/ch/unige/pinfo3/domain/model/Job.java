@@ -20,7 +20,7 @@ public class Job implements Serializable {
     public String ucnf;
 
     @NotNull
-    public Date timestamp;
+    public Long timestamp;
 
     @NotNull
     public String status;

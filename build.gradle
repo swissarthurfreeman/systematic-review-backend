@@ -40,7 +40,8 @@ repositories {
 
 dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
-    implementation('io.quarkus:quarkus-oidc')
+    implementation('io.quarkus:quarkus-kubernetes-config')
+
     implementation('io.quarkus:quarkus-smallrye-health')
     implementation('io.quarkus:quarkus-container-image-jib')
     implementation('io.quarkus:quarkus-resteasy-jackson')
@@ -52,6 +53,7 @@ dependencies {
     implementation('io.quarkus:quarkus-narayana-jta')        // transaction manager
     implementation('io.quarkus:quarkus-jdbc-postgresql')     // database connector
     implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+    implementation group: 'io.quarkus', name: 'quarkus-jdbc-h2', version: '2.8.0.Final'
 
     implementation('commons-validator:commons-validator:1.7') // validator interface
     implementation("io.quarkus:quarkus-hibernate-validator")  // request validator interface
@@ -59,16 +61,25 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-client")
     implementation("io.quarkus:quarkus-rest-client-jackson")
 
-    implementation("io.quarkus:quarkus-quartz")
+    implementation('io.quarkus:quarkus-test-h2')
 
     implementation('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
     implementation('org.yaml:snakeyaml:1.30')
+    implementation("io.quarkus:quarkus-security")
 
-    implementation("io.quarkus:quarkus-jdbc-h2:2.9.0.Final")
-    testImplementation('io.quarkus:quarkus-test-h2') // in memory database
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.quarkus:quarkus-junit5-mockito")
     testImplementation("io.rest-assured:rest-assured")
-    testImplementation("org.json:json:20220320")
+
     testImplementation("io.quarkus:quarkus-jacoco")
+    testImplementation group: 'org.json', name: 'json', version: '20220320'
+
+    // authentification dependencies
+    implementation('io.quarkus:quarkus-oidc')                       // for dev testing with keycloak container
+    testImplementation("io.quarkus:quarkus-test-oidc-server")        // for testing without keycloak container
+    testImplementation("io.quarkus:quarkus-test-keycloak-server")
+
+    // kafka communication dependencies
+    implementation('io.quarkus:quarkus-smallrye-reactive-messaging-kafka')
+    implementation('com.google.code.gson:gson:2.9.0')
 }

@@ -1,4 +1,4 @@
-package ch.unige.pinfo3;
+package ch.unige.pinfo3.EndpointTesting;
 
 import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.domain.model.Result;
@@ -8,11 +8,10 @@ import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import static io.restassured.RestAssured.given;
@@ -21,14 +20,13 @@ import static io.restassured.RestAssured.given;
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ResultsResourceTest {
-
-    @Inject
-    EntityManager em;
+@QuarkusTestResource(OidcWiremockTestResource.class)
+public class ResultsResourceTest extends ResourceTestParent{
 
     Result result = ResultService.getRandomResult();
     Article article1 = ArticleService.getRandomArticle(result.uuid);
     Article article2 = ArticleService.getRandomArticle(result.uuid);
+    
 
     // persisting a result to DB
     @Order(1)
@@ -48,22 +46,17 @@ public class ResultsResourceTest {
     @Test
     void getResults() {
         Log.info("Testing endpoint GET /results");
-        /*
-        String body = given()
-                .when()
-                .get("/results/"+result.uuid+"/articles").getBody().asPrettyString();
-        Log.info(body);
-         */
-
 
         given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
                 .when()
                 .get("/results")
                 .then()
                 .assertThat()
                 .statusCode(CoreMatchers.is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(2));
+                .body("size()", CoreMatchers.equalTo(3));
     }
 
     // Testing endpoint GET /results/:id
@@ -73,6 +66,8 @@ public class ResultsResourceTest {
 
         Log.info("Testing endpoint GET /results/:id");
         given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
                 .when()
                 .get("results/" + result.uuid)
                 .then()
@@ -93,6 +88,8 @@ public class ResultsResourceTest {
 
         Log.info("Testing endpoint GET /results/:id with invalid ID");
         given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
                 .when()
                 .get("results/1234")
                 .then()
@@ -106,17 +103,38 @@ public class ResultsResourceTest {
     void TestSpecificResultArticles() {
 
         Log.info("Testing endpoint GET /results/:id/articles");
+        Log.info((article1.x));
         given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
                 .when()
                 .get("results/"+result.uuid+"/articles")
                 .then()
                 .assertThat()
                 .statusCode(CoreMatchers.is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(2)); /// Todo voir comment vérifier les éléments du premier (trouver le bon JSON path)
-
+                .body("size()", CoreMatchers.equalTo(2))
+                .and()
+                .body("[0].size()", CoreMatchers.equalTo(16))
+                .and()
+                .body("[0][\"uuid\"]", CoreMatchers.equalTo(article1.uuid))
+                .and()
+                .body("[0][\"result_uuid\"]", CoreMatchers.equalTo(article1.result_uuid))
+                .and()
+                .body("[0][\"x\"]", CoreMatchers.equalTo(((float) article1.x)))
+                .and()
+                .body("[0][\"y\"]", CoreMatchers.equalTo((float) article1.y))
+                .and()
+                .body("[0][\"url\"]", CoreMatchers.equalTo(article1.URL))
+                .and()
+                .body("[0][\"abstract\"]", CoreMatchers.equalTo(article1.Abstract))
+                .and()
+                .body("[0][\"authors\"]", CoreMatchers.equalTo(article1.Authors))
+                .and()
+                .body("[0][\"full_text\"]", CoreMatchers.equalTo(article1.Full_text))
+                .and()
+                .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title));
+                /// Todo: A completer
 
     }
-
-
 }

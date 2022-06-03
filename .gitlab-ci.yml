@@ -34,7 +34,7 @@ define-profile:
 test:
   stage: test
   script:
-    - gradle clean test --rerun-tasks
+    - gradle clean test --info --rerun-tasks
   artifacts:
     name: coverage
     paths:

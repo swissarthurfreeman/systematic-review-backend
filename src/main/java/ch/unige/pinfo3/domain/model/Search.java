@@ -16,14 +16,17 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.ToString;
 
 
 @Entity
 @Table(name = "searches")
+@ToString
 public class Search implements Serializable {
     @Id
     public String uuid;
     
+    // this is the subject claim from jwt
     public String user_uuid;
     
     @NotNull
@@ -32,7 +35,7 @@ public class Search implements Serializable {
     public String query;
     public String ucnf;
 
-    public Date timestamp;
+    public Long timestamp;
 
     @JsonIgnore
     public String job_uuid;
