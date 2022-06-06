@@ -9,7 +9,6 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
-import io.restassured.http.ContentType;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 
@@ -57,7 +56,7 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(CoreMatchers.is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(3));
+                .body("size()", CoreMatchers.equalTo(4));
     }
 
     // Testing endpoint GET /results/:id
