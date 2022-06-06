@@ -94,7 +94,10 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .get("results/1234")
                 .then()
                 .assertThat()
-                .statusCode(CoreMatchers.is(400));
+                .statusCode(CoreMatchers.is(400))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
+
     }
 
     // Testing endpoint GET /results/:id/articles
