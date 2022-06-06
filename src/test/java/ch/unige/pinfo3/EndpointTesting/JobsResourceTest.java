@@ -74,7 +74,7 @@ public class JobsResourceTest extends ResourceTestParent{
                 .get("/jobs/"+ jobUUID)
                 .then()
                 .assertThat()
-                .statusCode(CoreMatchers.is(404))
+                .statusCode(CoreMatchers.is(400))
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
     }
