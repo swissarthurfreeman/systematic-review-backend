@@ -1,5 +1,7 @@
 package ch.unige.pinfo3.domain.model;
 
+import lombok.ToString;
+
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="articles")
+@ToString
 public class Article implements Serializable {
     @Id public String uuid;
     @NotNull public String result_uuid;
