@@ -58,7 +58,16 @@ public class JobsResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(CoreMatchers.is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(4));
+                .body("size()", CoreMatchers.equalTo(4))
+                .and()
+                .body("uuid", CoreMatchers.equalTo(jobUUID))
+                .and()
+                .body("ucnf", CoreMatchers.equalTo(job.ucnf))
+                .and()
+                .body("timestamp", CoreMatchers.equalTo(job.timestamp))
+                .and()
+                .body("status", CoreMatchers.equalTo(job.status));
+
     }
 
     @Test
@@ -85,7 +94,6 @@ public class JobsResourceTest extends ResourceTestParent{
         Log.info("Testing GET /jobs");
 
         Mockito.when(js.getJobsOfUser(userUUID)).thenReturn(jobs);
-
 
         given()
                 .auth()
