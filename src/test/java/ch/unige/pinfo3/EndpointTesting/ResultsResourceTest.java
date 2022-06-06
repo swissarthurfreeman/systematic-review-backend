@@ -9,6 +9,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
+import io.restassured.http.ContentType;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 
@@ -103,7 +104,6 @@ public class ResultsResourceTest extends ResourceTestParent{
     void TestSpecificResultArticles() {
 
         Log.info("Testing endpoint GET /results/:id/articles");
-        Log.info((article1.x));
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
@@ -121,11 +121,21 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .and()
                 .body("[0][\"result_uuid\"]", CoreMatchers.equalTo(article1.result_uuid))
                 .and()
+                .body("[0][\"labels\"]", CoreMatchers.equalTo(article1.labels))
+                .and()
+                .body("[0][\"text\"]", CoreMatchers.equalTo(article1.text))
+                .and()
+                .body("[0][\"cluster\"]", CoreMatchers.equalTo(article1.cluster))
+                .and()
                 .body("[0][\"x\"]", CoreMatchers.equalTo(((float) article1.x)))
                 .and()
                 .body("[0][\"y\"]", CoreMatchers.equalTo((float) article1.y))
                 .and()
                 .body("[0][\"url\"]", CoreMatchers.equalTo(article1.URL))
+                .and()
+                .body("[0][\"year\"]", CoreMatchers.equalTo(article1.Year))
+                .and()
+                .body("[0][\"date\"]", CoreMatchers.equalTo(article1.Date))
                 .and()
                 .body("[0][\"abstract\"]", CoreMatchers.equalTo(article1.Abstract))
                 .and()
@@ -133,8 +143,11 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .and()
                 .body("[0][\"full_text\"]", CoreMatchers.equalTo(article1.Full_text))
                 .and()
-                .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title));
-                /// Todo: A completer
+                .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title))
+                .and()
+                .body("[0][\"journal\"]", CoreMatchers.equalTo(article1.Journal))
+                .and()
+                .body("[0][\"pmcid\"]", CoreMatchers.equalTo(article1.PMCID));
 
     }
 }
