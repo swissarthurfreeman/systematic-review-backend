@@ -7,6 +7,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
+import lombok.ToString;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 
+@ToString
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -59,12 +61,28 @@ public class JobsResourceTest extends ResourceTestParent{
                 .body("size()", CoreMatchers.equalTo(4));
     }
 
+    @Test
+    void GetInexistingJob(){
+
+        jobUUID = "1234";
+
+        Log.info(jobUUID);
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .when()
+                .get("/jobs/"+ jobUUID)
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(404))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
+    }
+
     // Testing GET /jobs
     @Test
     void getJobsOfUser(){
         Log.info("Testing GET /jobs");
-        //when(mockJobService.submit("hiv AND covid AND ebola")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
-        //String jobUUID =  mockJobService.submit("hiv AND covid AND ebola");
 
         Mockito.when(js.getJobsOfUser(userUUID)).thenReturn(jobs);
 
@@ -79,6 +97,6 @@ public class JobsResourceTest extends ResourceTestParent{
                 .statusCode(CoreMatchers.is(200))
                 .and()
                 .assertThat()
-                .body("size()", CoreMatchers.equalTo(10)); /// todo: 0 pour que tests passent. Voir comment ajouter job à utilisateur
+                .body("size()", CoreMatchers.equalTo(10));
     }
 }
