@@ -126,7 +126,7 @@ class SearchResourceTest extends ResourceTestParent{
     @Transactional
     void PostInvalidShortSearch(){
         Log.info("Testing POST /searches with too short query");
-        String searchJson = ("{\"query\": \"hiv\"}");
+        String searchJson = ("{\"query\": \"a\"}");
         Log.info(searchJson);
         given()
                 .auth()
