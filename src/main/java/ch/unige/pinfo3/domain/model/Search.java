@@ -1,7 +1,6 @@
 package ch.unige.pinfo3.domain.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,7 +30,7 @@ public class Search implements Serializable {
     
     @NotNull
     @NotBlank(message = "Query cannot be blank you madman")
-    @Size(min = 15, message = "Query is too short !")
+    @Size(min = 2, message = "Query is too short !")
     public String query;
     public String ucnf;
 

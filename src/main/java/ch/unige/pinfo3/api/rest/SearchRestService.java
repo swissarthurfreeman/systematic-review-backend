@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.quarkus.logging.Log;
 import io.quarkus.security.Authenticated;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -40,6 +41,7 @@ public class SearchRestService {
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response postUserSearch(@Valid Search search) {
+        Log.debug("Creating search");
         var err = searchService.syntaxAnalysis(search.query);
         if(err.isPresent())
             return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();

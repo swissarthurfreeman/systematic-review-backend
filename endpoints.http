@@ -1,4 +1,5 @@
 @host = {{proto}}://{{hostname}}:{{port}}/{{path}}
+@jwt = 
 
 ###
 GET {{host}}/users
@@ -62,6 +63,20 @@ Accept: application/json
 GET {{host}}/users/{{test_uuid}}/jobs
 Content-Type: application/json
 Accept: application/json
+
+###
+GET {{host}}/searches
+Authorization: Bearer {{jwt}}
+
+###
+POST {{host}}/searches
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "query": "HIV"
+}
 
 ###
 GET {{host}}/results
