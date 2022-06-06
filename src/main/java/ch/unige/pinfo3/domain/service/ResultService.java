@@ -1,37 +1,26 @@
 package ch.unige.pinfo3.domain.service;
 
+import ch.unige.pinfo3.domain.model.Article;
+import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.domain.model.Result;
+import ch.unige.pinfo3.utils.ErrorReport;
+import ch.unige.pinfo3.utils.QueryUtils;
+import com.github.javafaker.Faker;
+import com.google.gson.Gson;
+import io.smallrye.common.annotation.Blocking;
+import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import javax.ws.rs.core.Response;
-
-import ch.unige.pinfo3.utils.ErrorReport;
-import ch.unige.pinfo3.domain.model.Article;
-import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.model.Result;
-import ch.unige.pinfo3.utils.QueryUtils;
-import io.quarkus.logging.Log;
-import io.quarkus.narayana.jta.runtime.TransactionConfiguration;
-import io.smallrye.common.annotation.Blocking;
-import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
-import io.smallrye.reactive.messaging.kafka.KafkaRecord;
-import io.vertx.core.json.JsonObject;
-
-import com.github.javafaker.Faker;
-import com.google.gson.Gson;
-
-import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.jose4j.json.internal.json_simple.JSONObject;
-import org.jose4j.json.internal.json_simple.parser.JSONParser;
-import org.jose4j.json.internal.json_simple.parser.ParseException;
 
 @ApplicationScoped
 public class ResultService {
@@ -120,10 +109,12 @@ public class ResultService {
     }
 
     public static Result getRandomResult(){
+        List<Article> articles = new ArrayList<Article>();
         Faker fk = new Faker();
         Result result = new Result();
         result.uuid = UUID.randomUUID().toString();
         result.ucnf =  fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word}");
+        result.setArticles(articles);
         return result;
     }
 }
