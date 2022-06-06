@@ -12,10 +12,6 @@ import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.UUID;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
@@ -25,13 +21,13 @@ import java.util.UUID;
 @QuarkusTestResource(OidcWiremockTestResource.class)
 public class ResultServiceTest {
 
-    // testing ResultService.java checkExistence test
-
     @InjectMock
     EntityManager em;
 
     @Inject
     ResultService rs;
+
+    // testing ResultService.java checkExistence test
 
     @Test
     void checkExistencePresentTest(){
