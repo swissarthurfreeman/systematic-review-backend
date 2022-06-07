@@ -34,17 +34,14 @@ public class ResultService {
     @Inject
     SearchService searchService;
 
-    @Transactional
     public List<Result> getAll() {
         return QueryUtils.getAll(Result.class, em);
     }
 
-    @Transactional
     public Optional<Result> getResult(String result_uuid) {
         return Optional.ofNullable(em.find(Result.class, result_uuid));
     }
 
-    @Transactional
     public Optional<ErrorReport> checkExistence(String result_uuid) {
         var res = Optional.ofNullable(em.find(Result.class, result_uuid));
         if(res.isPresent())
@@ -58,16 +55,6 @@ public class ResultService {
                 Response.Status.NOT_FOUND
         ));
         return Optional.of(err);
-    }
-
-    @Transactional
-    public void persist(Article article) {
-        em.persist(article);
-    }
-
-    @Transactional
-    public void persist(Result res) {
-        em.persist(res);
     }
 
     /***
@@ -94,7 +81,7 @@ public class ResultService {
             res.uuid = UUID.randomUUID().toString();
             res_uuid = res.uuid;
             res.ucnf = ucnf;
-            persist(res);
+            em.persist(res);
             searchService.updateSearchesOf(res.ucnf, res.uuid);
 
             // remove job for that ucnf (ucnf is unique col, so list has 1 or 0 element)
@@ -107,7 +94,7 @@ public class ResultService {
         
         received_article.uuid = UUID.randomUUID().toString();
         received_article.result_uuid = res_uuid;
-        persist(received_article);
+        em.persist(received_article);
     }
 
     public static Result getRandomResult(){

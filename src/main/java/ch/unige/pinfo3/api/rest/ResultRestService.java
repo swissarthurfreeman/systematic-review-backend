@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -31,7 +30,6 @@ public class ResultRestService {
     ArticleService ass;
 
     @GET // /results
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public List<Result> getResults(@QueryParam("page") int page) {
         return resultService.getAll();
@@ -39,7 +37,6 @@ public class ResultRestService {
 
     @GET // /results/:id
     @Path("{result_uuid}")
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getResult(@PathParam("result_uuid") @VALID_UUID String result_uuid) {
         var res = resultService.getResult(result_uuid);
@@ -60,7 +57,6 @@ public class ResultRestService {
 
     @GET // /results/:id/articles
     @Path("{result_uuid}/articles")
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getResultArticles(@PathParam("result_uuid") @VALID_UUID String result_uuid) {
         var err = resultService.checkExistence(result_uuid);

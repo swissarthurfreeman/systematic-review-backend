@@ -54,7 +54,6 @@ public class JobService {
         return commit_job.uuid;
     }
      
-    @Transactional
     public List<Job> getJobsOfUser(String user_uuid) {
         List<Search> searches = searchService.getSearchesOf(user_uuid);
         List<Job> jobs = new ArrayList<>();
@@ -65,7 +64,6 @@ public class JobService {
         return jobs;   
     }
     
-    @Transactional
     public Optional<Job> getJob(String job_uuid) {
         return Optional.ofNullable(em.find(Job.class, job_uuid));
     }

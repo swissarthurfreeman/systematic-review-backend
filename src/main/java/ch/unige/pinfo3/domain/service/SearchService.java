@@ -69,12 +69,10 @@ public class SearchService {
         return em.find(Search.class, search.uuid);
     }
 
-    @Transactional
     public List<Search> getAll() {
         return QueryUtils.getAll(Search.class, em);
     }
 
-    @Transactional
     public List<Search> getSearchesOf(String user_uuid) {
         return QueryUtils.select(Search.class, "user_uuid", user_uuid, em);
     }

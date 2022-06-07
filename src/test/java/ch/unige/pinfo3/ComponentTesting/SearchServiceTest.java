@@ -43,7 +43,7 @@ public class SearchServiceTest {
     @ApplicationScoped
     @Transactional
     @Order(1)
-    void createResultsNotEmpty(){
+    void createResultsNotEmpty() {
         // testing SearchService.java create if(!results.isEmpty())
 
         search1 = getRandomSearch(UUID.randomUUID().toString(), null, UUID.randomUUID().toString());

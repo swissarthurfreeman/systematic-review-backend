@@ -5,7 +5,6 @@ import ch.unige.pinfo3.domain.service.SearchService;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,7 +29,6 @@ public class SearchRestService {
     SearchService searchService;
 
     @GET
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSearches() {
         List<Search> searches = searchService.getSearchesOf(jwt.getSubject());
@@ -38,7 +36,6 @@ public class SearchRestService {
     }
 
     @POST
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response postUserSearch(@Valid Search search) {
         Log.debug("Creating search");
@@ -52,7 +49,6 @@ public class SearchRestService {
 
     @GET
     @Path("{search_uuid}")
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserSearch(@PathParam("search_uuid") String search_uuid) {
         var err = searchService.checkExistence(search_uuid);
