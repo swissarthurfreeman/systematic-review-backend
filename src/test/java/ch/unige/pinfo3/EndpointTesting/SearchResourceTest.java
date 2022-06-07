@@ -41,7 +41,7 @@ class SearchResourceTest extends ResourceTestParent{
     @Test
     @Order(1)
     @TestTransaction
-    void postSearch(){
+    void postSearch() {
         Log.info("Test endpoint POST /searches");
         String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
         Log.info("Testing POST searches");
