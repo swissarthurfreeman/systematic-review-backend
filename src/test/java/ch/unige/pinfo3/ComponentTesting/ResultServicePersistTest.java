@@ -35,9 +35,7 @@ public class ResultServicePersistTest {
     @Transactional
     @Order(1)
     void persistResultTest(){
-
         em.persist(result);
-
         Assertions.assertEquals(rs.getResult(result.uuid).toString(), Optional.of(result).toString());
     }
 
