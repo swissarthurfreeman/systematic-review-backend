@@ -4,6 +4,7 @@ import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.service.JobService;
 import ch.unige.pinfo3.domain.service.SearchService;
+import ch.unige.pinfo3.utils.RandomProducer;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -18,9 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static ch.unige.pinfo3.domain.service.JobService.getRandomJob;
-import static ch.unige.pinfo3.domain.service.SearchService.getRandomSearch;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
@@ -41,12 +39,12 @@ public class JobServiceTest {
     @Test
     void getJobsOfUserTest(){
         String userUUID = UUID.randomUUID().toString();
-        Job job = getRandomJob();
+        Job job = RandomProducer.getRandomJob();
         String jobUUID = job.uuid;
         List<Search> searches = new ArrayList<Search>();
-        searches.add(getRandomSearch(userUUID, null, UUID.randomUUID().toString()));
-        searches.add(getRandomSearch(userUUID, null, UUID.randomUUID().toString()));
-        searches.add(getRandomSearch(userUUID, jobUUID, null));
+        searches.add(RandomProducer.getRandomSearch(userUUID, null, UUID.randomUUID().toString()));
+        searches.add(RandomProducer.getRandomSearch(userUUID, null, UUID.randomUUID().toString()));
+        searches.add(RandomProducer.getRandomSearch(userUUID, jobUUID, null));
         List<Job> jobs = new ArrayList<>();
 
         Mockito.when(em.find(Job.class, jobUUID)).thenReturn(job);

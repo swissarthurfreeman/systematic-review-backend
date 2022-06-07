@@ -4,6 +4,7 @@ import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.service.SearchService;
+import ch.unige.pinfo3.utils.RandomProducer;
 import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
@@ -18,10 +19,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static ch.unige.pinfo3.domain.service.JobService.getRandomJob;
-import static ch.unige.pinfo3.domain.service.ResultService.getRandomResult;
-import static ch.unige.pinfo3.domain.service.SearchService.getRandomSearch;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
@@ -46,9 +43,9 @@ public class SearchServiceTest {
     void createResultsNotEmpty() {
         // testing SearchService.java create if(!results.isEmpty())
 
-        search1 = getRandomSearch(UUID.randomUUID().toString(), null, UUID.randomUUID().toString());
+        search1 = RandomProducer.getRandomSearch(UUID.randomUUID().toString(), null, UUID.randomUUID().toString());
 
-        Result result = getRandomResult();
+        Result result = RandomProducer.getRandomResult();
         result.uuid = search1.getResultUUID();
         result.ucnf = search1.ucnf;
 
@@ -65,12 +62,12 @@ public class SearchServiceTest {
     @ApplicationScoped
     @Transactional
     @Order(2)
-    void createJobsNotEmpty(){
+    void createJobsNotEmpty() {
         // testing SearchService.java create if(!jobs.isEmpty())
 
-        search2 = getRandomSearch(UUID.randomUUID().toString(), UUID.randomUUID().toString(), null);
+        search2 = RandomProducer.getRandomSearch(UUID.randomUUID().toString(), UUID.randomUUID().toString(), null);
 
-        Job job = getRandomJob();
+        Job job = RandomProducer.getRandomJob();
         job.uuid = search2.getJobUUID();
         job.ucnf = search2.ucnf;
 
@@ -85,7 +82,7 @@ public class SearchServiceTest {
 
     @Test
     @Order(3)
-    void getAllTest(){
+    void getAllTest() {
         // ici je teste avec les deux search qui ont deja ete persiste
         List<Search> searches = new ArrayList<>();
         searches.add(search1);
@@ -100,8 +97,8 @@ public class SearchServiceTest {
 
     @Test
     @Order(4)
-    void updateSearchesOfTest(){
-        Result result = getRandomResult();
+    void updateSearchesOfTest() {
+        Result result = RandomProducer.getRandomResult();
         result.ucnf = search2.ucnf;
         ss.updateSearchesOf(result.ucnf, result.uuid);
 
@@ -109,7 +106,5 @@ public class SearchServiceTest {
         search2.setResultUUID(result.uuid);
 
         Assertions.assertEquals(ss.getAll().get(1).toString(), search2.toString());
-
     }
-
 }

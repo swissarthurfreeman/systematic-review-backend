@@ -1,7 +1,7 @@
 package ch.unige.pinfo3.EndpointTesting;
 
 import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.service.JobService;
+import ch.unige.pinfo3.utils.RandomProducer;
 import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
@@ -32,11 +32,10 @@ public class JobsResourceTest extends ResourceTestParent{
 
     String jobUUID;
 
-
     @BeforeAll
     void Setup(){
         for(int i = 0; i < 10; i++){
-            jobs.add(JobService.getRandomJob());
+            jobs.add(RandomProducer.getRandomJob());
         }
         job = jobs.get(0);
     }

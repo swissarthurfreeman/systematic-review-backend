@@ -2,8 +2,7 @@ package ch.unige.pinfo3.EndpointTesting;
 
 import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.domain.model.Result;
-import ch.unige.pinfo3.domain.service.ArticleService;
-import ch.unige.pinfo3.domain.service.ResultService;
+import ch.unige.pinfo3.utils.RandomProducer;
 import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
@@ -23,9 +22,9 @@ import static io.restassured.RestAssured.given;
 @QuarkusTestResource(OidcWiremockTestResource.class)
 public class ResultsResourceTest extends ResourceTestParent{
 
-    Result result = ResultService.getRandomResult();
-    Article article1 = ArticleService.getRandomArticle(result.uuid);
-    Article article2 = ArticleService.getRandomArticle(result.uuid);
+    Result result = RandomProducer.getRandomResult();
+    Article article1 = RandomProducer.getRandomArticle(result.uuid);
+    Article article2 = RandomProducer.getRandomArticle(result.uuid);
     
 
     // persisting a result to DB
@@ -36,7 +35,7 @@ public class ResultsResourceTest extends ResourceTestParent{
         Log.info("persisting a results and articles to DB");
         Log.info(em);
         em.persist(result);
-        em.persist(ResultService.getRandomResult());
+        em.persist(RandomProducer.getRandomResult());
         em.persist(article1);
         em.persist(article2);
     }
