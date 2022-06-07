@@ -1,37 +1,30 @@
 package ch.unige.pinfo3.domain.service;
 
+import ch.unige.pinfo3.domain.model.Article;
+import ch.unige.pinfo3.domain.model.Job;
+import ch.unige.pinfo3.domain.model.Result;
+import ch.unige.pinfo3.utils.ErrorReport;
+import ch.unige.pinfo3.utils.QueryUtils;
+import com.github.javafaker.Faker;
+import com.google.gson.Gson;
+
+import io.quarkus.logging.Log;
+import io.smallrye.common.annotation.Blocking;
+import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import javax.ws.rs.core.Response;
-
-import ch.unige.pinfo3.utils.ErrorReport;
-import ch.unige.pinfo3.domain.model.Article;
-import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.model.Result;
-import ch.unige.pinfo3.utils.QueryUtils;
-import io.quarkus.logging.Log;
-import io.quarkus.narayana.jta.runtime.TransactionConfiguration;
-import io.smallrye.common.annotation.Blocking;
-import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
-import io.smallrye.reactive.messaging.kafka.KafkaRecord;
-import io.vertx.core.json.JsonObject;
-
-import com.github.javafaker.Faker;
-import com.google.gson.Gson;
-
-import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.jose4j.json.internal.json_simple.JSONObject;
-import org.jose4j.json.internal.json_simple.parser.JSONParser;
-import org.jose4j.json.internal.json_simple.parser.ParseException;
 
 @ApplicationScoped
 public class ResultService {
@@ -83,20 +76,20 @@ public class ResultService {
      * of lists, see df_hover.json. 
      */
     @Incoming("Jarticles")
-    @Blocking
     @Transactional
-    public CompletableFuture<Void> consume(IncomingKafkaRecord<String, String> result) {
-        String ucnf = result.getKey();
-        String data = result.getPayload();
+    public void consume(ConsumerRecord<String, String> result) {
+        String ucnf = result.key();
         
         Gson g = new Gson();
-        Article received_article = g.fromJson(data, Article.class);
-        //Log.info("Received article with Title = " + received_article.Title);
-
+        Article received_article = g.fromJson(result.value(), Article.class);
+        Log.info("Received article with Tile = " + received_article.Title);
         // create Result if not previously created (articles reference it)
         String res_uuid;
-        List<Result> potential_res = QueryUtils.select(Result.class, "ucnf", ucnf, em);
-        if(potential_res.size() == 0) { 
+        List<Result> potential_res;
+        
+        potential_res = QueryUtils.select(Result.class, "ucnf", ucnf, em);
+        
+        if(potential_res.size() == 0) {     // if no result exists, create one. 
             Result res = new Result();    
             res.uuid = UUID.randomUUID().toString();
             res_uuid = res.uuid;
@@ -115,15 +108,15 @@ public class ResultService {
         received_article.uuid = UUID.randomUUID().toString();
         received_article.result_uuid = res_uuid;
         persist(received_article);
-        
-        return result.ack().toCompletableFuture();
     }
 
     public static Result getRandomResult(){
+        List<Article> articles = new ArrayList<Article>();
         Faker fk = new Faker();
         Result result = new Result();
         result.uuid = UUID.randomUUID().toString();
         result.ucnf =  fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word}");
+        result.setArticles(articles);
         return result;
     }
 }

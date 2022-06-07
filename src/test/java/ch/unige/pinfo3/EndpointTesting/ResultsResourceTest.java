@@ -56,7 +56,7 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(CoreMatchers.is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(3));
+                .body("size()", CoreMatchers.equalTo(4));
     }
 
     // Testing endpoint GET /results/:id
@@ -94,7 +94,10 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .get("results/1234")
                 .then()
                 .assertThat()
-                .statusCode(CoreMatchers.is(400));
+                .statusCode(CoreMatchers.is(400))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
+
     }
 
     // Testing endpoint GET /results/:id/articles
@@ -103,7 +106,6 @@ public class ResultsResourceTest extends ResourceTestParent{
     void TestSpecificResultArticles() {
 
         Log.info("Testing endpoint GET /results/:id/articles");
-        Log.info((article1.x));
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
@@ -115,26 +117,31 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .and()
                 .body("size()", CoreMatchers.equalTo(2))
                 .and()
-                .body("[0].size()", CoreMatchers.equalTo(16))
+                .body("[0].size()", CoreMatchers.equalTo(15))
                 .and()
                 .body("[0][\"uuid\"]", CoreMatchers.equalTo(article1.uuid))
                 .and()
                 .body("[0][\"result_uuid\"]", CoreMatchers.equalTo(article1.result_uuid))
                 .and()
+                .body("[0][\"labels\"]", CoreMatchers.equalTo(article1.labels))
+                .and()
+                .body("[0][\"cluster\"]", CoreMatchers.equalTo(article1.cluster))
+                .and()
                 .body("[0][\"x\"]", CoreMatchers.equalTo(((float) article1.x)))
                 .and()
                 .body("[0][\"y\"]", CoreMatchers.equalTo((float) article1.y))
                 .and()
-                .body("[0][\"url\"]", CoreMatchers.equalTo(article1.URL))
+                .body("[0][\"url\"]", CoreMatchers.equalTo(article1.Url));
+                /*.and()
+                .body("[0][\"Published\"]", CoreMatchers.equalTo(article1.Published))
                 .and()
-                .body("[0][\"abstract\"]", CoreMatchers.equalTo(article1.Abstract))
+                .body("[0][\"Fulltext\"]", CoreMatchers.equalTo(article1.Fulltext))
                 .and()
-                .body("[0][\"authors\"]", CoreMatchers.equalTo(article1.Authors))
+                .body("[0][\"Title\"]", CoreMatchers.equalTo(article1.Title))
                 .and()
-                .body("[0][\"full_text\"]", CoreMatchers.equalTo(article1.Full_text))
+                .body("[0][\"Journal\"]", CoreMatchers.equalTo(article1.Journal))
                 .and()
-                .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title));
-                /// Todo: A completer
+                .body("[0][\"PmcId\"]", CoreMatchers.equalTo(article1.PmcId));*/
 
     }
 }

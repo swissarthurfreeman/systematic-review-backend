@@ -17,5 +17,6 @@
             "proto": "https",
             "path": "/url"
         }
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "automatic"
 }

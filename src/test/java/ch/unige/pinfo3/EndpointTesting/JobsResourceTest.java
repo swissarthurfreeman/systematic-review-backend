@@ -3,24 +3,22 @@ package ch.unige.pinfo3.EndpointTesting;
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.service.JobService;
 import io.quarkus.logging.Log;
-import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.oidc.server.OidcWiremockTestResource;
+import lombok.ToString;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 
-import io.quarkus.test.oidc.server.OidcWiremockTestResource;
-import io.smallrye.jwt.build.Jwt;
-
+@ToString
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -28,80 +26,75 @@ import io.smallrye.jwt.build.Jwt;
 @QuarkusTestResource(OidcWiremockTestResource.class)
 public class JobsResourceTest extends ResourceTestParent{
 
-    ///////////////////////
-    /// TODO JE N'ARRIVE PAS A PERSISTER OU EN TROUT CAS RETIRER UN JOB, CAR JE N'ARRIVE PAS à LIER LE JOB à L'UTILISATEUR
-    ///////////////////////
+    Job job;
 
-    Job job = JobService.getRandomJob();
+    public List<Job> jobs = new ArrayList<Job>();
 
     String jobUUID;
 
-    // persister job avec em
 
-    // injecter OIDC d'un utilisateur job, et essayer faire comme
-
-
-    // TODO : Use mockito to mock JobService behaviour.
-    // One test when the Job is stored in database. 
-    @Test
-    @Order(4)
-    void testMutualExclusionJobResult() {
-        // this test is wrong
-        //Mockito.when(js.submit(Mockito.anyString())).thenReturn(job.uuid);
-    
+    @BeforeAll
+    void Setup(){
+        for(int i = 0; i < 10; i++){
+            jobs.add(JobService.getRandomJob());
+        }
+        job = jobs.get(0);
     }
 
-
-    @Order(1)
-    @Test
-    @Transactional
-    void setup(){
-        /// Todo JE NE VEUX PAS HARDCODER, VOIR COMMENT NE PAS RENVOYER NULL
-        //Mockito.when(js.submit("aids AND hiv AND monkey")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
-        //jobUUID = js.submit("aids AND hiv AND monkey");
-        //Mockito.when(js.submit(Mockito.anyString())).thenReturn(job.uuid);
-        //jobUUID = js.submit(job.ucnf);
-        //Log.info(jobUUID);
-        em.persist(job);
-        Log.info(job.uuid);
-    }
-
-
-    @Order(2)
-    @Transactional
     @Test
     void GetSpecificJob(){
+
+        jobUUID = job.uuid;
+
+        Mockito.when(js.getJob(jobUUID)).thenReturn(Optional.ofNullable(job));
+
         Log.info(jobUUID);
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
                 .when()
-                .get("/jobs/"+ job.uuid)
+                .get("/jobs/"+ jobUUID)
                 .then()
                 .assertThat()
-                .statusCode(CoreMatchers.is(404)) /// Todo, voir pourquoi c'est 404 et pas 200......
+                .statusCode(CoreMatchers.is(200))
+                .and()
+                .body("size()", CoreMatchers.equalTo(4))
+                .and()
+                .body("uuid", CoreMatchers.equalTo(jobUUID))
+                .and()
+                .body("ucnf", CoreMatchers.equalTo(job.ucnf))
+                .and()
+                .body("timestamp", CoreMatchers.equalTo(job.timestamp))
+                .and()
+                .body("status", CoreMatchers.equalTo(job.status));
+
+    }
+
+    @Test
+    void GetInexistingJob(){
+
+        jobUUID = "1234";
+
+        Log.info(jobUUID);
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .when()
+                .get("/jobs/"+ jobUUID)
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(400))
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
     }
 
-
-    @Order(3)
-    @Test
-    @Transactional
-    void persistResult() {
-        //Log.info("persisting a results and articles to DB");
-        //Log.info(em);
-        //em.persist(job);
-    }
-
     // Testing GET /jobs
     @Test
-    @Order(4)
-    @TestTransaction
     void getJobsOfUser(){
         Log.info("Testing GET /jobs");
-        //when(mockJobService.submit("hiv AND covid AND ebola")).thenReturn("908e5224-c74c-4ffd-bc45-9ef0b95462aa");
-        //String jobUUID =  mockJobService.submit("hiv AND covid AND ebola");
+
+        Mockito.when(js.getJobsOfUser(userUUID)).thenReturn(jobs);
+
         given()
                 .auth()
                 .oauth2(getAccessToken("alice"))
@@ -112,6 +105,6 @@ public class JobsResourceTest extends ResourceTestParent{
                 .statusCode(CoreMatchers.is(200))
                 .and()
                 .assertThat()
-                .body("size()", CoreMatchers.equalTo(0)); /// todo: 0 pour que tests passent. Voir comment ajouter job à utilisateur
+                .body("size()", CoreMatchers.equalTo(10));
     }
 }

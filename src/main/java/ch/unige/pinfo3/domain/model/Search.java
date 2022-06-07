@@ -30,7 +30,6 @@ public class Search implements Serializable {
     
     @NotNull
     @NotBlank(message = "Query cannot be blank you madman")
-    @Size(min = 2, message = "Query is too short !")
     public String query;
     public String ucnf;
 
