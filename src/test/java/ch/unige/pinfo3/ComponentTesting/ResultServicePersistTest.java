@@ -4,6 +4,7 @@ import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.service.ArticleService;
 import ch.unige.pinfo3.domain.service.ResultService;
+import ch.unige.pinfo3.utils.RandomProducer;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
@@ -15,9 +16,6 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static ch.unige.pinfo3.domain.service.ArticleService.getRandomArticle;
-import static ch.unige.pinfo3.domain.service.ResultService.getRandomResult;
 
 @QuarkusTest
 public class ResultServicePersistTest {
@@ -31,7 +29,7 @@ public class ResultServicePersistTest {
     @Inject
     ArticleService as;
 
-    Result  result = getRandomResult();
+    Result  result = RandomProducer.getRandomResult();
 
     @Test
     @Transactional
@@ -48,7 +46,7 @@ public class ResultServicePersistTest {
     @Order(2)
     void persistArticleTest(){
 
-        Article article = getRandomArticle(result.uuid);
+        Article article = RandomProducer.getRandomArticle(result.uuid);
 
         List<Article> articles = new ArrayList<Article>();
         articles.add(article);

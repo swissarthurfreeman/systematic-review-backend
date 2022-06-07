@@ -5,12 +5,8 @@ import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.utils.QueryUtils;
-import com.github.javafaker.Faker;
 import com.google.gson.Gson;
-
 import io.quarkus.logging.Log;
-import io.smallrye.common.annotation.Blocking;
-import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -20,11 +16,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @ApplicationScoped
 public class ResultService {
@@ -95,15 +89,5 @@ public class ResultService {
         received_article.uuid = UUID.randomUUID().toString();
         received_article.result_uuid = res_uuid;
         em.persist(received_article);
-    }
-
-    public static Result getRandomResult(){
-        List<Article> articles = new ArrayList<Article>();
-        Faker fk = new Faker();
-        Result result = new Result();
-        result.uuid = UUID.randomUUID().toString();
-        result.ucnf =  fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word}");
-        result.setArticles(articles);
-        return result;
     }
 }

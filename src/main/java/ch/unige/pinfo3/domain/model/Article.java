@@ -2,9 +2,6 @@ package ch.unige.pinfo3.domain.model;
 
 import lombok.ToString;
 
-import java.io.Serializable;
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;

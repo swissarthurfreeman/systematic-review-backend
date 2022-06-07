@@ -63,10 +63,10 @@ dependencies {
 
     implementation('io.quarkus:quarkus-test-h2')
 
-    implementation('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
-    implementation('org.yaml:snakeyaml:1.30')
     implementation("io.quarkus:quarkus-security")
 
+    testImplementation('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
+    implementation('org.yaml:snakeyaml:1.30')
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.quarkus:quarkus-junit5-mockito")
     testImplementation("io.rest-assured:rest-assured")
@@ -75,7 +75,7 @@ dependencies {
     testImplementation group: 'org.json', name: 'json', version: '20220320'
 
     // authentification dependencies
-    implementation('io.quarkus:quarkus-oidc')                       // for dev testing with keycloak container
+    implementation('io.quarkus:quarkus-oidc')                        // for dev testing with keycloak container
     testImplementation("io.quarkus:quarkus-test-oidc-server")        // for testing without keycloak container
     testImplementation("io.quarkus:quarkus-test-keycloak-server")
 

@@ -16,8 +16,6 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 
-import com.github.javafaker.Faker;
-
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
@@ -117,23 +115,5 @@ public class SearchService {
             return Optional.of(err);
         }
         return Optional.empty();
-    }
-
-    public static Search getRandomSearch(String user_uuid, String job_uuid, String result_uuid){
-        Search search = new Search();
-        Faker fk = new Faker();
-        search.uuid = UUID.randomUUID().toString();
-        search.user_uuid = user_uuid;
-        search.query = fk.lorem().word() + " AND " + fk.lorem().word() + " AND " + fk.lorem().word();
-        search.ucnf = search.query; /// TODO tranformer les query en ucnf
-        search.timestamp = new Date().getTime();
-        search.job_uuid = job_uuid;
-        search.setResultUUID(null);
-        if(result_uuid != null){
-            search.setResultUUID(result_uuid);
-            search.setJobUUID(null);
-        }
-
-        return search;
     }
 }

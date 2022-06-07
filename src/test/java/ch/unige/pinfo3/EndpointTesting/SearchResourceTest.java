@@ -2,6 +2,7 @@ package ch.unige.pinfo3.EndpointTesting;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Search;
+import ch.unige.pinfo3.utils.RandomProducer;
 import io.quarkus.logging.Log;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -12,13 +13,10 @@ import io.restassured.http.ContentType;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-import static ch.unige.pinfo3.domain.service.JobService.getRandomJob;
-import static ch.unige.pinfo3.domain.service.SearchService.getRandomSearch;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -30,9 +28,9 @@ import static org.hamcrest.CoreMatchers.is;
 @ApplicationScoped
 class SearchResourceTest extends ResourceTestParent{
 
-    Job job = getRandomJob();
+    Job job = RandomProducer.getRandomJob();
 
-    String getElementFromJson(String json, String element){
+    String getElementFromJson(String json, String element) {
         JSONObject obj = new JSONObject(json);
         return (obj.getString(element));
     }
@@ -63,7 +61,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .asString();
 
         for(int i = 0; i < 9; i++){
-            Search search = getRandomSearch(userUUID, UUID.randomUUID().toString(), null);
+            Search search = RandomProducer.getRandomSearch(userUUID, UUID.randomUUID().toString(), null);
             Log.info(search.ucnf);
             given()
                     .auth()

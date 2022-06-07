@@ -12,17 +12,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import ch.unige.pinfo3.domain.model.Job;
-import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
-import ch.unige.pinfo3.utils.QueryUtils;
-
-import com.github.javafaker.Faker;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import io.quarkus.logging.Log;
-
-import io.smallrye.reactive.messaging.kafka.Record;
 
 // there can only be one jobber.
 @ApplicationScoped
@@ -32,8 +25,6 @@ public class JobService {
 
     @Inject
     SearchService searchService;
-
-    static final ArrayList<Job> queue = new ArrayList<Job>();
 
     @Inject
     @Channel("ucnfs")
@@ -65,16 +56,5 @@ public class JobService {
     
     public Optional<Job> getJob(String job_uuid) {
         return Optional.ofNullable(em.find(Job.class, job_uuid));
-    }
-
-    public static Job getRandomJob(){
-        String[] status = {"queued"};
-        Job job = new Job();
-        Faker fk = new Faker();
-        job.uuid = UUID.randomUUID().toString();
-        job.ucnf = fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word}");
-        job.timestamp = new Date().getTime();
-        job.status = status[(int) (Math.random() * status.length)];
-        return job;
     }
 }
