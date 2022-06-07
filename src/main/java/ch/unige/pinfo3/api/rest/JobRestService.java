@@ -5,7 +5,6 @@ import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.utils.VALID_UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -29,7 +28,6 @@ public class JobRestService {
 
     @GET // /jobs/:id
     @Path("{job_uuid}")
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getJob(@PathParam("job_uuid") @VALID_UUID String job_uuid) {
         Log.info("getting job");
@@ -54,7 +52,6 @@ public class JobRestService {
     }
 
     @GET
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserJobs() {
         return Response.ok(jobService.getJobsOfUser(jwt.getSubject())).build();

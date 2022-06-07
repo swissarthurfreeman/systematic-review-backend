@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import com.github.javafaker.*;
 import java.util.Random;
 
@@ -20,7 +19,6 @@ public class ArticleService {
 
     static Random rand = new Random();
 
-    @Transactional
     public List<Article> getArticlesOf(String result_uuid) {
         return QueryUtils.select(Article.class, "result_uuid", result_uuid, em);
     }

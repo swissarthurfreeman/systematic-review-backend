@@ -1,6 +1,5 @@
 package ch.unige.pinfo3.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -8,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 
 /***
  * This class contains wrapper helper functions to interface
@@ -17,7 +15,6 @@ import javax.transaction.Transactional;
  */
 @ApplicationScoped
 public final class QueryUtils {
-    @Transactional
     static public <T> List<T> select(Class<T> entity, String whereColumn, String is, EntityManager em) {
         // building queries uses the builder design pattern.
         // the builder allows us to build a complex query (SQL under the hood)
@@ -33,7 +30,6 @@ public final class QueryUtils {
         return em.createQuery(criteria).getResultList();
     }
 
-    @Transactional
     static public <T> List<T> select(Class<T> entity, String col1, String is1, String col2, String is2, EntityManager em) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(entity);
@@ -47,7 +43,6 @@ public final class QueryUtils {
         return em.createQuery(criteria).getResultList();
     }
 
-    @Transactional
     static public <T> List<T> getAll(Class<T> entity, EntityManager em) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = builder.createQuery(entity);
