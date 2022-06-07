@@ -14,7 +14,7 @@ import javax.persistence.criteria.Root;
  * done here in order to avoid repeating code. 
  */
 @ApplicationScoped
-public final class QueryUtils {
+public class QueryUtils {
     static public <T> List<T> select(Class<T> entity, String whereColumn, String is, EntityManager em) {
         // building queries uses the builder design pattern.
         // the builder allows us to build a complex query (SQL under the hood)
