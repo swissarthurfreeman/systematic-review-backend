@@ -11,6 +11,8 @@ import com.google.gson.Gson;
 import io.quarkus.logging.Log;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -75,15 +77,12 @@ public class ResultService {
      */
     @Incoming("Jarticles")
     @Transactional
-    public CompletableFuture<Void> consume(IncomingKafkaRecord<String, String> result) {
-        String ucnf = result.getKey();
-        String data = result.getPayload();
+    public void consume(ConsumerRecord<String, String> result) {
+        String ucnf = result.key();
         
-
         Gson g = new Gson();
-        Article received_article = g.fromJson(data, Article.class);
-        Log.info("Received article with Title = " + received_article.Title);
-
+        Article received_article = g.fromJson(result.value(), Article.class);
+        Log.info("Received article with Tile = " + received_article.Title);
         // create Result if not previously created (articles reference it)
         String res_uuid;
         List<Result> potential_res;
@@ -109,8 +108,6 @@ public class ResultService {
         received_article.uuid = UUID.randomUUID().toString();
         received_article.result_uuid = res_uuid;
         persist(received_article);
-        
-        return result.ack().toCompletableFuture();
     }
 
     public static Result getRandomResult(){
