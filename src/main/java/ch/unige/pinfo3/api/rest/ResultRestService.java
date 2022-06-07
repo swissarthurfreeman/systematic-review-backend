@@ -9,6 +9,7 @@ import io.quarkus.security.Authenticated;
 
 import java.util.List;
 
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -29,12 +30,14 @@ public class ResultRestService {
     @Inject
     ArticleService ass;
 
+
     @GET // /results
     @Produces(MediaType.APPLICATION_JSON)
     public List<Result> getResults(@QueryParam("page") int page) {
         return resultService.getAll();
     }
 
+    
     @GET // /results/:id
     @Path("{result_uuid}")
     @Produces(MediaType.APPLICATION_JSON)
