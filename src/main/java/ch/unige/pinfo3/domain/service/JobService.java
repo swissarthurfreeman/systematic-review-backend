@@ -35,7 +35,6 @@ public class JobService {
 
     static final ArrayList<Job> queue = new ArrayList<Job>();
 
-
     @Inject
     @Channel("ucnfs")
     Emitter<String> ucnfEmitter;

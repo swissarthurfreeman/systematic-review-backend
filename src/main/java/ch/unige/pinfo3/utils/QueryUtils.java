@@ -30,6 +30,7 @@ public class QueryUtils {
         return em.createQuery(criteria).getResultList();
     }
 
+    
     static public <T> List<T> select(Class<T> entity, String col1, String is1, String col2, String is2, EntityManager em) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(entity);
