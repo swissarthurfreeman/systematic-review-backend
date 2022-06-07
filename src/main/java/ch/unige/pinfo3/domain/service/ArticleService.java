@@ -30,11 +30,11 @@ public class ArticleService {
         Article ar = new Article();
         ar.uuid = UUID.randomUUID().toString();
         ar.result_uuid= result_uuid;
-        ar.Full_text = fk.lorem().fixedString(1000);
+        ar.Fulltext = fk.lorem().fixedString(1000);
         ar.Authors = fk.name().fullName() + ", " + fk.name().fullName();
         ar.Abstract = fk.lorem().fixedString(200);
         ar.Title = fk.book().title();
-        ar.URL = fk.internet().url();
+        ar.Url = fk.internet().url();
         ar.x = Math.abs(rand.nextGaussian(0.5, 0.3));
         ar.y = Math.abs(rand.nextGaussian(0.5, 0.5));
         return ar;

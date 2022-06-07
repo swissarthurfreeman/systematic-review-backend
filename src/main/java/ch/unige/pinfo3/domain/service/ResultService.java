@@ -7,6 +7,8 @@ import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.utils.QueryUtils;
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;
+
+import io.quarkus.logging.Log;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -72,20 +74,23 @@ public class ResultService {
      * of lists, see df_hover.json. 
      */
     @Incoming("Jarticles")
-    @Blocking
     @Transactional
     public CompletableFuture<Void> consume(IncomingKafkaRecord<String, String> result) {
         String ucnf = result.getKey();
         String data = result.getPayload();
         
+
         Gson g = new Gson();
         Article received_article = g.fromJson(data, Article.class);
-        //Log.info("Received article with Title = " + received_article.Title);
+        Log.info("Received article with Title = " + received_article.Title);
 
         // create Result if not previously created (articles reference it)
         String res_uuid;
-        List<Result> potential_res = QueryUtils.select(Result.class, "ucnf", ucnf, em);
-        if(potential_res.size() == 0) { 
+        List<Result> potential_res;
+        
+        potential_res = QueryUtils.select(Result.class, "ucnf", ucnf, em);
+        
+        if(potential_res.size() == 0) {     // if no result exists, create one. 
             Result res = new Result();    
             res.uuid = UUID.randomUUID().toString();
             res_uuid = res.uuid;

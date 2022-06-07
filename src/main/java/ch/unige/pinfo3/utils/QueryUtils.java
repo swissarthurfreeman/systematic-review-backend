@@ -1,5 +1,6 @@
 package ch.unige.pinfo3.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
