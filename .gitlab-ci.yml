@@ -68,7 +68,7 @@ downstream-bridge:
     ENVIRONMENT: ${ENVIRONMENT}
   stage: downstream
   trigger:
-    project: pinfo-2022/pinfo-3/microservices
+    project: pinfo-2022/pinfo-3/charts
     strategy: depend
   needs:
     - job: define-profile
