@@ -43,6 +43,8 @@ public class JobServiceSubmitTest {
 
         Assertions.assertTrue(job.isPresent());
 
+        Assertions.assertEquals(job.get().uuid, commitJobUUID);
+
     }
 
 
