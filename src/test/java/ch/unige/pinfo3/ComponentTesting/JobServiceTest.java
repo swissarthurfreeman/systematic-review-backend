@@ -5,6 +5,7 @@ import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.service.JobService;
 import ch.unige.pinfo3.domain.service.SearchService;
 import ch.unige.pinfo3.utils.RandomProducer;
+import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.mockito.Mockito.when;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTest
