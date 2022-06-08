@@ -11,9 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import ch.unige.pinfo3.utils.ValidSearch;
 import lombok.ToString;
 
 
@@ -28,6 +31,7 @@ public class Search implements Serializable {
     public String user_uuid;
     
     @NotNull
+    @ValidSearch
     @NotBlank(message = "Query cannot be blank you madman")
     public String query;
     public String ucnf;

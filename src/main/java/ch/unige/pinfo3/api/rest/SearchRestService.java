@@ -1,6 +1,7 @@
 package ch.unige.pinfo3.api.rest;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.service.SearchService;
+import ch.unige.pinfo3.utils.ValidSearch;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -39,6 +40,7 @@ public class SearchRestService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response postUserSearch(@Valid Search search) {
         Log.debug("Creating search");
+        search.query = search.query.toUpperCase();
         var err = searchService.syntaxAnalysis(search.query);
         if(err.isPresent())
             return Response.status(Response.Status.BAD_REQUEST).entity(err.get()).build();
