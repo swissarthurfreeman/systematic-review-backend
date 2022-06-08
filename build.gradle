@@ -35,7 +35,9 @@ repositories {
     maven {
         url "https://mvnrepository.com/"
     }
-
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -77,6 +79,9 @@ dependencies {
     implementation('io.quarkus:quarkus-oidc')                        // for dev testing with keycloak container
     testImplementation("io.quarkus:quarkus-test-oidc-server")        // for testing without keycloak container
     testImplementation("io.quarkus:quarkus-test-keycloak-server")
+
+    implementation 'orbital-core:orbital-core:1.3.0'
+    implementation 'orbital-ext:orbital-ext:1.3.0'
 
     // kafka communication dependencies
     implementation('io.quarkus:quarkus-smallrye-reactive-messaging-kafka')

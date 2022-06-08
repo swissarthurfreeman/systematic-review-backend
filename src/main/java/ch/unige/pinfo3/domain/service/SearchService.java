@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
+import ch.unige.pinfo3.domain.service.cnfUtils.CnfUtils;
 import ch.unige.pinfo3.domain.service.parser.ParseException;
 import ch.unige.pinfo3.domain.service.parser.Query;
 import ch.unige.pinfo3.utils.ErrorReport;
@@ -48,7 +49,7 @@ public class SearchService {
     public Search create(Search search) {
         search.timestamp = new Date().getTime();
         search.uuid = UUID.randomUUID().toString();
-        search.ucnf = search.query;
+        search.ucnf = CnfUtils.computeUcnf(search.query);
         Log.info(search.user_uuid);
         // TODO : Check search hasn't already been performed. 
         // search for job or result with said ucnf

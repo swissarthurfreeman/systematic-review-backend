@@ -31,7 +31,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "query": "hiv AND (bye OR dab)"
+    "query": "NOT ( hiv AND (json OR NOT lol) AND (bye OR dab) ) OR hello"
 }
 
 ###
