@@ -1,0 +1,78 @@
+options {
+  LOOKAHEAD=2;
+  STATIC=false;
+}
+
+PARSER_BEGIN(Query)
+
+public class Query {
+  public static void main(String args[]) {
+    System.out.println("Reading from standard input...");
+    Query t = new Query(System.in);
+    try {
+      t.Start();
+    } catch(ParseException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+}
+
+PARSER_END(Query)
+
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| <"//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+| <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">
+}
+
+TOKEN: { <AND: "AND"> }
+TOKEN: { <NOT: "NOT"> }
+TOKEN: { <OR: "OR"> }
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: <LETTER> (<LETTER>)* >
+|
+  < #LETTER: ["a"-"z","A"-"Z"] >
+}
+
+/** Main production. */
+void Start() : {}
+{
+  Expression() <EOF>
+}
+
+/** An Expression. */
+void Expression() : {}
+{
+  AdditiveExpression()
+}
+
+/** An Additive Expression. */
+void AdditiveExpression() : {}
+{
+  MultiplicativeExpression() ( ( <OR> ) MultiplicativeExpression() )*
+}
+
+/** A Multiplicative Expression. */
+void MultiplicativeExpression() : {}
+{
+  UnaryExpression() ( ( <AND> ) UnaryExpression() )*
+}
+
+/** A Unary Expression. */
+void UnaryExpression() : {}
+{
+  ( <NOT> )? "(" Expression() ")" | ( <NOT> )? Identifier()
+}
+
+/** An Identifier. */
+void Identifier() : {}
+{
+  <IDENTIFIER>
+}
