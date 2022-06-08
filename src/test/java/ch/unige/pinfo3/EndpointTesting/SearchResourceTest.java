@@ -43,7 +43,7 @@ class SearchResourceTest extends ResourceTestParent{
     @TestTransaction
     void postSearch() {
         Log.info("Test endpoint POST /searches");
-        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+        String searchJson = ("{\"query\": \"HIV AND COVID AND EBOLA\"}");
         Log.info("Testing POST searches");
         Log.info(searchJson);
         String access_token = getAccessToken("alice");
@@ -77,68 +77,10 @@ class SearchResourceTest extends ResourceTestParent{
         }
     }
 
-    /// Todo Sert à rien, enlever. Fait la même chohse que GET /searches
-    /*
-    @Test
-    @Order(2)
-    //verifie le nb d'attributs pour un search, et les attributs pour un search test
-    void shouldGetSearchById() {
-        // TODO : Get sur /searches tu prends le premier search de la liste et tu récupère
-        // son id et ENSUITE tu get /searches?uuid=id_recupere
-        String access_token = getAccessToken("alice");
-
-        // voir à quoi le body ressemble
-        String body = given()
-                .auth()
-                .oauth2(access_token)
-                .when()
-                .get("/searches?uuid=" + getElementFromJson(searchBody, "uuid"))
-                .getBody()
-                .asPrettyString();
-        Log.info(getElementFromJson(searchBody, "uuid"));
-        Log.info(body);
-
-
-        given()
-                .auth()
-                .oauth2(access_token)
-                .when()
-                .get("/searches?uuid=" + getElementFromJson(searchBody, "uuid"))
-                .then()
-                .assertThat()
-                .statusCode(is(200))
-                .and()
-                .body("size()", CoreMatchers.equalTo(4)) // il y a 4 attributs pour une recherche
-                .and()
-                .body("user_uuid", CoreMatchers.equalTo(getElementFromJson(searchBody, "uuid")))
-                .and()
-                .body("query", CoreMatchers.equalTo(getElementFromJson(searchBody, "query")))
-                .and()
-                .body("ucnf", CoreMatchers.equalTo(getElementFromJson(searchBody, "ucnf")));
-    }
-     */
-
-
     @Test
     @Order(3)
     @Transactional
-    void PostInvalidShortSearch(){
-        /*Log.info("Testing POST /searches with too short query");
-        String searchJson = ("{\"query\": \"hiv\"}");
-        Log.info(searchJson);
-        given()
-                .auth()
-                .oauth2(getAccessToken("alice"))
-                .when()
-                .contentType(ContentType.JSON)
-                .body(searchJson)
-                .when()
-                .post("/searches")
-                .then()
-                .assertThat()
-                .statusCode(is(400));
-        */
-        
+    void PostInvalidShortSearch() {
         Log.info("Testing GET /searches");
         given()
                 .auth()
@@ -171,8 +113,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .post("/searches")
                 .then()
                 .assertThat()
-                .statusCode(is(200));
-
+                .statusCode(is(400));
 
         Log.info("Testing GET /searches");
         given()
@@ -184,7 +125,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(11));
+                .body("size()", CoreMatchers.equalTo(10));
     }
 
     // Testing GET /searches
@@ -201,7 +142,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(11));
+                .body("size()", CoreMatchers.equalTo(10));
     }
 
     // Testing GET /searches/:id

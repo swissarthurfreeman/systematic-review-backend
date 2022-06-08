@@ -59,7 +59,7 @@ public class RandomProducer {
         Faker fk = new Faker();
         search.uuid = UUID.randomUUID().toString();
         search.user_uuid = user_uuid;
-        search.query = fk.lorem().word() + " AND " + fk.lorem().word() + " AND " + fk.lorem().word();
+        search.query = fk.lorem().word().toUpperCase() + " AND " + fk.lorem().word().toUpperCase() + " AND " + fk.lorem().word().toUpperCase();
         search.ucnf = search.query; /// TODO tranformer les query en ucnf
         search.timestamp = new Date().getTime();
         search.job_uuid = job_uuid;
