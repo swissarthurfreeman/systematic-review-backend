@@ -36,7 +36,6 @@ public class ResultRestService {
     public List<Result> getResults(@QueryParam("page") int page) {
         return resultService.getAll();
     }
-
     
     @GET // /results/:id
     @Path("{result_uuid}")
