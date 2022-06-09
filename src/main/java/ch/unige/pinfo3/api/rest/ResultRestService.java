@@ -5,6 +5,7 @@ import ch.unige.pinfo3.domain.service.ArticleService;
 import ch.unige.pinfo3.domain.service.ResultService;
 import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.utils.VALID_UUID;
+import io.quarkus.logging.Log;
 import io.quarkus.security.Authenticated;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class ResultRestService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getResult(@PathParam("result_uuid") @VALID_UUID String result_uuid) {
         var res = resultService.getResult(result_uuid);
-        if(!res.isPresent()) {
+        if(res.isEmpty()) {
             var err = new ErrorReport();
             err.errors
                 .add(
