@@ -1,9 +1,6 @@
 package ch.unige.pinfo3.utils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import com.github.javafaker.Faker;
 
@@ -71,5 +68,43 @@ public class RandomProducer {
             search.setJobUUID(null);
         }
         return search;
+    }
+
+    public static String CreateRandomCnf(){
+        String[] operators = {"&", "|", "~" , ""};
+        Faker fk = new Faker();
+        StringBuilder cnf = new StringBuilder();
+        int maxI = fk.number().numberBetween(1,10);
+        // nb d'atomes
+        for(int i = 0; i <= maxI; i++){
+            cnf.append("(");
+            //nb d'éléments à l'intéreur d'un atome
+            int maxJ = fk.number().numberBetween(1,5);
+            for(int j = 0; j <= maxJ; j++){
+                cnf.append(operators[fk.number().numberBetween(2,4)]); // ajouter un not ou pas
+                cnf.append(fk.lorem().word());
+                if(j < maxJ){ // pour tot, sauf le dernier
+                    cnf.append(operators[1]);
+                }
+            }
+            cnf.append(")");
+            if(i < maxI){ // pour tot, sauf le dernier
+                cnf.append(operators[0]);
+            }
+        }
+        return cnf.toString();
+    }
+
+    public static String shuffleCnf(String cnf){
+        List<String> atomes = Arrays.asList(cnf.split("&"));
+        Collections.shuffle(atomes);
+        String shuffled = "";
+        for (int i = 0; i < atomes.size(); i++) {
+            shuffled += atomes.get(i);
+            if(i < atomes.size()-1){
+                shuffled += "&";
+            }
+        }
+        return shuffled;
     }
 }
