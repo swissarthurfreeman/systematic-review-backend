@@ -1,6 +1,5 @@
 package ch.unige.pinfo3.EndpointTesting;
 
-import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.utils.RandomProducer;
 import io.quarkus.logging.Log;
@@ -13,6 +12,7 @@ import io.restassured.http.ContentType;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.*;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.UUID;
