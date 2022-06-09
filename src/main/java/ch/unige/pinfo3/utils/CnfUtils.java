@@ -1,4 +1,4 @@
-package ch.unige.pinfo3.domain.service.cnfUtils;
+package ch.unige.pinfo3.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

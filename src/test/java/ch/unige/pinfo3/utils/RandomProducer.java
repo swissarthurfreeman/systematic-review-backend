@@ -8,7 +8,6 @@ import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
-import ch.unige.pinfo3.domain.service.cnfUtils.CnfUtils;
 
 import java.security.SecureRandom;
 
