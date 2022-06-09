@@ -149,18 +149,21 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .and()
                 .body("[0][\"y\"]", CoreMatchers.equalTo((float) article1.y))
                 .and()
-                .body("[0][\"url\"]", CoreMatchers.equalTo(article1.Url));
-                /*.and()
-                .body("[0][\"Published\"]", CoreMatchers.equalTo(article1.Published))
+                .body("[0][\"url\"]", CoreMatchers.equalTo(article1.Url))
                 .and()
-                .body("[0][\"Fulltext\"]", CoreMatchers.equalTo(article1.Fulltext))
+                .body("[0][\"published\"]", CoreMatchers.equalTo(article1.Published))
                 .and()
-                .body("[0][\"Title\"]", CoreMatchers.equalTo(article1.Title))
+                .body("[0][\"fulltext\"]", CoreMatchers.equalTo(article1.Fulltext))
                 .and()
-                .body("[0][\"Journal\"]", CoreMatchers.equalTo(article1.Journal))
+                .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title))
                 .and()
-                .body("[0][\"PmcId\"]", CoreMatchers.equalTo(article1.PmcId));*/
-
+                .body("[0][\"journal\"]", CoreMatchers.equalTo(article1.Journal))
+                .and()
+                .body("[0][\"PmcId\"]", CoreMatchers.equalTo(article1.PmcId))
+                .and()
+                .body("[0][\"doi\"]", CoreMatchers.equalTo(article1.DOI))
+                .and()
+                .body("[0][\"authors\"]", CoreMatchers.equalTo(article1.Authors));
     }
 
     @Order(6)
@@ -178,6 +181,5 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .statusCode(CoreMatchers.is(404))
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
-
     }
 }
