@@ -26,16 +26,16 @@ when testing in development. Production will use the Oauth2 server deployed on t
 
 ### Semantics
 
-| Verb | URL                     | Body                                              | Return code | Description                                                                                                                  
-|------|-------------------------|---------------------------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| GET  | /jobs                   | N/A                                               | 200         | Returns a list of [Job object](#job-object) that user is observing.                                                                        | 
-| GET  | /jobs/:id               | N/A                                               | 200         | Returns a [Job object](#job-object) specified by id. Returns an [Error Object](error-object) if uuid is invalid (job doesn't exist, invalid format). Jobs are global. |
-| GET  | /searches               | N/A                                               | 200         | Returns a list of [Search Object](#search-object) of the user. |
-| POST | /searches               | {"query": "hiv OR malaria"}                       | 201         | Creates a [Search Object](#search-object) belonging to user. |
-| GET  | /searches/:id           | N/A                                               | 200         | Returns a list of [Search Object](#search-object) belonging to the user. Returns an [Error Object](error-object) if search uuid is invalid. |
-| GET  | /results                | N/A                                               | 200         | Returns a list of [Result Object](#result-object). List will be empty if no results exist. Results are global. |
-| GET  | /results/:id            | N/A                                               | 200         | Returns a [Result Object](#result-object). Returns an [Error Object](error-object) if result_uuid is invalid. |
-| GET  | /results/:id/articles   | N/A                                               | 200         | Returns a list of [Article Object](#article-object) Returns an [Error Object](error-object) if result does not exist.|
+| Verb | URL                     | Body                                              | Return code               | Description                                                                                                                  
+|------|-------------------------|---------------------------------------------------|---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| GET  | /jobs                   | N/A                                               | 200                       | Returns a list of [Job object](#job-object) that user is observing.                                                                        | 
+| GET  | /jobs/:id               | N/A                                               | 200 <br/> 400<br/> 404 | Returns a [Job object](#job-object) specified by id. Returns an [Error Object](error-object) if uuid is invalid (job doesn't exist, invalid format). Jobs are global. |
+| GET  | /searches               | N/A                                               | 200                       | Returns a list of [Search Object](#search-object) of the user. |
+| POST | /searches               | {"query": "hiv OR malaria"}                       | 201 <br/>400           | Creates a [Search Object](#search-object) belonging to user. |
+| GET  | /searches/:id           | N/A                                               | 200 <br/>400           | Returns a list of [Search Object](#search-object) belonging to the user. Returns an [Error Object](error-object) if search uuid is invalid. |
+| GET  | /results                | N/A                                               | 200                       | Returns a list of [Result Object](#result-object). List will be empty if no results exist. Results are global. |
+| GET  | /results/:id            | N/A                                               | 200 <br/>400<br/>404      | Returns a [Result Object](#result-object). Returns an [Error Object](error-object) if result_uuid is invalid. |
+| GET  | /results/:id/articles   | N/A                                               | 200 <br/>400 <br/>404     | Returns a list of [Article Object](#article-object) Returns an [Error Object](error-object) if result does not exist.|
 
 # Resources types
 
@@ -52,19 +52,23 @@ when testing in development. Production will use the Oauth2 server deployed on t
 
 #### Job Object
 
-| Field Name | Type                          | Description                                               |
-|------------|-------------------------------|-----------------------------------------------------------|
-| uuid       | UString                         | Unique identifier of the Job. (128 hexadecimal bit key) |
-| ucnf       | string                        | The ucnf job query.                                       |
-| status     | ["queued", "running", "done"] | Self-explanatory.                                         |
-| percentage | uint                          | Percentage of completion.                                 |
-| user       | User                          | User having creating the Job.                             |
+| Field Name  | Type                          | Description                                             |
+|-------------|-------------------------------|---------------------------------------------------------|
+| uuid        | UString                       | Unique identifier of the Job. (128 hexadecimal bit key) |
+| ucnf        | string                        | The ucnf job query.                                     |
+| status      | ["queued", "running", "done"] | Self-explanatory.                                       |
+| percentage  | uint                          | Percentage of completion.                               |
+| user        | User                          | User having creating the Job.                           |
+| timestamp   | Long                          | Time when the job was created                           |
+| progress    | int                           |                                                         |
+| totalTrials | int                           |                                                         |
 
 #### Result Object
-| Field Name | Type                          | Description                                               |
-|------------|-------------------------------|-----------------------------------------------------------|
-| uuid       | String                        | Unique identifier of the result.                          |
-| ucnf       | string                        | the ucnf job query.                                       |
+| Field Name | Type          | Description                      |
+|------------|---------------|----------------------------------|
+| uuid       | String        | Unique identifier of the result. |
+| ucnf       | string        | the ucnf job query.              |
+| articles   | List<Article> | Articles of the result           |
 
 #### ErrorReport Object
 
@@ -84,21 +88,23 @@ ErrorReports are generated when validation fails or requests to inexistant resou
 
 
 #### Article Object
-| Field Name | Type                          | Description                                                        |
-|------------|-------------------------------|--------------------------------------------------------------------|
-| uuid       | String                        | Unique identifier of the article result.                           |
-| result_uuid| String                        | Unique identifier of the result to the which this article belongs. |
-| Title      | String                        | article title                                                      |
-| Authors    | String                        | list of article authors, may be null.                              |
-| Abstract   | String                        | article abstract                                                   |
-| Full_text  | String                        | article full text                                                  |
-| URL        | String                        | The article URL, may be null.                                      |
-| Journal    | String                        | The journal of publication, may be null.                           |
-| Year       | String                        | The year of publication, may be null.                              |
-| Date       | String                        | The Date of publication, may be null.                              |
-| labels     | String                        | A list of strings that uniquely identifiy the cluster.             |
-| cluster    | int                           | An integer that identifies the cluster, -1 means not atributed.    |
-| x,y        | double                        | the position of the article in the clustering                      |
+| Field Name  | Type   | Description                                                        |
+|-------------|--------|--------------------------------------------------------------------|
+| uuid        | String | Unique identifier of the article result.                           |
+| result_uuid | String | Unique identifier of the result to the which this article belongs. |
+| Title       | String | article title                                                      |
+| Authors     | String | list of article authors, may be null.                              |
+| Abstract    | String | article abstract                                                   |
+| Full_text   | String | article full text                                                  |
+| URL         | String | The article URL, may be null.                                      |
+| Journal     | String | The journal of publication, may be null.                           |
+| Year        | String | The year of publication, may be null.                              |
+| Date        | String | The Date of publication, may be null.                              |
+| labels      | String | A list of strings that uniquely identifiy the cluster.             |
+| cluster     | int    | An integer that identifies the cluster, -1 means not atributed.    |
+| x,y         | double | the position of the article in the clustering                      |
+| PmcId       | String |                                                                    |
+| DOI         | String |                                                                    |
 
 An article is represented in Java by, 
 
@@ -107,7 +113,8 @@ public class Article {
     public String uuid;
     public String result_uuid;
     public String Title;
-    public String PMCID;
+    public String DOI;
+    public String PmcId;
     public String Authors; 
     public String Abstract;
     public String Full_text; 
