@@ -30,11 +30,8 @@ public class JobRestService {
     @Path("{job_uuid}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getJob(@PathParam("job_uuid") @VALID_UUID String job_uuid) {
-        Log.info("getting job");
-        
         var job = jobService.getJob(job_uuid);
-        Log.info(job.isPresent());
-        if(!job.isPresent()) {
+        if(job.isEmpty()) {
             Log.info("job is not present");
             var err = new ErrorReport();
             err.errors
