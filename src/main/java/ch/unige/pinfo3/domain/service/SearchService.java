@@ -19,9 +19,8 @@ import javax.ws.rs.core.Response;
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
-import ch.unige.pinfo3.domain.service.cnfUtils.CnfUtils;
-import ch.unige.pinfo3.domain.service.parser.ParseException;
-import ch.unige.pinfo3.domain.service.parser.Query;
+import ml.researchado.parser.*;
+import ch.unige.pinfo3.utils.CnfUtils;
 import ch.unige.pinfo3.utils.ErrorReport;
 import io.quarkus.logging.Log;
 
