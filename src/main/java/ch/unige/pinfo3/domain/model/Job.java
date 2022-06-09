@@ -1,13 +1,11 @@
 package ch.unige.pinfo3.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
 
 import java.io.Serializable;
 
-import javax.persistence.Id;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -18,11 +16,15 @@ public class Job implements Serializable {
     public String uuid;
 
     @NotNull
-    @Column(unique=true) 
+    @Column(unique = true)
     public String ucnf;
 
     @NotNull
     public Long timestamp;
+
+    @NotNull
+    @JsonIgnore
+    public int progress = 0;
 
     @NotNull
     public String status;
