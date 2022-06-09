@@ -28,7 +28,7 @@ public class CnfUtilsTest {
 
     @Test
     void computeUcnfExceptionTest(){
-        String query = "sfgsdvdsveq";
+        String query = "sfgsdvd&sv__!eq";
         Assertions.assertEquals(computeUcnf(query), query);
     }
 
