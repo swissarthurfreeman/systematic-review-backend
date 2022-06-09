@@ -23,6 +23,8 @@ public class RandomProducer {
         job.ucnf = fk.expression("#{lorem.word} AND #{lorem.word} AND #{lorem.word}");
         job.timestamp = new Date().getTime();
         job.status = status[(int) (Math.random() * status.length)];
+        job.progress = fk.number().numberBetween(0,100);
+        job.totalTrials = fk.number().numberBetween(0,20);
         return job;
     }
 
