@@ -5,11 +5,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Search;
@@ -64,7 +60,7 @@ public class JobService {
 
     @Incoming("job_status")
     @Transactional
-    public void updateJobStatus(ConsumerRecord<String, String> record) {
+    public void updateJobProgress(ConsumerRecord<String, String> record) {
         final var ucnf = record.key();
         final var totalTrials = Integer.parseInt(record.value());
 
@@ -76,8 +72,12 @@ public class JobService {
             return;
         }
 
-        job.progress++;
-        job.status = String.format("%.2f%%", 100. * (float) job.progress / (float) totalTrials);
+        job.totalTrials = totalTrials;
+
+        if (Objects.equals(job.status, "queued"))
+            job.status = "started";
+        else
+            job.progress++;
 
         em.merge(job);
     }
