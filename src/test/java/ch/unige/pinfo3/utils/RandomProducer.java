@@ -98,13 +98,13 @@ public class RandomProducer {
     public static String shuffleCnf(String cnf){
         List<String> atomes = Arrays.asList(cnf.split("&"));
         Collections.shuffle(atomes);
-        String shuffled = "";
+        StringBuilder shuffled = new StringBuilder();
         for (int i = 0; i < atomes.size(); i++) {
-            shuffled += atomes.get(i);
+            shuffled.append(atomes.get(i));
             if(i < atomes.size()-1){
-                shuffled += "&";
+                shuffled.append("&");
             }
         }
-        return shuffled;
+        return shuffled.toString();
     }
 }
