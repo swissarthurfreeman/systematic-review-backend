@@ -19,12 +19,9 @@ public class CnfUtilsTest {
 
     @Test
     void sortCnfNonAtomicTest(){
-        // 100 tests pour bien vérifier
-        for(int i = 0; i < 100; i++) {
-            String query = CreateRandomCnf();
-            String shuffledQuery = shuffleCnf(query);
-            Assertions.assertEquals(sortCnf(query), sortCnf(shuffledQuery));
-        }
+        String query = CreateRandomCnf();
+        String shuffledQuery = shuffleCnf(query);
+        Assertions.assertEquals(sortCnf(query), sortCnf(shuffledQuery));
     }
 
     @Test
