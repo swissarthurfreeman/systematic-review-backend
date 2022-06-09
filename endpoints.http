@@ -1,9 +1,5 @@
 // variables accessibles via {{var}}.
-@hostname = 127.0.0.1
-@port = 8080
-@proto = http
-
-@host = {{proto}}://{{hostname}}:{{port}}
+@host = {{proto}}://{{hostname}}:{{port}}/{{path}}
 
 // test_uuid of john doe user. First post will create
 // this user, latter ones will create random uuids.

@@ -11,11 +11,11 @@
             "proto": "http",
             "path": ""
         },
-        "dev.researchado.ml": {
-            "hostname": "dev.researchado.ml",
+        "staging.researchado.ml": {
+            "hostname": "staging.researchado.ml",
             "port": "443",
             "proto": "https",
-            "path": "/url"
+            "path": "/api"
         }
     },
     "java.configuration.updateBuildConfiguration": "automatic",
