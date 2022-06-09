@@ -92,13 +92,13 @@ class SearchResourceTest extends ResourceTestParent{
                 .body("size()", CoreMatchers.equalTo(10));
     }
 
-    // Testing POST /user/:id/searches with invalid characters
+    // Testing POST /user/:id/searches with invalid syntax
     @Test
     @Order(4)
     @Transactional
     void PostInvalidSearch(){
-        Log.info("Testing POST /searches with invalid characters");
-        String searchJson = ("{\"query\": \"ifféie%oiem_$~¡§π«\"}");
+        Log.info("Testing POST /searches with invalid syntax");
+        String searchJson = ("{\"query\": \"(covid AND (malaria OR HIV)\"}");
         Log.info(searchJson);
         given()
                 .auth()
