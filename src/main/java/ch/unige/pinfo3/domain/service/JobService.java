@@ -75,7 +75,7 @@ public class JobService {
         job.totalTrials = totalTrials;
 
         if (Objects.equals(job.status, "queued"))
-            job.status = "started";
+            job.status = "running";
         else
             job.progress++;
 

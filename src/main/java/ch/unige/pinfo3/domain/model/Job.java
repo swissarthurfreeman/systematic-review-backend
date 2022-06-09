@@ -35,8 +35,8 @@ public class Job implements Serializable {
 
     @JsonProperty("progress_fraction")
     @NotNull
-    public double getProgressFraction () {
-        return (double) progress / (double) totalTrials;
+    public double getProgressFraction() {
+        return totalTrials == 0 ? 0 : (double) progress / (double) totalTrials;
     }
 
     @NotNull
