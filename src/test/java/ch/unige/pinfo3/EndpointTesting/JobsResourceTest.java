@@ -58,7 +58,7 @@ public class JobsResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(CoreMatchers.is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(4))
+                .body("size()", CoreMatchers.equalTo(5))
                 .and()
                 .body("uuid", CoreMatchers.equalTo(jobUUID))
                 .and()
@@ -66,7 +66,7 @@ public class JobsResourceTest extends ResourceTestParent{
                 .and()
                 .body("timestamp", CoreMatchers.equalTo(job.timestamp))
                 .and()
-                .body("status", CoreMatchers.equalTo(job.status));
+                .body("progress_fraction", CoreMatchers.equalTo((float) job.getProgressFraction()));
 
     }
 
