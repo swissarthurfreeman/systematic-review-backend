@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 
@@ -70,7 +71,7 @@ public class JobsResourceTest extends ResourceTestParent{
     }
 
     @Test
-    void GetInexistingJob(){
+    void GetJobInvalidUUID(){
 
         jobUUID = "1234";
 
@@ -83,6 +84,24 @@ public class JobsResourceTest extends ResourceTestParent{
                 .then()
                 .assertThat()
                 .statusCode(CoreMatchers.is(400))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
+    }
+
+    @Test
+    void GetJobInexistantUUID(){
+
+        jobUUID = UUID.randomUUID().toString();
+
+        Log.info(jobUUID);
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .when()
+                .get("/jobs/"+ jobUUID)
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(404))
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
     }
