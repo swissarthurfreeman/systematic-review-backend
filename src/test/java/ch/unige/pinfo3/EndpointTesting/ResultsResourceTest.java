@@ -13,6 +13,8 @@ import org.junit.jupiter.api.*;
 
 import javax.transaction.Transactional;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
@@ -96,7 +98,24 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .statusCode(CoreMatchers.is(400))
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
+    }
 
+    // Testing endpoint GET /results/:id with inexistant ID
+    @Order(4)
+    @Test
+    void TestSpecificResultInexistantId() {
+
+        Log.info("Testing endpoint GET /results/:id with invalid ID");
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .when()
+                .get("results/"+UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(404))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
     }
 
     // Testing endpoint GET /results/:id/articles
@@ -130,17 +149,37 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .and()
                 .body("[0][\"y\"]", CoreMatchers.equalTo((float) article1.y))
                 .and()
-                .body("[0][\"url\"]", CoreMatchers.equalTo(article1.Url));
-                /*.and()
-                .body("[0][\"Published\"]", CoreMatchers.equalTo(article1.Published))
+                .body("[0][\"url\"]", CoreMatchers.equalTo(article1.Url))
                 .and()
-                .body("[0][\"Fulltext\"]", CoreMatchers.equalTo(article1.Fulltext))
+                .body("[0][\"published\"]", CoreMatchers.equalTo(article1.Published))
                 .and()
-                .body("[0][\"Title\"]", CoreMatchers.equalTo(article1.Title))
+                .body("[0][\"fulltext\"]", CoreMatchers.equalTo(article1.Fulltext))
                 .and()
-                .body("[0][\"Journal\"]", CoreMatchers.equalTo(article1.Journal))
+                .body("[0][\"title\"]", CoreMatchers.equalTo(article1.Title))
                 .and()
-                .body("[0][\"PmcId\"]", CoreMatchers.equalTo(article1.PmcId));*/
+                .body("[0][\"journal\"]", CoreMatchers.equalTo(article1.Journal))
+                .and()
+                .body("[0][\"PmcId\"]", CoreMatchers.equalTo(article1.PmcId))
+                .and()
+                .body("[0][\"doi\"]", CoreMatchers.equalTo(article1.DOI))
+                .and()
+                .body("[0][\"authors\"]", CoreMatchers.equalTo(article1.Authors));
+    }
 
+    @Order(6)
+    @Test
+    void TestInexistantResultArticles() {
+
+        Log.info("Testing endpoint GET /results/:id/articles with inexistant id");
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .when()
+                .get("results/"+UUID.randomUUID().toString()+"/articles")
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(404))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
     }
 }
