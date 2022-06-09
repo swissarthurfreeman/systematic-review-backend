@@ -1,5 +1,6 @@
 package ch.unige.pinfo3.ComponentTesting;
 
+import ch.unige.pinfo3.utils.CnfUtils;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,11 @@ public class CnfUtilsTest {
     void computeUcnfExceptionTest(){
         String query = "sfgsdvd&sv__!eq";
         Assertions.assertEquals(computeUcnf(query), query);
+    }
+
+    @Test
+    void CnfUtilsClassTest(){
+        new CnfUtils();
     }
 
 }
