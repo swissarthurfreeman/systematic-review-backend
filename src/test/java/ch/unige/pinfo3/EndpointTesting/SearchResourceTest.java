@@ -28,8 +28,6 @@ import static org.hamcrest.CoreMatchers.is;
 @ApplicationScoped
 class SearchResourceTest extends ResourceTestParent{
 
-    Job job = RandomProducer.getRandomJob();
-
     String getElementFromJson(String json, String element) {
         JSONObject obj = new JSONObject(json);
         return (obj.getString(element));
@@ -95,7 +93,6 @@ class SearchResourceTest extends ResourceTestParent{
     }
 
     // Testing POST /user/:id/searches with invalid characters
-    /// todo ATTENTION: Pour le moment il est possible de poster des recherches qui sont syntaxiquement incorrectes
     @Test
     @Order(4)
     @Transactional
