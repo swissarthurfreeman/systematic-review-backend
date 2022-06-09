@@ -4,6 +4,7 @@ import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
 import ch.unige.pinfo3.domain.service.SearchService;
+import ch.unige.pinfo3.utils.ErrorReport;
 import ch.unige.pinfo3.utils.RandomProducer;
 import io.quarkus.logging.Log;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -18,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
@@ -106,5 +108,17 @@ public class SearchServiceTest {
         search2.setResultUUID(result.uuid);
 
         Assertions.assertEquals(ss.getAll().get(1).toString(), search2.toString());
+    }
+
+    // with syntaxicly correct query
+    @Test
+    void syntaxAnalysisCorrectTest(){
+        Assertions.assertEquals(ss.syntaxAnalysis("covid AND hiv AND malaria"), Optional.empty());
+    }
+
+    // with syntaxicly incorrect query
+    @Test
+    void syntaxAnalysisIncorrectTest(){
+        Assertions.assertEquals(ss.syntaxAnalysis("(covid AND (malaria)").getClass(), Optional.of(new ErrorReport()).getClass());
     }
 }
