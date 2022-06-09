@@ -19,6 +19,9 @@ import javax.ws.rs.core.Response;
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
+import ch.unige.pinfo3.domain.service.cnfUtils.CnfUtils;
+import ch.unige.pinfo3.domain.service.parser.ParseException;
+import ch.unige.pinfo3.domain.service.parser.Query;
 import ch.unige.pinfo3.utils.ErrorReport;
 import io.quarkus.logging.Log;
 
@@ -46,7 +49,7 @@ public class SearchService {
     public Search create(Search search) {
         search.timestamp = new Date().getTime();
         search.uuid = UUID.randomUUID().toString();
-        search.ucnf = search.query;
+        search.ucnf = CnfUtils.computeUcnf(search.query);
         Log.info(search.user_uuid);
         // TODO : Check search hasn't already been performed. 
         // search for job or result with said ucnf
@@ -93,8 +96,21 @@ public class SearchService {
      * Perform syntactic analysis of query. 
      */
     public Optional<ErrorReport> syntaxAnalysis(String query) {
-        // TODO use ANTLR java syntactic analyser to validate query.
-        return Optional.empty();
+        
+        Optional<ParseException> syntaxError = Query.parse(query);
+        if(!syntaxError.isPresent()) {
+            return Optional.empty();
+        } else {
+            var err = new ErrorReport();
+            err.errors
+                .add(
+                    new ErrorReport.Error(
+                        "Syntax Error, please provide a well formed Query", 
+                        syntaxError.get().getMessage(), 
+                        Response.Status.BAD_REQUEST)
+                );
+            return Optional.of(err);
+        }
     }
 
     public Search getSearchOfUser(String user_uuid, String search_uuid) {

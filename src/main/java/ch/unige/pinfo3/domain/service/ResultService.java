@@ -62,7 +62,7 @@ public class ResultService {
         
         Gson g = new Gson();
         Article received_article = g.fromJson(result.value(), Article.class);
-        Log.info("Received article with Tile = " + received_article.Title);
+        Log.debug("Received article with Tile = " + received_article.Title);
         // create Result if not previously created (articles reference it)
         String res_uuid;
         List<Result> potential_res;

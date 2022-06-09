@@ -43,7 +43,7 @@ class SearchResourceTest extends ResourceTestParent{
     @TestTransaction
     void postSearch() {
         Log.info("Test endpoint POST /searches");
-        String searchJson = ("{\"query\": \"hiv AND covid AND ebola\"}");
+        String searchJson = ("{\"query\": \"HIV AND COVID AND EBOLA\"}");
         Log.info("Testing POST searches");
         Log.info(searchJson);
         String access_token = getAccessToken("alice");
@@ -80,23 +80,7 @@ class SearchResourceTest extends ResourceTestParent{
     @Test
     @Order(3)
     @Transactional
-    void PostInvalidShortSearch(){
-        /*Log.info("Testing POST /searches with too short query");
-        String searchJson = ("{\"query\": \"hiv\"}");
-        Log.info(searchJson);
-        given()
-                .auth()
-                .oauth2(getAccessToken("alice"))
-                .when()
-                .contentType(ContentType.JSON)
-                .body(searchJson)
-                .when()
-                .post("/searches")
-                .then()
-                .assertThat()
-                .statusCode(is(400));
-        */
-        
+    void PostInvalidShortSearch() {
         Log.info("Testing GET /searches");
         given()
                 .auth()
@@ -129,8 +113,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .post("/searches")
                 .then()
                 .assertThat()
-                .statusCode(is(200));
-
+                .statusCode(is(400));
 
         Log.info("Testing GET /searches");
         given()
@@ -142,7 +125,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(11));
+                .body("size()", CoreMatchers.equalTo(10));
     }
 
     // Testing GET /searches
@@ -159,7 +142,7 @@ class SearchResourceTest extends ResourceTestParent{
                 .assertThat()
                 .statusCode(is(200))
                 .and()
-                .body("size()", CoreMatchers.equalTo(11));
+                .body("size()", CoreMatchers.equalTo(10));
     }
 
     // Testing GET /searches/:id

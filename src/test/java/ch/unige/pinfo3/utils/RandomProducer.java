@@ -11,6 +11,7 @@ import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.domain.model.Job;
 import ch.unige.pinfo3.domain.model.Result;
 import ch.unige.pinfo3.domain.model.Search;
+import ch.unige.pinfo3.domain.service.cnfUtils.CnfUtils;
 
 import java.security.SecureRandom;
 
@@ -59,8 +60,9 @@ public class RandomProducer {
         Faker fk = new Faker();
         search.uuid = UUID.randomUUID().toString();
         search.user_uuid = user_uuid;
-        search.query = fk.lorem().word() + " AND " + fk.lorem().word() + " AND " + fk.lorem().word();
-        search.ucnf = search.query; /// TODO tranformer les query en ucnf
+        search.query = fk.lorem().word().toUpperCase() + " AND " + fk.lorem().word().toUpperCase() + " AND " + fk.lorem().word().toUpperCase();
+        
+        search.ucnf = CnfUtils.computeUcnf(search.query); /// TODO tranformer les query en ucnf
         search.timestamp = new Date().getTime();
         search.job_uuid = job_uuid;
         search.setResultUUID(null);

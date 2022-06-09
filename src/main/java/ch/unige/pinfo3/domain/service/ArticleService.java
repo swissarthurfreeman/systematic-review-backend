@@ -4,6 +4,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import ch.unige.pinfo3.domain.model.Article;
 import ch.unige.pinfo3.utils.QueryUtils; 
@@ -13,6 +14,7 @@ public class ArticleService {
     @Inject 
     EntityManager em;
 
+    @Transactional
     public List<Article> getArticlesOf(String result_uuid) {
         return QueryUtils.select(Article.class, "result_uuid", result_uuid, em);
     }
