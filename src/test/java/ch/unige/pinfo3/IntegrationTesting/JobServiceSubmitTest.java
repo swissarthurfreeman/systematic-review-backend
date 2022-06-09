@@ -27,11 +27,6 @@ public class JobServiceSubmitTest {
 
     @Test
     void submitTest(){
-        //when(js.ucnfEmitter.send("ebola AND monkeypox AND covid")).thenReturn(null);
-
-        //Mockito.doNothing().when(ucnfEmitter).send("ebola AND monkeypox AND covid");
-
-        //Mockito.when(ucnfEmitter.send("ebola AND monkeypox AND covid")).thenReturn(null);
 
         String commitJobUUID = js.submit("ebola AND monkeypox AND covid");
 
