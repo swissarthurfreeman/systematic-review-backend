@@ -1,20 +1,30 @@
 package ch.unige.pinfo3.ComponentTesting;
 
-import ch.unige.pinfo3.domain.service.cnfUtils.CnfUtils;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-
 import static ch.unige.pinfo3.domain.service.cnfUtils.CnfUtils.createOrbitalFormula;
+import static ch.unige.pinfo3.domain.service.cnfUtils.CnfUtils.sortCnf;
+import static ch.unige.pinfo3.utils.RandomProducer.CreateRandomCnf;
+import static ch.unige.pinfo3.utils.RandomProducer.shuffleCnf;
 
 @QuarkusTest
 public class CnfUtilsTest {
 
-
     @Test
-    void createOrbitalFormulaNotTest(){
+    void createOrbitalFormulaNotTest() {
         Assertions.assertEquals(createOrbitalFormula("NOT test"), " ~  test");
     }
+
+    @Test
+    void sortCnfNonAtomicTest(){
+        // 100 tests pour bien vérifier
+        for(int i = 0; i < 100; i++) {
+            String query = CreateRandomCnf();
+            String shuffledQuery = shuffleCnf(query);
+            Assertions.assertEquals(sortCnf(query), sortCnf(shuffledQuery));
+        }
+    }
+
 }
