@@ -162,4 +162,22 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .body("[0][\"PmcId\"]", CoreMatchers.equalTo(article1.PmcId));*/
 
     }
+
+    @Order(6)
+    @Test
+    void TestInexistantResultArticles() {
+
+        Log.info("Testing endpoint GET /results/:id/articles with inexistant id");
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .when()
+                .get("results/"+UUID.randomUUID().toString()+"/articles")
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(404))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
+
+    }
 }
