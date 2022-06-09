@@ -13,6 +13,8 @@ import org.junit.jupiter.api.*;
 
 import javax.transaction.Transactional;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 
 @QuarkusTestResource(H2DatabaseTestResource.class)
@@ -96,7 +98,24 @@ public class ResultsResourceTest extends ResourceTestParent{
                 .statusCode(CoreMatchers.is(400))
                 .and()
                 .body("size()", CoreMatchers.equalTo(2));
+    }
 
+    // Testing endpoint GET /results/:id with inexistant ID
+    @Order(4)
+    @Test
+    void TestSpecificResultInexistantId() {
+
+        Log.info("Testing endpoint GET /results/:id with invalid ID");
+        given()
+                .auth()
+                .oauth2(getAccessToken("alice"))
+                .when()
+                .get("results/"+UUID.randomUUID().toString())
+                .then()
+                .assertThat()
+                .statusCode(CoreMatchers.is(404))
+                .and()
+                .body("size()", CoreMatchers.equalTo(2));
     }
 
     // Testing endpoint GET /results/:id/articles
