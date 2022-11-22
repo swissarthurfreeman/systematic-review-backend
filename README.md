@@ -19,7 +19,7 @@ a clear and reliable way to the user. This was developed by a dedicated front-en
 
 The backend microservice is the repository you're currently on. This microservice exposes a REST
 API (described below), and dealt with logical equivalences (no need to redo two clusterings for 
-HIV OR AIDS and AIDS OR HIV), check syntactic validity of the queries and manage what jobs are active, 
+HIV OR AIDS and AIDS OR HIV), checking syntactic validity of the queries and managed what jobs are active, 
 what their percentage of completion is etc... The features were developed by myself and the tests by
 a dedicated test engineer. 
 
