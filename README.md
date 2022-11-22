@@ -9,24 +9,25 @@ The CLI was developed by a client from the faculty of Medecine, and it's usage w
     
 2) the application would then pull articles from pubmed, peform data mining on them and create vectors out of them. Clustering was then performed on the articles.
 
-The goal of our application was to make a web app to interface with this python application using
-Java Microservices. 
+The goal of our application was to make a web app to interface with this python CLI using Java Microservices. 
 
 ### Responsibilities
 
 There were a total of 4 microservices in our architecture. The most obvious is the frontend 
 Angular application, who dealt with querying the backend and displaying jobs and results in 
-a clear and reliable way to the user.
+a clear and reliable way to the user. This was developed by a dedicated front-end dev.
 
 The backend microservice is the repository you're currently on. This microservice exposes a REST
 API (described below), and dealt with logical equivalences (no need to redo two clusterings for 
 HIV OR AIDS and AIDS OR HIV), check syntactic validity of the queries and manage what jobs are active, 
-what their percentage of completion is etc...
+what their percentage of completion is etc... The features were developed by myself and the tests by
+a dedicated test engineer. 
 
 This microservice communicated with another Java Microservice called Jobert via a Kafka channel.
 It essentially only sent the parsed querystring obtained from the user and Jobert dealt with
 creating a python microservice instance that would pull all required articles from pubmed and
-call our client's clustering CLI with the downloaded articles as entry data. 
+call our client's clustering CLI with the downloaded articles as entry data. The python microservice
+was developed by a dedicated developer, I wrote most of Jobert.  
 
 The microservices were all kept on gitlab and pipelines were running to ensure a commit to
 master on any one of them was directly deployed on our VMs by gitlab runners. It is not meaningful
