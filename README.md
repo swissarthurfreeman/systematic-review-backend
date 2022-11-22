@@ -5,10 +5,9 @@ The project was to develop an interface to a scientific clustering CLI.
 
 The CLI was developed by a client from the faculty of Medecine, and it's usage was as follows:
 
-    1) the user would provide a logical query related to medecine, e.g. HIV OR (AIDS AND AFRICA)
+1) the user would provide a logical query related to medecine, e.g. HIV OR (AIDS AND AFRICA)
     
-    2) the application would then pull articles from pubmed peform data mining on them and create
-      vectors out of them. Clustering was then performed on the articles.
+2) the application would then pull articles from pubmed, peform data mining on them and create vectors out of them. Clustering was then performed on the articles.
 
 The goal of our application was to make a web app to interface with this python application using
 Java Microservices. 
