@@ -9,13 +9,19 @@ The CLI was developed by a client from the faculty of Medecine, and it's usage w
     
 2) the application would then pull articles from pubmed, peform data mining on them and create vectors out of them. Clustering was then performed on the articles.
 
-The goal of our application was to make a web app to interface with this python CLI using Java Microservices. 
+The goal of our application was to make a web app to interface with this python CLI using Java Microservices.
+Doing a clustering would take multiple hours as it was a very intensive computing task, we therefore had to develop
+solutions to avoid doing unecessary calculations as much as possible. This is described in the next section.
+
+[Presentation Summarizing the Whole Project](https://docs.google.com/presentation/d/1WcF2eikkGUv_yYPLGCGEc9Qz72ggc5iCXANJocP7TpE/edit?usp=sharing)
 
 ### Responsibilities
 
-There were a total of 4 microservices in our architecture. The most obvious is the frontend 
-Angular application, who dealt with querying the backend and displaying jobs and results in 
-a clear and reliable way to the user. This was developed by a dedicated front-end dev.
+There were a total of 4 microservices in our architecture. The all communicated either via 
+REST apis or via Kafka channels.
+The most visual is the frontend Angular application, who dealt with querying the backend 
+and displaying jobs and results in an elegant way to the user. This was developed by a 
+dedicated front-end dev. 
 
 The backend microservice is the repository you're currently on. This microservice exposes a REST
 API (described below), and dealt with logical equivalences (no need to redo two clusterings for 
