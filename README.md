@@ -3,7 +3,7 @@
 # Objective
 
 This repository is just here to showcase a microservice I worked on as part of a project. 
-Lazar Barta developed the component and unit tests, A. Freeman developped the API. 
+Lazar Barta developed the component and unit tests, I (Arthur Freeman) developped the API. 
 The global application was deployed on gitlab and had a frontend microservice, a Java microservice
 that created the clustering instances and communicated with our backend via Kafka. 
 
