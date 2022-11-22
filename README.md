@@ -13,6 +13,8 @@ The goal of our application was to make a web app to interface with this python 
 Doing a clustering would take multiple hours as it was a very intensive computing task, we therefore had to develop
 solutions to avoid doing unecessary calculations as much as possible. This is described in the next section.
 
+We had to present our application's global architecture to our supervisors, this was done in the following
+slides, which I highly encourage you to view if you want a global view of the inner workings of the project. 
 [Presentation Summarizing the Whole Project](https://docs.google.com/presentation/d/1WcF2eikkGUv_yYPLGCGEc9Qz72ggc5iCXANJocP7TpE/edit?usp=sharing)
 
 ### Responsibilities
